@@ -22,6 +22,13 @@ namespace Tce {
 
 				break;
 		}
+		for (auto &pGame : m_pGames) {
+			if (pGame) {
+				if (!pGame->Init()){
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 

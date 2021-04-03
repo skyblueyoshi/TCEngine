@@ -1,14 +1,11 @@
-//
-// Created by cn on 2021/4/3.
-//
+#pragma once
 
-#ifndef TCENGINE_TICKRUNNER_H
-#define TCENGINE_TICKRUNNER_H
+#include <cstdint>
 
-
-class TickRunner {
-
-};
-
-
-#endif //TCENGINE_TICKRUNNER_H
+namespace Tce {
+    class TickRunner {
+    public:
+        static uint64_t GetCurrentTickCount();
+        static void DoSleep(unsigned long milliseconds);
+    };
+}

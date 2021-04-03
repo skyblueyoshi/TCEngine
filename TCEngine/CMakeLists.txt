@@ -20,16 +20,22 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_o
 
 set(TARGET_SOURCE_FILES
 		src/Main.cpp
-		src/Application.cpp
-		src/Game.cpp
-		src/Log.cpp
-		src/Main.cpp
-		src/StringHelper.cpp
+		src/Game/Application.cpp
+		src/Game/Game.cpp
+		src/Game/GameState.cpp
+		src/Utils/Log.cpp
+		src/Utils/StringHelper.cpp
+        src/Utils/TickRunner.cpp
 		)
 
 add_library(${PROJECT_NAME} SHARED ${TARGET_SOURCE_FILES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC . src)
+target_include_directories(${PROJECT_NAME} PUBLIC
+        .
+        src
+        src/Game
+        src/Utils
+        src/Graphics)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	android
