@@ -1,16 +1,13 @@
-//
-// Created by cn on 2021/4/3.
-//
+#pragma once
 
-#ifndef TCENGINE_GRAPHICS_H
-#define TCENGINE_GRAPHICS_H
+#include "GraphicsDevice.h"
 
+namespace Tce {
 
+    class Graphics : public GraphicsDevice {
+    public:
+        Graphics() = default;
+        virtual ~Graphics() = default;
+    };
 
-class Graphics {
-
-};
-
-
-
-#endif //TCENGINE_GRAPHICS_H
+}

@@ -17,6 +17,8 @@ namespace Tce {
         uint32_t framePreSecond{};				    // 帧每秒，每秒游戏渲染函数调用次数
         bool isMaxFps{};                        // 是否启用最大帧
         bool isFrontWindow{};                   // 是否在最前窗口运行
+        // 将当前状态变成成为新的状态
+        void SetState(EnumState _state);
         // 检查状态是否发生变更
         // @return 状态是否变化
         bool CheckState();

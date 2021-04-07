@@ -1,20 +1,20 @@
 #pragma once
 
 #include <cstdint>
+#include "Vector.h"
 
 namespace Tce {
 
-    // ARGB颜色
-    union Color {
-        uint32_t _value{};
-        struct ARGB {
-            uint8_t alpha;
-            uint8_t red;
-            uint8_t green;
-            uint8_t blue;
-            ARGB() = default;
-            ARGB(uint8_t a, uint8_t r, uint8_t g, uint8_t b);
-        } argb;
+    struct Color {
+        union {
+            struct {
+                uint8_t alpha;
+                uint8_t red;
+                uint8_t green;
+                uint8_t blue;
+            };
+            uint32_t _value{};
+        };
 
         // 构造函数
         // @param value 符合ARGB格式的32位无符号整数
@@ -52,6 +52,30 @@ namespace Tce {
         // @param g 绿色通道[0, 255]
         // @param b 蓝色通道[0, 255]
         Color(uint8_t a, uint8_t r, uint8_t g, uint8_t b);
+
+        // 构造函数
+        // @param color 颜色
+        // @param alpha alpha通道[0, 255]
+        Color(const Color& color, int _alpha);
+
+        // 构造函数
+        // @param color 颜色
+        // @param alpha alpha通道[0.0f, 1.0f]
+        Color(const Color& color, float _alpha);
+
+        // 构造函数
+        // @param vector3 三维向量XYZ(RGB)
+        Color(Vector3 vector3);
+
+        // 构造函数
+        // @param vector4 四维向量XYZW(RGBA)
+        Color(Vector4 vector4);
+
+        // 返回三维向量XYZ(RGB)
+        Vector3 ToVector3();
+
+        // 返回四维向量XYZW(RGBA)
+        Vector4 ToVector4();
 
         bool operator==(const Color& color) const {
             return _value == color._value;

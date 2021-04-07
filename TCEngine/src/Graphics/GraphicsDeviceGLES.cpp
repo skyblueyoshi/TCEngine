@@ -5,7 +5,33 @@ namespace Tce {
 
 #if defined(GLES)
 
+    void GraphicsDevice::ResourceHandle::Free() {
+        auto pHandle = const_cast<GLuint *>(&m_handle);
+        switch (m_eType) {
+            case RESOURCE_TEXTURE:
+                glDeleteTextures(1, pHandle);
+                break;
+            case RESOURCE_SHADER:
+                if (glIsShader(m_handle)) {
+                    glDeleteShader(m_handle);
+                }
+                break;
+            case RESOURCE_BUFFER:
+                glDeleteBuffers(1, pHandle);
+                break;
+            case RESOURCE_PROGRAM:
+                if (glIsProgram(m_handle)) {
+                    glDeleteProgram(m_handle);
+                }
+                break;
+            case RESOURCE_FRAMEBUFFER:
+                glDeleteFramebuffers(1, pHandle);
+                break;
+        }
+    }
+
     void GraphicsDevice::_PlatformInit() {
+
         TCE_LOG_INFO("Android OpenGLES Start Initialize.");
 
         // GLES 初始化实现：
@@ -100,6 +126,24 @@ namespace Tce {
         m_display = EGL_NO_DISPLAY;
         m_context = EGL_NO_CONTEXT;
         m_surface = EGL_NO_SURFACE;
+    }
+
+    bool GraphicsDevice::_PlatformCanRender() {
+        return m_initialized;
+    }
+
+    void GraphicsDevice::_PlatformFixDevice() {
+
+    }
+
+    void GraphicsDevice::_PlatformClear(Color color) {
+        auto vColor = color.ToVector4();
+        glClearColor(vColor.x, vColor.y, vColor.z, vColor.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    void GraphicsDevice::_PlatformPresent() {
+        eglSwapBuffers(m_display, m_surface);
     }
 
 #endif

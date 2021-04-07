@@ -22,10 +22,25 @@ set(TARGET_SOURCE_FILES
 		src/Main.cpp
 		src/Game/Application.cpp
 		src/Game/Game.cpp
+		src/Game/GameClient.cpp
+		src/Game/GameServer.cpp
 		src/Game/GameState.cpp
+		src/Game/GameWindow.cpp
 		src/Utils/Log.cpp
 		src/Utils/StringHelper.cpp
         src/Utils/TickRunner.cpp
+        src/Graphics/Graphics.cpp
+		src/Graphics/GraphicsDevice.cpp
+		src/Graphics/GraphicsDeviceGLES.cpp
+		src/Graphics/GraphicsResource.cpp
+		src/Graphics/Sprite.cpp
+		src/Graphics/Texture2D.cpp
+		src/Graphics/TextureManager.cpp
+		src/Graphics/Shader.cpp
+		src/Graphics/GraphicsHelper.cpp
+		src/Type/Color.cpp
+		src/Type/Vector.cpp
+		src/Type/Matrix.cpp
 		)
 
 add_library(${PROJECT_NAME} SHARED ${TARGET_SOURCE_FILES})
@@ -37,10 +52,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src/Utils
         src/Graphics)
 
+add_subdirectory(libs/glm)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	android
 	native_app_glue
 	log
 	EGL
 	GLESv2
+	glm
 )

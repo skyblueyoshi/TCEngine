@@ -1,16 +1,17 @@
-//
-// Created by cn on 2021/4/3.
-//
+#pragma once
 
-#ifndef TCENGINE_GAMESERVER_H
-#define TCENGINE_GAMESERVER_H
+#include "Game.h"
 
+namespace Tce {
 
+    class GameServer : public Game {
+    public:
+        GameServer();
+        bool Init();
 
-class GameServer {
+    protected:
+        // 执行主循环
+        void _DoMainLoop();
+    };
 
-};
-
-
-
-#endif //TCENGINE_GAMESERVER_H
+}

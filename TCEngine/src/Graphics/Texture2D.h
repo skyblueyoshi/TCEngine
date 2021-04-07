@@ -1,16 +1,10 @@
-//
-// Created by cn on 2021/4/3.
-//
+#pragma once
 
-#ifndef TCENGINE_TEXTURE2D_H
-#define TCENGINE_TEXTURE2D_H
+namespace Tce {
 
+    class Texture2D {
 
+    };
 
-class Texture2D {
+}
 
-};
-
-
-
-#endif //TCENGINE_TEXTURE2D_H

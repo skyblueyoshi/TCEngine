@@ -1,16 +1,16 @@
-//
-// Created by cn on 2021/4/3.
-//
+#pragma once
 
-#ifndef TCENGINE_SPRITE_H
-#define TCENGINE_SPRITE_H
+#include "GraphicsResource.h"
 
+namespace Tce {
 
+    class Sprite : public GraphicsResource {
+    public:
+        Sprite(std::shared_ptr<GraphicsDevice> & pDevice);
+        virtual ~Sprite() = default;
+        void Begin();
+        void End();
+        void Flush();
+    };
 
-class Sprite {
-
-};
-
-
-
-#endif //TCENGINE_SPRITE_H
+}

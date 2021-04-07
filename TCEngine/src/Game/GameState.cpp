@@ -10,5 +10,9 @@ namespace Tce {
         return false;
     }
 
+    void GameState::SetState(GameState::EnumState _state) {
+        this->state = _state;
+    }
+
 }
 
