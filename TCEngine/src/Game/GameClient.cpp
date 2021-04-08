@@ -2,9 +2,12 @@
 // Created by cn on 2021/4/3.
 //
 
+#include <src/Type/Matrix.h>
 #include "GameClient.h"
-#include "Graphics.h"
+#include "GraphicsDevice.h"
 
+
+#include "Program.h"
 
 // 调试器注入检测
 static bool _PebIsDebuggedApproach() {
@@ -26,8 +29,8 @@ static bool _PebIsDebuggedApproach() {
 
 namespace Tce {
     GameClient::GameClient(std::shared_ptr<AppState> &pAppState,
-                           std::shared_ptr<Graphics> &pGraphics)
-            : Game(false), m_pAppState(pAppState), m_pGraphics(pGraphics) {
+                           std::shared_ptr<GraphicsDevice> &pGraphicsDevice)
+            : Game(false), m_pAppState(pAppState), m_pGraphicsDevice(pGraphicsDevice) {
 
     }
 
@@ -82,14 +85,14 @@ namespace Tce {
                                        (isCurrentLoopChangeUpdater && isCurrentLoopRunUpdate);
 
             //主绘制
-            if (isCurrentLoopRender && m_pGraphics->CanRender()) {
+            if (isCurrentLoopRender && m_pGraphicsDevice->CanRender()) {
 
                 _MainRender();
 
                 tickTemp.TimingLoopRender(m_state.framePreSecond, m_state.gameSpeed);
                 tickTemp.CheckSleep(m_state.isMaxFps);
             } else {        //不满足渲染条件（设备丢失），修复设备
-                m_pGraphics->FixDevice();
+                m_pGraphicsDevice->FixDevice();
                 tickTemp = TickInGame();
             }
 
@@ -143,7 +146,8 @@ namespace Tce {
     }
 
     void GameClient::Render() {
-        m_pGraphics->Clear(Color(255, 255, 0));
+        m_pGraphicsDevice->Clear(Color(255, 255, 0));
+
 
         static const GLfloat g_vertex_buffer_data[] = {
                 -1.0f, -1.0f, 0.0f,
@@ -154,8 +158,37 @@ namespace Tce {
 
         static GLuint vertexbuffer;
 
+        static std::shared_ptr<Program> ppg;
+
         if (!init) {
             init = true;
+
+//            const std::string svs = "layout(location = 0) in vec3 vertexPosition_modelspace;"
+//                                    "void main(){"
+//                                    "  gl_Position.xyz = vertexPosition_modelspace;"
+//                                    "  gl_Position.w = 1.0;"
+//                                    "}";
+            const std::string svs = "attribute vec3 vertexPosition_modelspace;\n"
+                                    "uniform mat4 MVP;\n"
+                                    "void main(){\n"
+                                    "  gl_Position = MVP * vec4(vertexPosition_modelspace,1);\n"
+                                    //"  gl_Position.xyz = vertexPosition_modelspace;\n"
+                                    //"  gl_Position.w = 1.0;\n"
+                                    "}";
+            const char sPS[] = //"varying vec3 color;\n"
+                               "void main(){\n"
+                               //"  color = vec3(1,0,0);\n"
+                               "  gl_FragColor.xyz = vec3(1,0,0);\n"
+                               "}";
+
+            static auto pvs = std::make_shared<Shader>(m_pGraphicsDevice, Shader::STAGE_VERTEX,
+                                                       svs);
+            static auto pps = std::make_shared<Shader>(m_pGraphicsDevice, Shader::STAGE_PIXEL, sPS);
+            ppg = std::make_shared<Program>(m_pGraphicsDevice, pvs, pps);
+            ppg->Load();
+
+
+
             // This will identify our vertex buffer
 // Generate 1 buffer, put the resulting identifier in vertexbuffer
             glGenBuffers(1, &vertexbuffer);
@@ -165,6 +198,13 @@ namespace Tce {
             glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data,
                          GL_STATIC_DRAW);
         }
+
+
+        glUseProgram(ppg->GetHandle());
+
+        auto matrixID = glGetUniformLocation(ppg->GetHandle(), "MVP");
+        Matrix mvp = Matrix::identity;
+        glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvp._11);
 
         // 1st attribute buffer : vertices
         glEnableVertexAttribArray(0);
@@ -182,8 +222,7 @@ namespace Tce {
         glDisableVertexAttribArray(0);
 
 
-
-        m_pGraphics->Present();
+        m_pGraphicsDevice->Present();
     }
 
 }

@@ -29,14 +29,16 @@ set(TARGET_SOURCE_FILES
 		src/Utils/Log.cpp
 		src/Utils/StringHelper.cpp
         src/Utils/TickRunner.cpp
-        src/Graphics/Graphics.cpp
 		src/Graphics/GraphicsDevice.cpp
-		src/Graphics/GraphicsDeviceGLES.cpp
+		src/Graphics/GraphicsDeviceOpenGL.cpp
 		src/Graphics/GraphicsResource.cpp
 		src/Graphics/Sprite.cpp
 		src/Graphics/Texture2D.cpp
 		src/Graphics/TextureManager.cpp
 		src/Graphics/Shader.cpp
+		src/Graphics/ShaderManager.cpp
+		src/Graphics/Program.cpp
+		src/Graphics/ProgramManager.cpp
 		src/Graphics/GraphicsHelper.cpp
 		src/Type/Color.cpp
 		src/Type/Vector.cpp

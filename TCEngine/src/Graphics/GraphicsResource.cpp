@@ -8,7 +8,7 @@ namespace Tce {
     }
 
     GraphicsResource::~GraphicsResource() {
-        Unload();
+        GraphicsResource::Unload();
     }
 
     void GraphicsResource::Load() {

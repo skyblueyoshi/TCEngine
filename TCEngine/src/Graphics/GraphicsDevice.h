@@ -22,37 +22,63 @@
 #include <memory>
 #include <list>
 #include <mutex>
+#include "ShaderManager.h"
 #include "src/Type/Color.h"
 
 namespace Tce {
 
     class GraphicsResource;
 
-    class GraphicsDevice {
+    class GraphicsDevice : public std::enable_shared_from_this<GraphicsDevice> {
     public:
         GraphicsDevice();
+
         virtual ~GraphicsDevice() = default;
+
+        // 创建所有设备
+        void InitAllManagers();
+
         // 初始化绘制设备
         // @param pAppState APP状态
-        void Init(std::shared_ptr<AppState> & pAppState);
+        void Init(std::shared_ptr<AppState> &pAppState);
+
         // 销毁绘制设备
         void Destroy();
+
         // 判断当前设备状态是否允许绘制
         // @return 设备是否允许绘制
         bool CanRender();
+
         // 修复设备
         void FixDevice();
+
         // 清空设备
         void Clear(Color color);
+
         // 展示到屏幕
         void Present();
+
+        // 丢弃着色器
+        // @param handle 着色器句柄
+        void DisposeShader(uint32_t handle);
+
+        // 丢弃PROGRAM
+        // @param handle 着色器句柄
+        void DisposeProgram(uint32_t handle);
+
     private:
         void _PlatformInit();
+
         void _PlatformDestroy();
+
         bool _PlatformCanRender();
+
         void _PlatformFixDevice();
+
         void _PlatformClear(Color color);
+
         void _PlatformPresent();
+
     private:
 
         enum EnumResourceType {
@@ -62,24 +88,31 @@ namespace Tce {
             RESOURCE_PROGRAM,
             RESOURCE_FRAMEBUFFER
         };
+
         struct ResourceHandle {
             EnumResourceType m_eType;
             uint32_t m_handle;
+
             static ResourceHandle Texture(uint32_t handle) {
-                    return ResourceHandle{RESOURCE_TEXTURE, handle};
+                return ResourceHandle{RESOURCE_TEXTURE, handle};
             }
+
             static ResourceHandle Shader(uint32_t handle) {
-                    return ResourceHandle{RESOURCE_SHADER, handle};
+                return ResourceHandle{RESOURCE_SHADER, handle};
             }
+
             static ResourceHandle Buffer(uint32_t handle) {
-                    return ResourceHandle{RESOURCE_BUFFER, handle};
+                return ResourceHandle{RESOURCE_BUFFER, handle};
             }
+
             static ResourceHandle Program(uint32_t handle) {
-                    return ResourceHandle{RESOURCE_PROGRAM, handle};
+                return ResourceHandle{RESOURCE_PROGRAM, handle};
             }
+
             static ResourceHandle Framebuffer(uint32_t handle) {
-                    return ResourceHandle{RESOURCE_FRAMEBUFFER, handle};
+                return ResourceHandle{RESOURCE_FRAMEBUFFER, handle};
             }
+
             void Free();
         };
 
@@ -90,7 +123,9 @@ namespace Tce {
         bool m_initialized{};                           // 是否完成初始化
         std::list<ResourceHandle> m_nextDisposes;       // 下一帧丢弃资源表
         std::list<ResourceHandle> m_currentDisposes;    // 当前帧丢弃资源表
+        std::mutex m_disposeLock;                       // 抛弃操作锁
 
+        std::shared_ptr<ShaderManager> m_shaderManager;     // 着色器管理器
 
 #ifdef GLES
         EGLDisplay m_display{EGL_NO_DISPLAY};

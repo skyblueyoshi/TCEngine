@@ -16,7 +16,9 @@ namespace Tce {
         // 构造函数
         // @param stage 着色器类型
         // @param code  着色器代码
-        Shader(std::shared_ptr<GraphicsDevice> & pDevice, Stage stage, std::string code);
+        Shader(std::shared_ptr<GraphicsDevice> pDevice, Stage stage, std::string code);
+
+        virtual ~Shader();
 
         // 加载资源
         void Load();
@@ -25,7 +27,7 @@ namespace Tce {
         void Unload();
 
         // 获取句柄
-        uint32_t GetHandle();
+        inline uint32_t GetHandle() const { return m_handle; }
 
     private:
         Stage m_stage{};            // 当前着色器类型

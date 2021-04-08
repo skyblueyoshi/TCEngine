@@ -139,7 +139,7 @@ namespace Tce {
     void GraphicsDevice::_PlatformClear(Color color) {
         auto vColor = color.ToVector4();
         glClearColor(vColor.x, vColor.y, vColor.z, vColor.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void GraphicsDevice::_PlatformPresent() {

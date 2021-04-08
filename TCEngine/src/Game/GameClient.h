@@ -1,5 +1,6 @@
 #pragma once
 
+#include <src/Graphics/GraphicsDevice.h>
 #include "Game.h"
 
 namespace Tce {
@@ -9,7 +10,7 @@ namespace Tce {
 
     class GameClient : public Game {
     public:
-        GameClient(std::shared_ptr<AppState> & pAppState, std::shared_ptr<Graphics> & pGraphics);
+        GameClient(std::shared_ptr<AppState> & pAppState, std::shared_ptr<GraphicsDevice> & pGraphicsDevice);
         bool Init();
 
     protected:
@@ -27,7 +28,7 @@ namespace Tce {
 
     private:
         std::shared_ptr<AppState> m_pAppState;
-        std::shared_ptr<Graphics> m_pGraphics;
+        std::shared_ptr<GraphicsDevice> m_pGraphicsDevice;
     };
 
 }

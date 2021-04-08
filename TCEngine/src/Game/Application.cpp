@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "Game.h"
-#include "Graphics.h"
+#include "GraphicsDevice.h"
 #include "GameClient.h"
 #include "GameServer.h"
 #include "GameWindow.h"
@@ -17,9 +17,10 @@ namespace Tce {
 	bool Application::Init() {
 		switch (m_eSolution) {
 			case SOLUTION_CLIENT:
-                m_pGraphics = std::make_shared<Graphics>();
-				m_pGames[GAME_INDEX_CLIENT] = std::make_unique<GameClient>(m_pAppState, m_pGraphics);
-				m_pGameWindow = std::make_unique<GameWindow>(m_pAppState, m_pGraphics);
+                m_pGraphicsDevice = std::make_shared<GraphicsDevice>();
+                m_pGraphicsDevice->InitAllManagers();
+				m_pGames[GAME_INDEX_CLIENT] = std::make_unique<GameClient>(m_pAppState, m_pGraphicsDevice);
+				m_pGameWindow = std::make_unique<GameWindow>(m_pAppState, m_pGraphicsDevice);
 				break;
 			case SOLUTION_SERVER:
 				m_pGames[GAME_INDEX_SERVER] = std::make_unique<GameServer>();

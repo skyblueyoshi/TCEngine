@@ -2,13 +2,13 @@
 
 #include <memory>
 #include "AppState.h"
-#include "Graphics.h"
+#include "GraphicsDevice.h"
 
 namespace Tce {
 
     class GameWindow {
     public:
-        GameWindow(std::shared_ptr<AppState> & pAppState, std::shared_ptr<Graphics> & pGraphics);
+        GameWindow(std::shared_ptr<AppState> & pAppState, std::shared_ptr<GraphicsDevice> & pGraphicsDevice);
         virtual ~GameWindow() = default;
         void OnInitWindow();
         void OnDestroy();
@@ -18,7 +18,7 @@ namespace Tce {
 
     private:
         std::shared_ptr<AppState> m_pAppState;
-        std::shared_ptr<Graphics> m_pGraphics;
+        std::shared_ptr<GraphicsDevice> m_pGraphicsDevice;
     };
 
 }
