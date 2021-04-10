@@ -153,7 +153,7 @@ namespace Tce {
 
     float Vector2::Dot(const Vector2 &value1, const Vector2 &value2) {
         return value1.x * value2.x +
-               value1.y + value2.y;
+               value1.y * value2.y;
     }
 
     float Vector2::GetDistance(const Vector2 &value1, const Vector2 &value2) {
@@ -361,8 +361,8 @@ namespace Tce {
 
     float Vector3::Dot(const Vector3 &value1, const Vector3 &value2) {
         return value1.x * value2.x +
-               value1.y + value2.y +
-               value1.z + value2.z;
+               value1.y * value2.y +
+               value1.z * value2.z;
     }
 
     float Vector3::GetDistance(const Vector3 &value1, const Vector3 &value2) {
@@ -397,6 +397,12 @@ namespace Tce {
         Vector3 result;
         result.Clamp(min, max);
         return result;
+    }
+
+    Vector3 Vector3::Cross(const Vector3 &vector1, const Vector3 &vector2) {
+        return {vector1.y * vector2.z - vector2.y * vector1.z,
+                -(vector1.x * vector2.z - vector2.x * vector1.z),
+                vector1.x * vector2.y - vector2.x * vector1.y};
     }
 
     const Vector4 Vector4::kZero{};
@@ -627,9 +633,9 @@ namespace Tce {
 
     float Vector4::Dot(const Vector4 &value1, const Vector4 &value2) {
         return value1.x * value2.x +
-               value1.y + value2.y +
-               value1.z + value2.z +
-               value1.w + value2.w;
+               value1.y * value2.y +
+               value1.z * value2.z +
+               value1.w * value2.w;
     }
 
     float Vector4::GetDistance(const Vector4 &value1, const Vector4 &value2) {

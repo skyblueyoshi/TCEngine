@@ -4,11 +4,26 @@
 #include "Program.h"
 
 namespace Tce {
-
+    class ShaderManager;
     class ProgramManager : public GraphicsResourceManager<Program> {
     public:
-        ProgramManager(std::shared_ptr<GraphicsDevice> pDevice);
+        ProgramManager(std::shared_ptr<GraphicsDevice> &pDevice,
+                       std::shared_ptr<ShaderManager> &pShaderManager);
+
         virtual ~ProgramManager() = default;
+
+        // 加载着色程序
+        // @param vertexCode 顶点着色器代码
+        // @param pixelCode 像素着色器代码
+        // @return ID
+        uint32_t Load(const std::string &vertexCode, const std::string &pixelCode);
+
+        // 卸载着色程序
+        // @param pProgram 着色程序指针
+        void Unload(std::shared_ptr<Program> & pProgram);
+
+    private:
+        std::weak_ptr<ShaderManager> m_pShaderManager;
     };
 
 }

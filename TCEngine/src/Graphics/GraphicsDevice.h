@@ -24,6 +24,7 @@
 #include <mutex>
 #include "ShaderManager.h"
 #include "src/Type/Color.h"
+#include "ProgramManager.h"
 
 namespace Tce {
 
@@ -33,7 +34,7 @@ namespace Tce {
     public:
         GraphicsDevice();
 
-        virtual ~GraphicsDevice() = default;
+        virtual ~GraphicsDevice();
 
         // 创建所有设备
         void InitAllManagers();
@@ -57,6 +58,12 @@ namespace Tce {
 
         // 展示到屏幕
         void Present();
+
+        // 获取着色器管理器
+        std::shared_ptr<ShaderManager>& GetShaderManager();
+
+        // 获取着色程序管理器
+        std::shared_ptr<ProgramManager>& GetProgramManager();
 
         // 丢弃着色器
         // @param handle 着色器句柄
@@ -126,6 +133,7 @@ namespace Tce {
         std::mutex m_disposeLock;                       // 抛弃操作锁
 
         std::shared_ptr<ShaderManager> m_shaderManager;     // 着色器管理器
+        std::shared_ptr<ProgramManager> m_programManager;   // 着色程序管理器
 
 #ifdef GLES
         EGLDisplay m_display{EGL_NO_DISPLAY};

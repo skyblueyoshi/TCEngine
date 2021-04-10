@@ -368,6 +368,11 @@ namespace Tce {
         // @return 点乘结果
         static float Dot(const Vector3 &value1, const Vector3 &value2);
 
+        // 返回两个向量的叉积
+        // @param value1 向量1
+        // @param value2 向量2
+        // @return 叉积结果向量
+        static Vector3 Cross(const Vector3 & vector1, const Vector3 & vector2);
 
         // 向量转换
         static Vector3 Transform(const Vector3 &position, const Matrix &matrix);

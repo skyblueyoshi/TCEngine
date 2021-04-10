@@ -1,3 +1,5 @@
+#include <cmath>
+#include <src/Utils/ExceptionHelper.h>
 #include "Matrix.h"
 #include "StringHelper.h"
 #include "Vector.h"
@@ -503,6 +505,63 @@ namespace Tce {
         _31 = vector3.x;
         _32 = vector3.y;
         _33 = vector3.z;
+    }
+
+    void Matrix::CreateLookAt(const Vector3 &cameraPosition, const Vector3 &cameraTarget,
+                              const Vector3 &cameraUpVector, Matrix & result) {
+        auto vector = Vector3::Normalize(cameraPosition - cameraTarget);
+        auto vector2 = Vector3::Normalize(Vector3::Cross(cameraUpVector, vector));
+        auto vector3 = Vector3::Cross(vector, vector2);
+        result._11 = vector2.x;
+        result._12 = vector3.x;
+        result._13 = vector.x;
+        result._14 = 0.0f;
+        result._21 = vector2.y;
+        result._22 = vector3.y;
+        result._23 = vector.y;
+        result._24 = 0.0f;
+        result._31 = vector2.z;
+        result._32 = vector3.z;
+        result._33 = vector.z;
+        result._34 = 0.0f;
+        result._41 = -Vector3::Dot(vector2, cameraPosition);
+        result._42 = -Vector3::Dot(vector3, cameraPosition);
+        result._43 = -Vector3::Dot(vector, cameraPosition);
+        result._44 = 1.0f;
+    }
+
+    Matrix Matrix::CreateLookAt(const Vector3 &cameraPosition, const Vector3 &cameraTarget,
+                                const Vector3 &cameraUpVector) {
+        Matrix result;
+        CreateLookAt(cameraPosition, cameraTarget, cameraUpVector, result);
+        return result;
+    }
+
+    void Matrix::CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
+                                      float farPlaneDistance, Matrix &result) {
+        CHECK_RANGE_OR_ERROR(fieldOfView > 0.0f && fieldOfView < 3.141593f);
+        CHECK_RANGE_OR_ERROR(nearPlaneDistance > 0.0f);
+        CHECK_RANGE_OR_ERROR(farPlaneDistance > 0.0f);
+        CHECK_RANGE_OR_ERROR(nearPlaneDistance < farPlaneDistance);
+
+        float num = 1.0f / ((float) std::tan((double) (fieldOfView * 0.5f)));
+        float num9 = num / aspectRatio;
+        result._11 = num9;
+        result._12 = result._13 = result._14 = 0;
+        result._22 = num;
+        result._21 = result._23 = result._24 = 0;
+        result._31 = result._32 = 0.0f;
+        result._33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+        result._34 = -1.0f;
+        result._41 = result._42 = result._44 = 0;
+        result._43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+    }
+
+    Matrix Matrix::CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
+                                 float farPlaneDistance) {
+        Matrix result;
+        CreatePerspectiveFOV(fieldOfView, aspectRatio, nearPlaneDistance, farPlaneDistance, result);
+        return result;
     }
 
 }

@@ -28,12 +28,13 @@ set(TARGET_SOURCE_FILES
 		src/Game/GameWindow.cpp
 		src/Utils/Log.cpp
 		src/Utils/StringHelper.cpp
-        src/Utils/TickRunner.cpp
+    src/Utils/TickRunner.cpp
+		src/Utils/FileMapper.cpp
 		src/Graphics/GraphicsDevice.cpp
 		src/Graphics/GraphicsDeviceOpenGL.cpp
 		src/Graphics/GraphicsResource.cpp
 		src/Graphics/Sprite.cpp
-		src/Graphics/Texture2D.cpp
+		src/Graphics/Texture.cpp
 		src/Graphics/TextureManager.cpp
 		src/Graphics/Shader.cpp
 		src/Graphics/ShaderManager.cpp
@@ -52,9 +53,24 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src
         src/Game
         src/Utils
-        src/Graphics)
+        src/Graphics
+				)
 
 add_subdirectory(libs/glm)
+
+#find_library(libSDL2 libs/SDL2/libSDL2.so)
+
+add_library(libSDL2 SHARED IMPORTED)
+set_property(TARGET libSDL2 
+		PROPERTY IMPORTED_LOCATION 
+		${PROJECT_SOURCE_DIR}/libs/SDL2/${ANDROID_ABI}/libSDL2.so)
+
+add_library(libhidapi SHARED IMPORTED)
+set_property(TARGET libhidapi 
+		PROPERTY IMPORTED_LOCATION 
+		${PROJECT_SOURCE_DIR}/libs/SDL2/${ANDROID_ABI}/libhidapi.so)
+
+target_include_directories(${PROJECT_NAME} PUBLIC libs/SDL2/include)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	android
@@ -63,4 +79,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	EGL
 	GLESv2
 	glm
+	libSDL2
+	libhidapi
 )

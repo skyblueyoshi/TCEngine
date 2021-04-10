@@ -153,6 +153,36 @@ namespace Tce {
         // 写入后向量{M31, M32, M33}
         void SetBackward(const Vector3 & vector3);
 
+        // 构造一个VIEW矩阵
+        // @param cameraPosition 摄像机坐标
+        // @param cameraTarget 摄像机目标向量
+        // @param cameraUpVector 摄像机上边缘方向
+        // @return 结果VIEW矩阵
+        static Matrix CreateLookAt(const Vector3 & cameraPosition, const Vector3 & cameraTarget, const Vector3 & cameraUpVector);
+
+        // 构造一个VIEW矩阵
+        // @param cameraPosition 摄像机坐标
+        // @param cameraTarget 摄像机目标向量
+        // @param cameraUpVector 摄像机上边缘方向
+        // @param result 结果VIEW矩阵
+        static void CreateLookAt(const Vector3 & cameraPosition, const Vector3 & cameraTarget, const Vector3 & cameraUpVector, Matrix & result);
+
+        // 构造一个透视投影矩阵
+        // @param fieldOfView y轴方向上的视场角度（弧度制）
+        // @param aspectRadio 视景体的宽度与高度之比
+        // @param nearPlaneDistance 沿z轴方向的两截面之间距离的近处
+        // @param farPlaneDistance 沿z轴方向的两截面之间距离的远处
+        // @param result 结果PERSPECTIVE矩阵
+        static Matrix CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance);
+
+        // 构造一个透视投影矩阵
+        // @param fieldOfView y轴方向上的视场角度（弧度制）
+        // @param aspectRadio 视景体的宽度与高度之比
+        // @param nearPlaneDistance 沿z轴方向的两截面之间距离的近处
+        // @param farPlaneDistance 沿z轴方向的两截面之间距离的远处
+        // @param result 结果PERSPECTIVE矩阵
+        static void CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance, Matrix & result);
+
         //单位矩阵
         static const Matrix identity;
     };

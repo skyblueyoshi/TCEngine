@@ -105,6 +105,11 @@ namespace Tce {
         //glEnable(GL_CULL_FACE);
         //glShadeModel(GL_SMOOTH);
 
+        // 使用深度检测
+        glEnable(GL_DEPTH_TEST);
+        // 接受离相机更近的片元
+        glDepthFunc(GL_LESS);
+
         TCE_LOG_INFO("Android OpenGLES Initialize Success!");
         TCE_LOG_INFO("Window size: %d x %d", m_width, m_height);
 

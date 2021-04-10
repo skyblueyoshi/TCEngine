@@ -7,10 +7,17 @@ namespace Tce {
 
     }
 
+    GraphicsDevice::~GraphicsDevice() {
+        m_shaderManager.reset();
+    }
 
     void GraphicsDevice::InitAllManagers() {
+        auto pGraphicsDevice = shared_from_this();
         if (!m_shaderManager) {
-            m_shaderManager = std::make_shared<ShaderManager>(shared_from_this());
+            m_shaderManager = std::make_shared<ShaderManager>(pGraphicsDevice);
+        }
+        if (!m_programManager) {
+            m_programManager = std::make_shared<ProgramManager>(pGraphicsDevice, m_shaderManager);
         }
     }
 
@@ -65,5 +72,13 @@ namespace Tce {
     void GraphicsDevice::DisposeProgram(uint32_t handle) {
         std::lock_guard<std::mutex> lockGuard(m_disposeLock);
         m_nextDisposes.push_back(ResourceHandle::Program(handle));
+    }
+
+    std::shared_ptr<ShaderManager> &GraphicsDevice::GetShaderManager() {
+        return m_shaderManager;
+    }
+
+    std::shared_ptr<ProgramManager> &GraphicsDevice::GetProgramManager() {
+        return m_programManager;
     }
 }

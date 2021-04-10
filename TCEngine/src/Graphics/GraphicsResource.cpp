@@ -3,20 +3,11 @@
 
 namespace Tce {
     GraphicsResource::GraphicsResource(std::shared_ptr<GraphicsDevice> & pDevice)
-    : m_pDevice(pDevice) {
+    : m_pDevice(pDevice) {}
+
+    GraphicsResource::GraphicsResource(uint32_t handle) : m_handle(handle) {
 
     }
 
-    GraphicsResource::~GraphicsResource() {
-        GraphicsResource::Unload();
-    }
-
-    void GraphicsResource::Load() {
-        m_enabled = true;
-    }
-
-    void GraphicsResource::Unload() {
-        m_enabled = false;
-    }
 }
 
