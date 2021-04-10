@@ -45,6 +45,7 @@ namespace Tce {
     }
 
     void GraphicsDevice::Clear(Color color) {
+        glViewport(0,m_height / 2 - m_width/2,m_width,m_width);
         _PlatformClear(color);
         m_clearTimes++;
     }

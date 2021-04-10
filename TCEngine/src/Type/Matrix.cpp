@@ -544,6 +544,7 @@ namespace Tce {
         CHECK_RANGE_OR_ERROR(farPlaneDistance > 0.0f);
         CHECK_RANGE_OR_ERROR(nearPlaneDistance < farPlaneDistance);
 
+
         float num = 1.0f / ((float) std::tan((double) (fieldOfView * 0.5f)));
         float num9 = num / aspectRatio;
         result._11 = num9;

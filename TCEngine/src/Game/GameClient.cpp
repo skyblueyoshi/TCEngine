@@ -337,7 +337,7 @@ namespace Tce {
                 GL_FLOAT,                         // type
                 GL_FALSE,                         // normalized?
                 0,                                // stride
-                (void *) 0                          // array buffer offset
+                (void *) nullptr                          // array buffer offset
         );
 
 // Draw the triangle !
