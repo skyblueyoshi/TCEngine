@@ -18,15 +18,15 @@ namespace Tce {
         return levels;
     }
 
-    Texture::Texture(uint width, uint height)
-            : Texture(width, height, false, EnumSurfaceFormat::Color, EnumSurfaceType::TEXTURE) {}
+    Texture::Texture(uint32_t handle, uint width, uint height)
+            : Texture(handle, width, height, false, EnumSurfaceFormat::Color, EnumSurfaceType::TEXTURE) {}
 
-    Texture::Texture(uint width, uint height, bool mipmap, EnumSurfaceFormat format)
-            : Texture(width, height, mipmap, format, EnumSurfaceType::TEXTURE) {}
+    Texture::Texture(uint32_t handle, uint width, uint height, bool mipmap, EnumSurfaceFormat format)
+            : Texture(handle, width, height, mipmap, format, EnumSurfaceType::TEXTURE) {}
 
-    Texture::Texture(uint width, uint height, bool mipmap, EnumSurfaceFormat format,
+    Texture::Texture(uint32_t handle, uint width, uint height, bool mipmap, EnumSurfaceFormat format,
                      Texture::EnumSurfaceType type)
-            : m_width(width), m_height(height),
+            : GraphicsResource(handle), m_width(width), m_height(height),
               m_texelWidth(1.0f / width), m_texelHeight(1.0f / height),
               m_eFormat(format),
               m_levelCount(mipmap ? _CalculateMipLevels(width, height) : 1) {

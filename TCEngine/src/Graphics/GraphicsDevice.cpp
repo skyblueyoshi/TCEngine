@@ -8,16 +8,19 @@ namespace Tce {
     }
 
     GraphicsDevice::~GraphicsDevice() {
-        m_shaderManager.reset();
+        m_pShaderManager.reset();
     }
 
     void GraphicsDevice::InitAllManagers() {
         auto pGraphicsDevice = shared_from_this();
-        if (!m_shaderManager) {
-            m_shaderManager = std::make_shared<ShaderManager>(pGraphicsDevice);
+        if (!m_pShaderManager) {
+            m_pShaderManager = std::make_shared<ShaderManager>(pGraphicsDevice);
         }
-        if (!m_programManager) {
-            m_programManager = std::make_shared<ProgramManager>(pGraphicsDevice, m_shaderManager);
+        if (!m_pProgramManager) {
+            m_pProgramManager = std::make_shared<ProgramManager>(pGraphicsDevice, m_pShaderManager);
+        }
+        if (!m_pTextureManager) {
+            m_pTextureManager = std::make_shared<TextureManager>(pGraphicsDevice);
         }
     }
 
@@ -75,11 +78,20 @@ namespace Tce {
         m_nextDisposes.push_back(ResourceHandle::Program(handle));
     }
 
+    void GraphicsDevice::DisposeTexture(uint32_t handle) {
+        std::lock_guard<std::mutex> lockGuard(m_disposeLock);
+        m_nextDisposes.push_back(ResourceHandle::Texture(handle));
+    }
+
     std::shared_ptr<ShaderManager> &GraphicsDevice::GetShaderManager() {
-        return m_shaderManager;
+        return m_pShaderManager;
     }
 
     std::shared_ptr<ProgramManager> &GraphicsDevice::GetProgramManager() {
-        return m_programManager;
+        return m_pProgramManager;
+    }
+
+    std::shared_ptr<TextureManager> &GraphicsDevice::GetTextureManager() {
+        return m_pTextureManager;
     }
 }

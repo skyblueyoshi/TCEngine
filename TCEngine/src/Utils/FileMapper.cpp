@@ -44,9 +44,10 @@
 #include <windows.h>
 #endif
 #ifdef FileMapper_AndroidExtras
-#include <SDL_rwops.h>
-#include <SDL_assert.h>
+//#include <SDL_rwops.h>
+//#include <SDL_assert.h>
 #include <vector>
+#include <android/asset_manager.h>
 #endif
 
 class FileMapper::FileMapper_private
@@ -92,18 +93,21 @@ public:
 #ifdef FileMapper_AndroidExtras
 bool FileMapper::FileMapper_private::dumpFile(const std::string &path)
 {
-    size_t size;
-    SDL_RWops *op = SDL_RWFromFile(path.c_str(), "rb");
-
-    if(op)
-    {
-        size = static_cast<size_t>(SDL_RWsize(op));
-        m_dump.resize(size);
-        SDL_RWseek(op, 0, RW_SEEK_SET);
-        SDL_RWread(op, m_dump.data(), 1, size);
-        SDL_RWclose(op);
-        return true;
-    }
+//    size_t size;
+//
+//
+//
+//    SDL_RWops *op = SDL_RWFromFile(path.c_str(), "rb");
+//
+//    if(op)
+//    {
+//        size = static_cast<size_t>(SDL_RWsize(op));
+//        m_dump.resize(size);
+//        SDL_RWseek(op, 0, RW_SEEK_SET);
+//        SDL_RWread(op, m_dump.data(), 1, size);
+//        SDL_RWclose(op);
+//        return true;
+//    }
 
     return false;
 }

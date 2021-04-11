@@ -25,6 +25,7 @@
 #include "ShaderManager.h"
 #include "src/Type/Color.h"
 #include "ProgramManager.h"
+#include "TextureManager.h"
 
 namespace Tce {
 
@@ -65,13 +66,20 @@ namespace Tce {
         // 获取着色程序管理器
         std::shared_ptr<ProgramManager>& GetProgramManager();
 
+        // 获取纹理管理器
+        std::shared_ptr<TextureManager>& GetTextureManager();
+
         // 丢弃着色器
         // @param handle 着色器句柄
         void DisposeShader(uint32_t handle);
 
-        // 丢弃PROGRAM
-        // @param handle 着色器句柄
+        // 丢弃着色程序
+        // @param handle 着色程序句柄
         void DisposeProgram(uint32_t handle);
+
+        // 丢弃纹理
+        // @param handle 纹理句柄
+        void DisposeTexture(uint32_t handle);
 
     private:
         void _PlatformInit();
@@ -132,8 +140,9 @@ namespace Tce {
         std::list<ResourceHandle> m_currentDisposes;    // 当前帧丢弃资源表
         std::mutex m_disposeLock;                       // 抛弃操作锁
 
-        std::shared_ptr<ShaderManager> m_shaderManager;     // 着色器管理器
-        std::shared_ptr<ProgramManager> m_programManager;   // 着色程序管理器
+        std::shared_ptr<ShaderManager> m_pShaderManager;     // 着色器管理器
+        std::shared_ptr<ProgramManager> m_pProgramManager;   // 着色程序管理器
+        std::shared_ptr<TextureManager> m_pTextureManager;   // 纹理管理器
 
 #ifdef GLES
         EGLDisplay m_display{EGL_NO_DISPLAY};

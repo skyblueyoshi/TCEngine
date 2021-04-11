@@ -226,10 +226,50 @@ namespace Tce {
                 0.820f, 0.883f, 0.371f,
                 0.982f, 0.099f, 0.879f
         };
+        // Two UV coordinatesfor each vertex. They were created with Blender. You'll learn shortly how to do this yourself.
+        static const GLfloat g_uv_buffer_data[] = {
+                0.000059f, 1.0f - 0.000004f,
+                0.000103f, 1.0f - 0.336048f,
+                0.335973f, 1.0f - 0.335903f,
+                1.000023f, 1.0f - 0.000013f,
+                0.667979f, 1.0f - 0.335851f,
+                0.999958f, 1.0f - 0.336064f,
+                0.667979f, 1.0f - 0.335851f,
+                0.336024f, 1.0f - 0.671877f,
+                0.667969f, 1.0f - 0.671889f,
+                1.000023f, 1.0f - 0.000013f,
+                0.668104f, 1.0f - 0.000013f,
+                0.667979f, 1.0f - 0.335851f,
+                0.000059f, 1.0f - 0.000004f,
+                0.335973f, 1.0f - 0.335903f,
+                0.336098f, 1.0f - 0.000071f,
+                0.667979f, 1.0f - 0.335851f,
+                0.335973f, 1.0f - 0.335903f,
+                0.336024f, 1.0f - 0.671877f,
+                1.000004f, 1.0f - 0.671847f,
+                0.999958f, 1.0f - 0.336064f,
+                0.667979f, 1.0f - 0.335851f,
+                0.668104f, 1.0f - 0.000013f,
+                0.335973f, 1.0f - 0.335903f,
+                0.667979f, 1.0f - 0.335851f,
+                0.335973f, 1.0f - 0.335903f,
+                0.668104f, 1.0f - 0.000013f,
+                0.336098f, 1.0f - 0.000071f,
+                0.000103f, 1.0f - 0.336048f,
+                0.000004f, 1.0f - 0.671870f,
+                0.336024f, 1.0f - 0.671877f,
+                0.000103f, 1.0f - 0.336048f,
+                0.336024f, 1.0f - 0.671877f,
+                0.335973f, 1.0f - 0.335903f,
+                0.667969f, 1.0f - 0.671889f,
+                1.000004f, 1.0f - 0.671847f,
+                0.667979f, 1.0f - 0.335851f
+        };
         static bool init = false;
 
         static GLuint vertexbuffer;
         static GLuint colorbuffer;
+        static GLuint uvbuffer;
 
         static std::shared_ptr<Program> ppg;
 
@@ -249,9 +289,24 @@ namespace Tce {
                                     "void main(){\n"
                                     "  gl_FragColor.xyz = fragmentColor;\n"
                                     "}";
+            const std::string svs2 = "attribute vec3 vertexPosition_modelspace;\n"
+                                     "attribute vec2 vertexUV;\n"
+                                     "uniform mat4 MVP;\n"
+                                     "varying vec2 UV;\n"
+                                     "void main(){\n"
+                                     "  UV = vertexUV;\n"
+                                     "  gl_Position = MVP * vec4(vertexPosition_modelspace,1);\n"
+                                     "}";
+            const std::string sPS2 = "precision highp float;\n"
+                                     "varying vec2 UV;\n"
+                                     "uniform sampler2D myTextureSampler;\n"
+                                     "void main(){\n"
+                                     "  gl_FragColor = texture2D(myTextureSampler, UV);\n"
+                                     "}";
+
 
             auto &pProgramManager = m_pGraphicsDevice->GetProgramManager();
-            ppg = pProgramManager->Get(pProgramManager->Load(svs, sPS));
+            ppg = pProgramManager->Get(pProgramManager->Load(svs2, sPS2));
 
             // This will identify our vertex buffer
 // Generate 1 buffer, put the resulting identifier in vertexbuffer
@@ -267,6 +322,16 @@ namespace Tce {
             glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
             glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data,
                          GL_STATIC_DRAW);
+
+
+            glGenBuffers(1, &uvbuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data,
+                         GL_STATIC_DRAW);
+
+
+            auto &pTextureManager = m_pGraphicsDevice->GetTextureManager();
+            pTextureManager->LoadTextureFromFile("111.png");
         }
 
 
@@ -316,6 +381,14 @@ namespace Tce {
         glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvp._11);
         //glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
 
+        GLuint textureID  = glGetUniformLocation(ppg->GetHandle(), "myTextureSampler");
+
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 1);
+        // Set our "myTextureSampler" sampler to use Texture Unit 0
+        glUniform1i(textureID, 0);
+
         // 1st attribute buffer : vertices
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -329,15 +402,27 @@ namespace Tce {
         );
 
         // 2nd attribute buffer : colors
+//        glEnableVertexAttribArray(1);
+//        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+//        glVertexAttribPointer(
+//                1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+//                3,                                // size
+//                GL_FLOAT,                         // type
+//                GL_FALSE,                         // normalized?
+//                0,                                // stride
+//                (void *) nullptr                          // array buffer offset
+//        );
+
+// 2nd attribute buffer : UVs
         glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
         glVertexAttribPointer(
                 1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                3,                                // size
+                2,                                // size : U+V => 2
                 GL_FLOAT,                         // type
                 GL_FALSE,                         // normalized?
                 0,                                // stride
-                (void *) nullptr                          // array buffer offset
+                (void*)0                          // array buffer offset
         );
 
 // Draw the triangle !

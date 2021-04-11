@@ -28,8 +28,9 @@ set(TARGET_SOURCE_FILES
 		src/Game/GameWindow.cpp
 		src/Utils/Log.cpp
 		src/Utils/StringHelper.cpp
-    src/Utils/TickRunner.cpp
+    	src/Utils/TickRunner.cpp
 		src/Utils/FileMapper.cpp
+		src/Utils/File.cpp
 		src/Graphics/GraphicsDevice.cpp
 		src/Graphics/GraphicsDeviceOpenGL.cpp
 		src/Graphics/GraphicsResource.cpp
@@ -57,6 +58,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 				)
 
 add_subdirectory(libs/glm)
+
+target_include_directories(${PROJECT_NAME} PUBLIC libs/stb)
 
 #find_library(libSDL2 libs/SDL2/libSDL2.so)
 

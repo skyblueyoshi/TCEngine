@@ -34,7 +34,7 @@ void android_main(struct android_app *pApp) {
     TCE_LOG_INFO("Android Main Start.");
 
     std::shared_ptr<AppState> pAppState = std::make_shared<AppState>(pApp);
-    Tce::Application application(pAppState,Tce::Application::SOLUTION_CLIENT);
+    Tce::Application application(pAppState, Tce::Application::SOLUTION_CLIENT);
 
     TCE_LOG_INFO("Init Application.");
 

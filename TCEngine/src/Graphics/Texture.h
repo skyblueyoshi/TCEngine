@@ -18,14 +18,14 @@ namespace Tce {
         // 构造函数
         // @param width 纹理宽度
         // @param height 纹理高度
-        Texture(uint width, uint height);
+        Texture(uint32_t handle, uint width, uint height);
 
         // 构造函数
         // @param width 纹理宽度
         // @param height 纹理高度
         // @param mipmap 是否使用MipMap
         // @param format 纹理表面格式
-        Texture(uint width, uint height, bool mipmap, EnumSurfaceFormat format);
+        Texture(uint32_t handle, uint width, uint height, bool mipmap, EnumSurfaceFormat format);
 
         // 构造函数
         // @param width 纹理宽度
@@ -33,7 +33,7 @@ namespace Tce {
         // @param mipmap 是否使用MipMap
         // @param format 纹理表面格式
         // @param type 纹理表面类型
-        Texture(uint width, uint height, bool mipmap, EnumSurfaceFormat format,
+        Texture(uint32_t handle, uint width, uint height, bool mipmap, EnumSurfaceFormat format,
                 EnumSurfaceType type);
 
         // 获取表面格式
