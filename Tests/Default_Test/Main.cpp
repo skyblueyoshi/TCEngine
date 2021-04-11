@@ -1,34 +1,38 @@
-//#define JUST_SAMPLE2
+﻿//#define JUST_SAMPLE2
 #if !defined(JUST_SAMPLE) && !defined(JUST_SAMPLE2)
 
-#if defined(__unix__) || defined(__APPLE__) || defined(__HAIKU__) || defined(__ANDROID__)
-#   define FileMapper_POSIX
-#   if defined(__ANDROID__)
-#       define FileMapper_AndroidExtras
-#   endif
-#elif _WINDOWS
-#   define FileMapper_Windows
+#if defined(__unix__) || defined(__APPLE__) || defined(__HAIKU__) || \
+    defined(__ANDROID__)
+#define FileMapper_POSIX
+#if defined(__ANDROID__)
+#define FileMapper_AndroidExtras
+#endif
+#elif defined(_WINDOWS)
+#define FileMapper_Windows
 #else
-#   error Unsupported operating system!
+#error Unsupported operating system!
 #endif
 
+int main() {
+    return 0;
+}
+
 #ifdef __ANDROID__
-
-#include <android_native_app_glue.h>
-#include <jni.h>
-#include "src/Game/Application.h"
-
-#include "src/Utils/Log.h"
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#include <android_native_app_glue.h>
+#include <jni.h>
 #include <src/Game/AppState.h>
 #include <unistd.h>
 
+#include "src/Game/Application.h"
+#include "src/Utils/Log.h"
+
 extern "C" {
 
-void android_main(struct android_app *pApp) {
+void android_main(struct android_app* pApp) {
     using namespace Tce;
 
     TCE_LOG_INFO("Android Main Start.");
@@ -43,11 +47,10 @@ void android_main(struct android_app *pApp) {
         application.Run();
     }
 
-
     int events;
-    android_poll_source *pSource;
+    android_poll_source* pSource;
     do {
-        if (ALooper_pollAll(0, nullptr, &events, (void **) &pSource) >= 0) {
+        if (ALooper_pollAll(0, nullptr, &events, (void**)&pSource) >= 0) {
             if (pSource) {
                 pSource->process(pApp, pSource);
             }
@@ -60,26 +63,27 @@ void android_main(struct android_app *pApp) {
 
 #elif defined(JUST_SAMPLE)
 
-#include <jni.h>
-
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-
-#include <android/sensor.h>
 #include <android/log.h>
+#include <android/sensor.h>
 #include <android_native_app_glue.h>
+#include <jni.h>
 
 #include <cstring>
 
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
-#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+#define LOGI(...)                                                   \
+    ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", \
+                               __VA_ARGS__))
+#define LOGW(...)                                                   \
+    ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", \
+                               __VA_ARGS__))
 
 /**
  * Game Structures
  */
-struct Paddle
-{
+struct Paddle {
     float x;
     float y;
 };
@@ -120,8 +124,7 @@ static const int32_t COLOR_NUM_ELEMENTS = 4;
 static const int32_t TRIANGLE_NUM_VERTICES = 3;
 static const int32_t QUAD_NUM_VERTICES = 6;
 
-struct block
-{
+struct block {
     float x;
     float y;
     bool isActive;
@@ -130,8 +133,7 @@ struct block
 /**
  * Shared state for our app.
  */
-struct engine
-{
+struct engine {
     struct android_app* app;
 
     EGLDisplay display;
@@ -152,27 +154,25 @@ struct engine
     block blocks[NUM_BLOCKS];
 };
 
-static void engine_init_blocks(struct engine* engine)
-{
-    float blockYPos[] = { 0.8f, 0.675f, 0.55f };
+static void engine_init_blocks(struct engine* engine) {
+    float blockYPos[] = {0.8f, 0.675f, 0.55f};
 
-    for (int32_t i=0; i<NUM_BLOCKS; ++i)
-    {
-        engine->blocks[i].x = BLOCK_START_POSITION + ((BLOCK_WIDTH + BLOCK_HORIZONTAL_GAP) * (i % NUM_BLOCKS_ROW));
+    for (int32_t i = 0; i < NUM_BLOCKS; ++i) {
+        engine->blocks[i].x =
+            BLOCK_START_POSITION +
+            ((BLOCK_WIDTH + BLOCK_HORIZONTAL_GAP) * (i % NUM_BLOCKS_ROW));
         engine->blocks[i].y = blockYPos[i / NUM_BLOCKS_ROW];
         engine->blocks[i].isActive = true;
     }
 }
 
-GLuint LoadShader(const char *shaderSrc, GLenum type)
-{
+GLuint LoadShader(const char* shaderSrc, GLenum type) {
     GLuint shader;
     GLint compiled;
 
     // Create the shader object
     shader = glCreateShader(type);
-    if(shader != 0)
-    {
+    if (shader != 0) {
         // Load the shader source
         glShaderSource(shader, 1, &shaderSrc, NULL);
 
@@ -181,13 +181,11 @@ GLuint LoadShader(const char *shaderSrc, GLenum type)
         // Check the compile status
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 
-        if(!compiled)
-        {
+        if (!compiled) {
             GLint infoLen = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
 
-            if(infoLen > 1)
-            {
+            if (infoLen > 1) {
                 char* infoLog = new char[infoLen];
                 glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
                 LOGW("Error compiling shader:\n%s\n", infoLog);
@@ -211,15 +209,17 @@ static int engine_init_display(struct engine* engine) {
      * Below, we select an EGLConfig with at least 8 bits per color
      * component compatible with on-screen windows
      */
-    const EGLint attribs[] =
-            {
-                    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-                    EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                    EGL_BLUE_SIZE, 8,
-                    EGL_GREEN_SIZE, 8,
-                    EGL_RED_SIZE, 8,
-                    EGL_NONE
-            };
+    const EGLint attribs[] = {EGL_RENDERABLE_TYPE,
+                              EGL_OPENGL_ES2_BIT,
+                              EGL_SURFACE_TYPE,
+                              EGL_WINDOW_BIT,
+                              EGL_BLUE_SIZE,
+                              8,
+                              EGL_GREEN_SIZE,
+                              8,
+                              EGL_RED_SIZE,
+                              8,
+                              EGL_NONE};
 
     EGLint w, h, dummy, format;
     EGLint numConfigs;
@@ -244,13 +244,10 @@ static int engine_init_display(struct engine* engine) {
 
     ANativeWindow_setBuffersGeometry(engine->app->window, 0, 0, format);
 
-    surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
+    surface =
+        eglCreateWindowSurface(display, config, engine->app->window, NULL);
 
-    EGLint contextAttribs[] =
-            {
-                    EGL_CONTEXT_CLIENT_VERSION, 2,
-                    EGL_NONE
-            };
+    EGLint contextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
     context = eglCreateContext(display, config, NULL, contextAttribs);
 
     if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
@@ -281,22 +278,22 @@ static int engine_init_display(struct engine* engine) {
     glDisable(GL_DEPTH_TEST);
 
     char vShaderStr[] =
-            "attribute vec4 a_vPosition;   \n"
-            "attribute vec4 a_vColor;	   \n"
-            "varying vec4 v_vColor;		   \n"
-            "void main()                   \n"
-            "{                             \n"
-            "   gl_Position = a_vPosition; \n"
-            "	v_vColor = a_vColor;       \n"
-            "}                             \n";
+        "attribute vec4 a_vPosition;   \n"
+        "attribute vec4 a_vColor;      \n"
+        "varying vec4 v_vColor;        \n"
+        "void main()                   \n"
+        "{                             \n"
+        "   gl_Position = a_vPosition; \n"
+        "   v_vColor = a_vColor;       \n"
+        "}                             \n";
 
     char fShaderStr[] =
-            "precision mediump float;                   \n"
-            "varying vec4 v_vColor;		 				\n"
-            "void main()                                \n"
-            "{                                          \n"
-            "  gl_FragColor = v_vColor;					\n"
-            "}                                          \n";
+        "precision mediump float;                   \n"
+        "varying vec4 v_vColor;                     \n"
+        "void main()                                \n"
+        "{                                          \n"
+        "  gl_FragColor = v_vColor;                 \n"
+        "}                                          \n";
 
     GLuint vertexShader;
     GLuint fragmentShader;
@@ -309,8 +306,7 @@ static int engine_init_display(struct engine* engine) {
 
     // Create the program object
     engine->programObject = glCreateProgram();
-    if(engine->programObject == 0)
-    {
+    if (engine->programObject == 0) {
         return -1;
     }
 
@@ -319,21 +315,21 @@ static int engine_init_display(struct engine* engine) {
     glAttachShader(engine->programObject, fragmentShader);
 
     // Bind a_vPosition to attribute 0 and a_vColor to 1
-    glBindAttribLocation(engine->programObject, POSITION_PARAMETER_INDEX, "a_vPosition");
-    glBindAttribLocation(engine->programObject, COLOR_PARAMETER_INDEX, "a_vColor");
+    glBindAttribLocation(engine->programObject, POSITION_PARAMETER_INDEX,
+                         "a_vPosition");
+    glBindAttribLocation(engine->programObject, COLOR_PARAMETER_INDEX,
+                         "a_vColor");
 
     // Link the program
     glLinkProgram(engine->programObject);
 
     // Check the link status
     glGetProgramiv(engine->programObject, GL_LINK_STATUS, &linked);
-    if(!linked)
-    {
+    if (!linked) {
         GLint infoLen = 0;
         glGetProgramiv(engine->programObject, GL_INFO_LOG_LENGTH, &infoLen);
 
-        if(infoLen > 1)
-        {
+        if (infoLen > 1) {
             char* infoLog = new char[infoLen];
             glGetProgramInfoLog(engine->programObject, infoLen, NULL, infoLog);
             LOGW("Error linking program:\n%s\n", infoLog);
@@ -350,45 +346,34 @@ static int engine_init_display(struct engine* engine) {
     return 0;
 }
 
-static void engine_update_frame(struct engine* engine)
-{
-    if (engine->touchIsDown)
-    {
-        if (engine->touchX < 0.15f && engine->touchY < 0.2f)
-        {
+static void engine_update_frame(struct engine* engine) {
+    if (engine->touchIsDown) {
+        if (engine->touchX < 0.15f && engine->touchY < 0.2f) {
             engine->playerX -= 0.015f;
-            if (engine->playerX < PADDLE_LEFT_BOUND)
-            {
+            if (engine->playerX < PADDLE_LEFT_BOUND) {
                 engine->playerX = PADDLE_LEFT_BOUND;
             }
-        }
-        else if (engine->touchX > 0.85f && engine->touchY < 0.2f)
-        {
+        } else if (engine->touchX > 0.85f && engine->touchY < 0.2f) {
             engine->playerX += 0.015f;
-            if (engine->playerX > PADDLE_RIGHT_BOUND)
-            {
+            if (engine->playerX > PADDLE_RIGHT_BOUND) {
                 engine->playerX = PADDLE_RIGHT_BOUND;
             }
         }
     }
 
     engine->ballX += engine->ballVelocityX;
-    if (engine->ballX < BALL_LEFT_BOUND || engine->ballX > BALL_RIGHT_BOUND)
-    {
+    if (engine->ballX < BALL_LEFT_BOUND || engine->ballX > BALL_RIGHT_BOUND) {
         engine->ballVelocityX = -engine->ballVelocityX;
     }
 
     engine->ballY += engine->ballVelocityY;
-    if (engine->ballY > BALL_TOP_BOUND)
-    {
+    if (engine->ballY > BALL_TOP_BOUND) {
         engine->ballVelocityY = -engine->ballVelocityY;
     }
 
-    if (engine->ballY < BALL_BOTTOM_BOUND)
-    {
+    if (engine->ballY < BALL_BOTTOM_BOUND) {
         // reset the ball
-        if (engine->ballVelocityY < 0.0f)
-        {
+        if (engine->ballVelocityY < 0.0f) {
             engine->ballVelocityY = -engine->ballVelocityY;
         }
 
@@ -409,37 +394,26 @@ static void engine_update_frame(struct engine* engine)
     const float paddleRight = engine->playerX + PADDLE_HALF_WIDTH;
     const float paddleTop = engine->playerY + PADDLE_HALF_HEIGHT;
     const float paddleBottom = engine->playerY - PADDLE_HALF_HEIGHT;
-    if (!((ballRight < paddleLeft) ||
-          (ballLeft > paddleRight) ||
-          (ballBottom > paddleTop) ||
-          (ballTop < paddleBottom)))
-    {
-        if (engine->ballVelocityY < 0.0f)
-        {
+    if (!((ballRight < paddleLeft) || (ballLeft > paddleRight) ||
+          (ballBottom > paddleTop) || (ballTop < paddleBottom))) {
+        if (engine->ballVelocityY < 0.0f) {
             engine->ballVelocityY = -engine->ballVelocityY;
         }
     }
 
     bool anyBlockActive = false;
-    for (int32_t i=0; i<NUM_BLOCKS; ++i)
-    {
+    for (int32_t i = 0; i < NUM_BLOCKS; ++i) {
         block& currentBlock = engine->blocks[i];
-        if (currentBlock.isActive)
-        {
+        if (currentBlock.isActive) {
             const float blockLeft = currentBlock.x - BLOCK_HALF_WIDTH;
             const float blockRight = currentBlock.x + BLOCK_HALF_WIDTH;
             const float blockTop = currentBlock.y + BLOCK_HALF_HEIGHT;
             const float blockBottom = currentBlock.y - BLOCK_HALF_HEIGHT;
-            if (!((ballRight < blockLeft) ||
-                  (ballLeft > blockRight) ||
-                  (ballTop < blockBottom) ||
-                  (ballBottom > blockTop)))
-            {
+            if (!((ballRight < blockLeft) || (ballLeft > blockRight) ||
+                  (ballTop < blockBottom) || (ballBottom > blockTop))) {
                 engine->ballVelocityY = -engine->ballVelocityY;
 
-                if (ballLeft < blockLeft ||
-                    ballRight > blockRight)
-                {
+                if (ballLeft < blockLeft || ballRight > blockRight) {
                     engine->ballVelocityX = -engine->ballVelocityX;
                 }
 
@@ -449,8 +423,7 @@ static void engine_update_frame(struct engine* engine)
         }
     }
 
-    if (!anyBlockActive)
-    {
+    if (!anyBlockActive) {
         engine_init_blocks(engine);
     }
 }
@@ -458,15 +431,14 @@ static void engine_update_frame(struct engine* engine)
 /**
  * Just the current frame in the display.
  */
-static void engine_draw_frame(struct engine* engine)
-{
-    if (engine->display == NULL)
-    {
+static void engine_draw_frame(struct engine* engine) {
+    if (engine->display == NULL) {
         // No display.
         return;
     }
 
-    glViewport(0, 0, static_cast<int32_t>(engine->width), static_cast<int32_t>(engine->height));
+    glViewport(0, 0, static_cast<int32_t>(engine->width),
+               static_cast<int32_t>(engine->height));
 
     // Just fill the screen with a color.
     glClearColor(0.95f, 0.95f, 0.95f, 1);
@@ -480,27 +452,61 @@ static void engine_draw_frame(struct engine* engine)
 
     const float z = 0.0f;
     const float buttonColor[] = {0.25f, 0.25f, 0.25f, 1.0f};
-    GLfloat leftButton[] = {-0.85f, 0.75f, z,
-                            buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3],
-                            -0.9f, 0.8f, z,
-                            buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3],
-                            -0.85f,  0.85f, z,
-                            buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3]};
+    GLfloat leftButton[] = {-0.85f,
+                            0.75f,
+                            z,
+                            buttonColor[0],
+                            buttonColor[1],
+                            buttonColor[2],
+                            buttonColor[3],
+                            -0.9f,
+                            0.8f,
+                            z,
+                            buttonColor[0],
+                            buttonColor[1],
+                            buttonColor[2],
+                            buttonColor[3],
+                            -0.85f,
+                            0.85f,
+                            z,
+                            buttonColor[0],
+                            buttonColor[1],
+                            buttonColor[2],
+                            buttonColor[3]};
 
     // Load the vertex data
-    glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, leftButton);
-    glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, &leftButton[3]);
+    glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS,
+                          GL_FLOAT, GL_FALSE, VERTEX_SIZE, leftButton);
+    glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT,
+                          GL_FALSE, VERTEX_SIZE, &leftButton[3]);
     glDrawArrays(GL_TRIANGLES, 0, TRIANGLE_NUM_VERTICES);
 
-    GLfloat rightButton[] = {0.85f,  0.75f, z,
-                             buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3],
-                             0.9f, 0.8f, z,
-                             buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3],
-                             0.85f,  0.85f, z,
-                             buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3]};
+    GLfloat rightButton[] = {0.85f,
+                             0.75f,
+                             z,
+                             buttonColor[0],
+                             buttonColor[1],
+                             buttonColor[2],
+                             buttonColor[3],
+                             0.9f,
+                             0.8f,
+                             z,
+                             buttonColor[0],
+                             buttonColor[1],
+                             buttonColor[2],
+                             buttonColor[3],
+                             0.85f,
+                             0.85f,
+                             z,
+                             buttonColor[0],
+                             buttonColor[1],
+                             buttonColor[2],
+                             buttonColor[3]};
 
-    glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, rightButton);
-    glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, &rightButton[3]);
+    glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS,
+                          GL_FLOAT, GL_FALSE, VERTEX_SIZE, rightButton);
+    glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT,
+                          GL_FALSE, VERTEX_SIZE, &rightButton[3]);
     glDrawArrays(GL_TRIANGLES, 0, TRIANGLE_NUM_VERTICES);
 
     float left = engine->playerX - PADDLE_HALF_WIDTH;
@@ -508,21 +514,53 @@ static void engine_draw_frame(struct engine* engine)
     float top = engine->playerY - PADDLE_HALF_HEIGHT;
     float bottom = engine->playerY + PADDLE_HALF_HEIGHT;
     const float paddleColor[] = {1.0f, 0.0f, 0.0f, 1.0f};
-    GLfloat paddle[] = {left, top, z,
-                        paddleColor[0], paddleColor[1], paddleColor[2], paddleColor[3],
-                        left, bottom, z,
-                        paddleColor[0], paddleColor[1], paddleColor[2], paddleColor[3],
-                        right, top, z,
-                        paddleColor[0], paddleColor[1], paddleColor[2], paddleColor[3],
-                        right, top, z,
-                        paddleColor[0], paddleColor[1], paddleColor[2], paddleColor[3],
-                        left, bottom, z,
-                        paddleColor[0], paddleColor[1], paddleColor[2], paddleColor[3],
-                        right, bottom, z,
-                        paddleColor[0], paddleColor[1], paddleColor[2], paddleColor[3]};
+    GLfloat paddle[] = {left,
+                        top,
+                        z,
+                        paddleColor[0],
+                        paddleColor[1],
+                        paddleColor[2],
+                        paddleColor[3],
+                        left,
+                        bottom,
+                        z,
+                        paddleColor[0],
+                        paddleColor[1],
+                        paddleColor[2],
+                        paddleColor[3],
+                        right,
+                        top,
+                        z,
+                        paddleColor[0],
+                        paddleColor[1],
+                        paddleColor[2],
+                        paddleColor[3],
+                        right,
+                        top,
+                        z,
+                        paddleColor[0],
+                        paddleColor[1],
+                        paddleColor[2],
+                        paddleColor[3],
+                        left,
+                        bottom,
+                        z,
+                        paddleColor[0],
+                        paddleColor[1],
+                        paddleColor[2],
+                        paddleColor[3],
+                        right,
+                        bottom,
+                        z,
+                        paddleColor[0],
+                        paddleColor[1],
+                        paddleColor[2],
+                        paddleColor[3]};
 
-    glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, paddle);
-    glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, &paddle[3]);
+    glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS,
+                          GL_FLOAT, GL_FALSE, VERTEX_SIZE, paddle);
+    glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT,
+                          GL_FALSE, VERTEX_SIZE, &paddle[3]);
     glDrawArrays(GL_TRIANGLES, 0, QUAD_NUM_VERTICES);
 
     left = engine->ballX - BALL_HALF_WIDTH;
@@ -530,29 +568,60 @@ static void engine_draw_frame(struct engine* engine)
     top = engine->ballY - BALL_HALF_HEIGHT;
     bottom = engine->ballY + BALL_HALF_HEIGHT;
     const float ballColor[] = {1.0f, 0.0f, 0.0f, 1.0f};
-    GLfloat ball[] = {left,  top, z,
-                      ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      left, bottom,  z,
-                      ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      right,   top, z,
-                      ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      right,   top, z,
-                      ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      left, bottom,  z,
-                      ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      right,  bottom, z,
-                      ballColor[0], ballColor[1], ballColor[2], ballColor[3]};
+    GLfloat ball[] = {left,
+                      top,
+                      z,
+                      ballColor[0],
+                      ballColor[1],
+                      ballColor[2],
+                      ballColor[3],
+                      left,
+                      bottom,
+                      z,
+                      ballColor[0],
+                      ballColor[1],
+                      ballColor[2],
+                      ballColor[3],
+                      right,
+                      top,
+                      z,
+                      ballColor[0],
+                      ballColor[1],
+                      ballColor[2],
+                      ballColor[3],
+                      right,
+                      top,
+                      z,
+                      ballColor[0],
+                      ballColor[1],
+                      ballColor[2],
+                      ballColor[3],
+                      left,
+                      bottom,
+                      z,
+                      ballColor[0],
+                      ballColor[1],
+                      ballColor[2],
+                      ballColor[3],
+                      right,
+                      bottom,
+                      z,
+                      ballColor[0],
+                      ballColor[1],
+                      ballColor[2],
+                      ballColor[3]};
 
-    glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, ball);
-    glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, &ball[3]);
+    glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS,
+                          GL_FLOAT, GL_FALSE, VERTEX_SIZE, ball);
+    glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT,
+                          GL_FALSE, VERTEX_SIZE, &ball[3]);
     glDrawArrays(GL_TRIANGLES, 0, QUAD_NUM_VERTICES);
 
-    GLfloat blockColors[][4] = { {0.0f, 1.0f, 0.0f, 1.0f},{0.0f, 0.0f, 1.0f, 1.0f} };
-    for (int32_t i=0; i<NUM_BLOCKS; ++i)
-    {
+    GLfloat blockColors[][4] = {{0.0f, 1.0f, 0.0f, 1.0f},
+                                {0.0f, 0.0f, 1.0f, 1.0f}};
+    for (int32_t i = 0; i < NUM_BLOCKS; ++i) {
         block& currentBlock = engine->blocks[i];
-        if (currentBlock.isActive)
-        {
+        if (currentBlock.isActive) {
             const int32_t colorIndex = i % 2;
             const float r = blockColors[colorIndex][0];
             const float g = blockColors[colorIndex][1];
@@ -562,21 +631,16 @@ static void engine_draw_frame(struct engine* engine)
             const float right = currentBlock.x + BLOCK_HALF_WIDTH;
             const float top = currentBlock.y + BLOCK_HALF_HEIGHT;
             const float bottom = currentBlock.y - BLOCK_HALF_HEIGHT;
-            GLfloat block[] = {left, top, z,
-                               r, g, b, a,
-                               left, bottom, z,
-                               r, g, b, a,
-                               right, top, z,
-                               r, g, b, a,
-                               right, top, z,
-                               r, g, b, a,
-                               left, bottom, z,
-                               r, g, b, a,
-                               right, bottom, z,
-                               r, g, b, a};
+            GLfloat block[] = {
+                left,  top,    z, r, g, b, a, left,  bottom, z, r, g, b, a,
+                right, top,    z, r, g, b, a, right, top,    z, r, g, b, a,
+                left,  bottom, z, r, g, b, a, right, bottom, z, r, g, b, a};
 
-            glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, block);
-            glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, &block[3]);
+            glVertexAttribPointer(POSITION_PARAMETER_INDEX,
+                                  POSITION_NUM_ELEMENTS, GL_FLOAT, GL_FALSE,
+                                  VERTEX_SIZE, block);
+            glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS,
+                                  GL_FLOAT, GL_FALSE, VERTEX_SIZE, &block[3]);
             glDrawArrays(GL_TRIANGLES, 0, QUAD_NUM_VERTICES);
         }
     }
@@ -590,17 +654,14 @@ static void engine_draw_frame(struct engine* engine)
 /**
  * Tear down the EGL context currently associated with the display.
  */
-static void engine_term_display(struct engine* engine)
-{
-    if (engine->display != EGL_NO_DISPLAY)
-    {
-        eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-        if (engine->context != EGL_NO_CONTEXT)
-        {
+static void engine_term_display(struct engine* engine) {
+    if (engine->display != EGL_NO_DISPLAY) {
+        eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE,
+                       EGL_NO_CONTEXT);
+        if (engine->context != EGL_NO_CONTEXT) {
             eglDestroyContext(engine->display, engine->context);
         }
-        if (engine->surface != EGL_NO_SURFACE)
-        {
+        if (engine->surface != EGL_NO_SURFACE) {
             eglDestroySurface(engine->display, engine->surface);
         }
         eglTerminate(engine->display);
@@ -613,29 +674,28 @@ static void engine_term_display(struct engine* engine)
 /**
  * Process the next input event.
  */
-static int32_t engine_handle_input(struct android_app* app, AInputEvent* event)
-{
+static int32_t engine_handle_input(struct android_app* app,
+                                   AInputEvent* event) {
     struct engine* engine = (struct engine*)app->userData;
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION)
-    {
+    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         int32_t ret = 0;
 
         int32_t action = AMotionEvent_getAction(event);
-        if (action == AMOTION_EVENT_ACTION_DOWN)
-        {
+        if (action == AMOTION_EVENT_ACTION_DOWN) {
             engine->touchIsDown = true;
             ret = 1;
-        }
-        else if (action == AMOTION_EVENT_ACTION_UP)
-        {
+        } else if (action == AMOTION_EVENT_ACTION_UP) {
             engine->touchIsDown = false;
             ret = 1;
         }
 
-        if (ret)
-        {
-            engine->touchX = static_cast<float>(AMotionEvent_getRawX(event, 0)) / engine->width;
-            engine->touchY = static_cast<float>(AMotionEvent_getRawY(event, 0)) / engine->height;
+        if (ret) {
+            engine->touchX =
+                static_cast<float>(AMotionEvent_getRawX(event, 0)) /
+                engine->width;
+            engine->touchY =
+                static_cast<float>(AMotionEvent_getRawY(event, 0)) /
+                engine->height;
         }
         return ret;
     }
@@ -645,15 +705,12 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event)
 /**
  * Process the next main command.
  */
-static void engine_handle_cmd(struct android_app* app, int32_t cmd)
-{
+static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
     auto* engine = static_cast<struct engine*>(app->userData);
-    switch (cmd)
-    {
+    switch (cmd) {
         case APP_CMD_INIT_WINDOW:
             // The window is being shown, get it ready.
-            if (engine->app->window != NULL)
-            {
+            if (engine->app->window != NULL) {
                 engine_init_display(engine);
                 engine_draw_frame(engine);
             }
@@ -670,9 +727,8 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
  * android_native_app_glue.  It runs in its own thread, with its own
  * event loop for receiving input events and doing other things.
  */
-void android_main(struct android_app* state)
-{
-    struct engine engine{};
+void android_main(struct android_app* state) {
+    struct engine engine {};
 
     LOGI("SSSSSTART");
 
@@ -695,17 +751,16 @@ void android_main(struct android_app* state)
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
-        while ((ident=ALooper_pollAll(0, nullptr, &events, reinterpret_cast<void**>(&source))) >= 0)
-        {
+        while ((ident = ALooper_pollAll(0, nullptr, &events,
+                                        reinterpret_cast<void**>(&source))) >=
+               0) {
             // Process this event.
-            if (source != nullptr)
-            {
+            if (source != nullptr) {
                 source->process(state, source);
             }
 
             // Check if we are exiting.
-            if (state->destroyRequested != 0)
-            {
+            if (state->destroyRequested != 0) {
                 engine_term_display(&engine);
                 return;
             }
@@ -720,7 +775,6 @@ void android_main(struct android_app* state)
 }
 
 #elif defined(JUST_SAMPLE2)
-
 
 /*
  * Copyright (C) 2010 The Android Open Source Project
@@ -739,53 +793,51 @@ void android_main(struct android_app* state)
  *
  */
 
-
-
-#include <jni.h>
-
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-
-#include <android/sensor.h>
 #include <android/log.h>
+#include <android/sensor.h>
 #include <android_native_app_glue.h>
+#include <jni.h>
 
 #include <cstring>
 
-
-#define LOGI(...)((void) __android_log_print(ANDROID_LOG_INFO, "AndroidProject1.NativeActivity", __VA_ARGS__))
-#define LOGW(...)((void) __android_log_print(ANDROID_LOG_WARN, "AndroidProject1.NativeActivity", __VA_ARGS__))
+#define LOGI(...)                                \
+    ((void)__android_log_print(ANDROID_LOG_INFO, \
+                               "AndroidProject1.NativeActivity", __VA_ARGS__))
+#define LOGW(...)                                \
+    ((void)__android_log_print(ANDROID_LOG_WARN, \
+                               "AndroidProject1.NativeActivity", __VA_ARGS__))
 
 #define LOG_TAG "libgl2jni"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
-static void printGLString(const char *name, GLenum s) {
-    const char *v = (const char *) glGetString(s);
+static void printGLString(const char* name, GLenum s) {
+    const char* v = (const char*)glGetString(s);
     LOGI("GL %s = %s\n", name, v);
 }
 
-static void checkGlError(const char *op) {
+static void checkGlError(const char* op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
 }
 
 static const char gVertexShader[] =
-        "attribute vec4 vPosition;\n"
-        "void main() {\n"
-        " gl_Position = vPosition;\n"
-        "}\n";
+    "attribute vec4 vPosition;\n"
+    "void main() {\n"
+    " gl_Position = vPosition;\n"
+    "}\n";
 
 static const char gFragmentShader[] =
-        "precision mediump float;\n"
-        "void main() {\n"
-        " gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-        "}\n";
+    "precision mediump float;\n"
+    "void main() {\n"
+    " gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+    "}\n";
 
-GLuint loadShader(GLenum shaderType,
-                  const char *pSource) {
+GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
     if (shader) {
         glShaderSource(shader, 1, &pSource, NULL);
@@ -796,11 +848,10 @@ GLuint loadShader(GLenum shaderType,
             GLint infoLen = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
             if (infoLen) {
-                char *buf = (char *) malloc(infoLen);
+                char* buf = (char*)malloc(infoLen);
                 if (buf) {
                     glGetShaderInfoLog(shader, infoLen, NULL, buf);
-                    LOGE("Could not compile shader %d:\n%s\n",
-                         shaderType, buf);
+                    LOGE("Could not compile shader %d:\n%s\n", shaderType, buf);
                     free(buf);
                 }
                 glDeleteShader(shader);
@@ -811,8 +862,7 @@ GLuint loadShader(GLenum shaderType,
     return shader;
 }
 
-GLuint createProgram(const char *pVertexSource,
-                     const char *pFragmentSource) {
+GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
     GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     if (!vertexShader) {
         return 0;
@@ -836,7 +886,7 @@ GLuint createProgram(const char *pVertexSource,
             GLint bufLength = 0;
             glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
             if (bufLength) {
-                char *buf = (char *) malloc(bufLength);
+                char* buf = (char*)malloc(bufLength);
                 if (buf) {
                     glGetProgramInfoLog(program, bufLength, NULL, buf);
                     LOGE("Could not link program:\n%s\n", buf);
@@ -866,11 +916,11 @@ struct saved_state {
  * Shared state for our app.
  */
 struct engine {
-    struct android_app *app;
+    struct android_app* app;
 
-    ASensorManager *sensorManager;
-    const ASensor *accelerometerSensor;
-    ASensorEventQueue *sensorEventQueue;
+    ASensorManager* sensorManager;
+    const ASensor* accelerometerSensor;
+    ASensorEventQueue* sensorEventQueue;
 
     int animating;
     EGLDisplay display;
@@ -884,7 +934,7 @@ struct engine {
 /**
  * Initialize an EGL context for the current display.
  */
-static int engine_init_display(struct engine *engine) {
+static int engine_init_display(struct engine* engine) {
     // initialize OpenGL ES and EGL
 
     /*
@@ -892,17 +942,11 @@ static int engine_init_display(struct engine *engine) {
      * Below, we select an EGLConfig with at least 8 bits per color
      * component compatible with on-screen windows
      */
-    const EGLint attribs[] = {
-            EGL_SURFACE_TYPE,
-            EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE,
-            8,
-            EGL_GREEN_SIZE,
-            8,
-            EGL_RED_SIZE,
-            8,
-            EGL_NONE
-    };
+    const EGLint attribs[] = {EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                              EGL_BLUE_SIZE,    8,
+                              EGL_GREEN_SIZE,   8,
+                              EGL_RED_SIZE,     8,
+                              EGL_NONE};
     EGLint w, h, format;
     EGLint numConfigs;
     EGLConfig config;
@@ -926,12 +970,10 @@ static int engine_init_display(struct engine *engine) {
 
     ANativeWindow_setBuffersGeometry(engine->app->window, 0, 0, format);
 
-    surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
+    surface =
+        eglCreateWindowSurface(display, config, engine->app->window, NULL);
 
-    const EGLint contextAttribs[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 2,
-            EGL_NONE
-    };
+    const EGLint contextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
     context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);
 
     if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
@@ -950,7 +992,7 @@ static int engine_init_display(struct engine *engine) {
     engine->state.angle = 0;
 
     // Initialize GL state.
-    //glEnable(GL_CULL_FACE);
+    // glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
 
     gProgram = createProgram(gVertexShader, gFragmentShader);
@@ -962,19 +1004,12 @@ static int engine_init_display(struct engine *engine) {
     return 0;
 }
 
-const GLfloat gTriangleVertices[] = {
-        0.0f,
-        0.5f,
-        -0.5f,
-        -0.5f,
-        0.5f,
-        -0.5f
-};
+const GLfloat gTriangleVertices[] = {0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f};
 
 /**
  * Just the current frame in the display.
  */
-static void engine_draw_frame(struct engine *engine) {
+static void engine_draw_frame(struct engine* engine) {
     if (engine->display == NULL) {
         // No display.
         return;
@@ -986,7 +1021,8 @@ static void engine_draw_frame(struct engine *engine) {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
 
-    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0,
+                          gTriangleVertices);
     checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);
     checkGlError("glEnableVertexAttribArray");
@@ -999,9 +1035,10 @@ static void engine_draw_frame(struct engine *engine) {
 /**
  * Tear down the EGL context currently associated with the display.
  */
-static void engine_term_display(struct engine *engine) {
+static void engine_term_display(struct engine* engine) {
     if (engine->display != EGL_NO_DISPLAY) {
-        eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE,
+                       EGL_NO_CONTEXT);
         if (engine->context != EGL_NO_CONTEXT) {
             eglDestroyContext(engine->display, engine->context);
         }
@@ -1019,8 +1056,9 @@ static void engine_term_display(struct engine *engine) {
 /**
  * Process the next input event.
  */
-static int32_t engine_handle_input(struct android_app *app, AInputEvent *event) {
-    struct engine *engine = (struct engine *) app->userData;
+static int32_t engine_handle_input(struct android_app* app,
+                                   AInputEvent* event) {
+    struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         engine->state.x = AMotionEvent_getX(event, 0);
         engine->state.y = AMotionEvent_getY(event, 0);
@@ -1032,13 +1070,13 @@ static int32_t engine_handle_input(struct android_app *app, AInputEvent *event) 
 /**
  * Process the next main command.
  */
-static void engine_handle_cmd(struct android_app *app, int32_t cmd) {
-    struct engine *engine = (struct engine *) app->userData;
+static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
+    struct engine* engine = (struct engine*)app->userData;
     switch (cmd) {
         case APP_CMD_SAVE_STATE:
             // The system has asked us to save our current state. Do so.
             engine->app->savedState = malloc(sizeof(struct saved_state));
-            *((struct saved_state *) engine->app->savedState) = engine->state;
+            *((struct saved_state*)engine->app->savedState) = engine->state;
             engine->app->savedStateSize = sizeof(struct saved_state);
             break;
         case APP_CMD_INIT_WINDOW:
@@ -1059,7 +1097,8 @@ static void engine_handle_cmd(struct android_app *app, int32_t cmd) {
                                                engine->accelerometerSensor);
                 // We'd like to get 60 events per second (in us).
                 ASensorEventQueue_setEventRate(engine->sensorEventQueue,
-                                               engine->accelerometerSensor, (1000L / 60) *1000);
+                                               engine->accelerometerSensor,
+                                               (1000L / 60) * 1000);
             }
             break;
         case APP_CMD_LOST_FOCUS:
@@ -1081,7 +1120,7 @@ static void engine_handle_cmd(struct android_app *app, int32_t cmd) {
  * android_native_app_glue. It runs in its own thread, with its own
  * event loop for receiving input events and doing other things.
  */
-void android_main(struct android_app *state) {
+void android_main(struct android_app* state) {
     struct engine engine;
 
     memset(&engine, 0, sizeof(engine));
@@ -1092,14 +1131,14 @@ void android_main(struct android_app *state) {
 
     // Prepare to monitor accelerometer
     engine.sensorManager = ASensorManager_getInstance();
-    engine.accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,
-                                                                 ASENSOR_TYPE_ACCELEROMETER);
-    engine.sensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,
-                                                              state->looper, LOOPER_ID_USER, NULL, NULL);
+    engine.accelerometerSensor = ASensorManager_getDefaultSensor(
+        engine.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+    engine.sensorEventQueue = ASensorManager_createEventQueue(
+        engine.sensorManager, state->looper, LOOPER_ID_USER, NULL, NULL);
 
     if (state->savedState != NULL) {
         // We are starting with a previous saved state; restore from it.
-        engine.state = * (struct saved_state * ) state->savedState;
+        engine.state = *(struct saved_state*)state->savedState;
     }
 
     engine.animating = 1;
@@ -1110,14 +1149,13 @@ void android_main(struct android_app *state) {
         // Read all pending events.
         int ident;
         int events;
-        struct android_poll_source * source;
+        struct android_poll_source* source;
 
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
-        while ((ident = ALooper_pollAll(engine.animating ? 0 : -1, NULL, & events,
-                                        (void * * ) & source)) >= 0) {
-
+        while ((ident = ALooper_pollAll(engine.animating ? 0 : -1, NULL,
+                                        &events, (void**)&source)) >= 0) {
             // Process this event.
             if (source != NULL) {
                 source->process(state, source);
@@ -1125,7 +1163,7 @@ void android_main(struct android_app *state) {
 
             // Check if we are exiting.
             if (state->destroyRequested != 0) {
-                engine_term_display( & engine);
+                engine_term_display(&engine);
                 return;
             }
         }
