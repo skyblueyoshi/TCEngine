@@ -10,6 +10,7 @@
 #include <vector>
 #include <list>
 #include <assert.h>
+#include "Memory.h"
 
 namespace Tce {
 
@@ -27,8 +28,7 @@ namespace Tce {
 
         ~ObjectPool() {
             for (auto &p : m_buffers) {
-                delete p;
-                p = NULL;
+                SafeDelete(p);
             }
             m_buffers.clear();
         }

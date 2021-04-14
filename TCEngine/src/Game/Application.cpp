@@ -19,7 +19,6 @@ namespace Tce {
 		switch (m_eSolution) {
 			case SOLUTION_CLIENT:
                 m_pGraphicsDevice = std::make_shared<GraphicsDevice>();
-                m_pGraphicsDevice->InitAllManagers();
 				m_pGames[GAME_INDEX_CLIENT] = std::make_unique<GameClient>(m_pAppState, m_pGraphicsDevice);
 				m_pGameWindow = std::make_unique<GameWindow>(m_pAppState, m_pGraphicsDevice);
 				break;

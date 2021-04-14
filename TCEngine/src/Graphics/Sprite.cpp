@@ -68,7 +68,7 @@ namespace Tce {
     }
 
     void Sprite::_CheckRunning() {
-        CHECK_RUNTIME_OR_ERROR(m_running, "Sprite draw call must between begin and end.")
+        CHECK_RUNTIME_OR_ERROR(m_running, "Sprite draw call must between begin and end.");
     }
 
     Sprite::SpriteCache &Sprite::_CreateSpriteCache() {
