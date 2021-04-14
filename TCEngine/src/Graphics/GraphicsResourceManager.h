@@ -8,7 +8,7 @@ namespace Tce {
     template<class T>
     class GraphicsResourceManager : public GraphicsResource {
     public:
-        GraphicsResourceManager(std::shared_ptr<GraphicsDevice> &pDevice)
+        GraphicsResourceManager(GraphicsDevice* pDevice)
                 : GraphicsResource(pDevice) {}
 
         virtual ~GraphicsResourceManager() {

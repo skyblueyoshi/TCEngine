@@ -32,7 +32,7 @@
 #   error Unsupported operating system!
 #endif
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef FileMapper_POSIX
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -76,7 +76,7 @@ public:
     m_File(NULL),
         m_Map(NULL),
 #endif
-            m_Address(NULL),
+            m_Address(nullptr),
             m_size(0)
     {}
     FileMapper_private(const FileMapper_private &) = default;
@@ -120,7 +120,7 @@ bool FileMapper::FileMapper_private::dumpFile(const std::string &path)
 bool FileMapper::FileMapper_private::openFile(const std::string &path)
 {
     m_error.clear();
-    struct  stat sb;
+    struct  stat sb{};
     int     m_fd;
     m_fd = open(path.c_str(), O_RDONLY);
 
@@ -152,7 +152,7 @@ bool FileMapper::FileMapper_private::openFile(const std::string &path)
         return false;
     }
 
-    m_Address = mmap(0, sb.st_size, PROT_READ, MAP_SHARED, m_fd, 0);
+    m_Address = mmap(nullptr, sb.st_size, PROT_READ, MAP_SHARED, m_fd, 0);
 
     if(m_Address == MAP_FAILED)
     {
@@ -193,7 +193,7 @@ bool FileMapper::FileMapper_private::closeFile()
         }
     }
     m_path.clear();
-    m_Address   = NULL;
+    m_Address   = nullptr;
     m_size      = 0;
     return ret;
 }

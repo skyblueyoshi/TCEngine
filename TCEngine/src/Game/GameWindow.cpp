@@ -38,7 +38,7 @@ namespace Tce {
 
     void GameWindow::OnInitWindow() {
         if (m_pAppState->GetAndroidState()->window) {
-            m_pGraphicsDevice->Init(m_pAppState);
+            m_pGraphicsDevice->Init(m_pAppState.get());
         }
     }
 

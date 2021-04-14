@@ -4,27 +4,24 @@
 namespace Tce {
 
     GraphicsDevice::GraphicsDevice() {
-
+        if (!m_pShaderManager) {
+            m_pShaderManager = std::make_unique<ShaderManager>(this);
+        }
+        if (!m_pProgramManager) {
+            m_pProgramManager = std::make_unique<ProgramManager>(this, m_pShaderManager.get());
+        }
+        if (!m_pTextureManager) {
+            m_pTextureManager = std::make_unique<TextureManager>(this);
+        }
     }
 
     GraphicsDevice::~GraphicsDevice() {
         m_pShaderManager.reset();
+        m_pProgramManager.reset();
+        m_pTextureManager.reset();
     }
 
-    void GraphicsDevice::InitAllManagers() {
-        auto pGraphicsDevice = shared_from_this();
-        if (!m_pShaderManager) {
-            m_pShaderManager = std::make_shared<ShaderManager>(pGraphicsDevice);
-        }
-        if (!m_pProgramManager) {
-            m_pProgramManager = std::make_shared<ProgramManager>(pGraphicsDevice, m_pShaderManager);
-        }
-        if (!m_pTextureManager) {
-            m_pTextureManager = std::make_shared<TextureManager>(pGraphicsDevice);
-        }
-    }
-
-    void GraphicsDevice::Init(std::shared_ptr<AppState> &pAppState) {
+    void GraphicsDevice::Init(AppState* pAppState) {
         if (!m_initialized) {
             m_pAppState = pAppState;
             _PlatformInit();
@@ -48,7 +45,7 @@ namespace Tce {
     }
 
     void GraphicsDevice::Clear(Color color) {
-        glViewport(0,m_height / 2 - m_width/2,m_width,m_width);
+        glViewport(0, 0, m_width, m_height);
         _PlatformClear(color);
         m_clearTimes++;
     }
@@ -83,15 +80,23 @@ namespace Tce {
         m_nextDisposes.push_back(ResourceHandle::Texture(handle));
     }
 
-    std::shared_ptr<ShaderManager> &GraphicsDevice::GetShaderManager() {
-        return m_pShaderManager;
+    ShaderManager* GraphicsDevice::GetShaderManager() const {
+        return m_pShaderManager.get();
     }
 
-    std::shared_ptr<ProgramManager> &GraphicsDevice::GetProgramManager() {
-        return m_pProgramManager;
+    ProgramManager* GraphicsDevice::GetProgramManager() const {
+        return m_pProgramManager.get();
     }
 
-    std::shared_ptr<TextureManager> &GraphicsDevice::GetTextureManager() {
-        return m_pTextureManager;
+    TextureManager* GraphicsDevice::GetTextureManager() const {
+        return m_pTextureManager.get();
+    }
+
+    uint GraphicsDevice::GetDisplayWidth() const {
+        return m_width;
+    }
+
+    uint GraphicsDevice::GetDisplayHeight() const {
+        return m_height;
     }
 }

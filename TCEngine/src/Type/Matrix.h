@@ -183,6 +183,22 @@ namespace Tce {
         // @param result 结果PERSPECTIVE矩阵
         static void CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance, Matrix & result);
 
+        // 构造一个正视投影矩阵
+        // @param width 视图宽度
+        // @param height 视图高度
+        // @param nearPlaneDistance 近平面深度
+        // @param farPlaneDistance 远平面深度
+        // @return 结果正视投影矩阵
+        static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane);
+
+        // 构造一个正视投影矩阵
+        // @param width 视图宽度
+        // @param height 视图高度
+        // @param nearPlaneDistance 近平面深度
+        // @param farPlaneDistance 远平面深度
+        // @param result 结果正视投影矩阵
+        static void CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane, Matrix & result);
+
         //单位矩阵
         static const Matrix identity;
     };

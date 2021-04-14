@@ -7,8 +7,7 @@ namespace Tce {
     class ShaderManager;
     class ProgramManager : public GraphicsResourceManager<Program> {
     public:
-        ProgramManager(std::shared_ptr<GraphicsDevice> &pDevice,
-                       std::shared_ptr<ShaderManager> &pShaderManager);
+        ProgramManager(GraphicsDevice* pDevice, ShaderManager* pShaderManager);
 
         virtual ~ProgramManager() = default;
 
@@ -23,7 +22,7 @@ namespace Tce {
         void Unload(std::shared_ptr<Program> & pProgram);
 
     private:
-        std::weak_ptr<ShaderManager> m_pShaderManager;
+        ShaderManager* m_pShaderManager{nullptr};
     };
 
 }

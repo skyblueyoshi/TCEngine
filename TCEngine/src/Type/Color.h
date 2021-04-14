@@ -7,14 +7,16 @@ namespace Tce {
 
     struct Color {
         union {
+            uint32_t _value{};
             struct {
                 uint8_t alpha;
                 uint8_t red;
                 uint8_t green;
                 uint8_t blue;
             };
-            uint32_t _value{};
         };
+
+        Color() = default;
 
         // 构造函数
         // @param value 符合ARGB格式的32位无符号整数

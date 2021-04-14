@@ -305,7 +305,7 @@ namespace Tce {
                                      "}";
 
 
-            auto &pProgramManager = m_pGraphicsDevice->GetProgramManager();
+            auto pProgramManager = m_pGraphicsDevice->GetProgramManager();
             ppg = pProgramManager->Get(pProgramManager->Load(svs2, sPS2));
 
             // This will identify our vertex buffer
@@ -330,8 +330,8 @@ namespace Tce {
                          GL_STATIC_DRAW);
 
 
-            auto &pTextureManager = m_pGraphicsDevice->GetTextureManager();
-            pTextureManager->LoadTextureFromFile("111.png");
+            auto pTextureManager = m_pGraphicsDevice->GetTextureManager();
+            pTextureManager->LoadTextureFromFile("oo.png");
         }
 
 
@@ -340,7 +340,7 @@ namespace Tce {
         static float dgg = 0;
         dgg += 1;
         // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-        glm::mat4 Projection = glm::perspective(glm::radians(dgg), (float) 4 / (float) 3, 0.1f,
+        glm::mat4 Projection = glm::perspective(glm::radians(dgg), (float) 3 / (float) 3, 0.1f,
                                                 100.0f);
 
 // Or, for an ortho camera :
@@ -363,13 +363,20 @@ namespace Tce {
 
         Matrix projection = Matrix::CreatePerspectiveFOV(
                 glm::radians(45.0f),
-                (float) 4 / (float) 3,
+                (float) m_pGraphicsDevice->GetDisplayWidth() /
+                (float) m_pGraphicsDevice->GetDisplayHeight(),
                 0.1f,
                 100.0f);
 
+        static float zz = -3;
+        static float xx = 4;
+        static float tt = 1;
+        tt += 0.01;
+        xx = sin(tt) * 4;
+        zz = cos(tt) * 5;
 
         Matrix view = Matrix::CreateLookAt(
-                Vector3(4, 3, -3),
+                Vector3(xx, 3, zz),
                 Vector3(0, 0, 0),
                 Vector3(0, 1, 0));
 
@@ -381,7 +388,7 @@ namespace Tce {
         glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvp._11);
         //glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
 
-        GLuint textureID  = glGetUniformLocation(ppg->GetHandle(), "myTextureSampler");
+        GLuint textureID = glGetUniformLocation(ppg->GetHandle(), "myTextureSampler");
 
         // Bind our texture in Texture Unit 0
         glActiveTexture(GL_TEXTURE0);
@@ -422,7 +429,7 @@ namespace Tce {
                 GL_FLOAT,                         // type
                 GL_FALSE,                         // normalized?
                 0,                                // stride
-                (void*)0                          // array buffer offset
+                (void *) 0                          // array buffer offset
         );
 
 // Draw the triangle !

@@ -6,7 +6,7 @@
 
 namespace Tce {
 
-    ShaderManager::ShaderManager(std::shared_ptr<GraphicsDevice> &pDevice)
+    ShaderManager::ShaderManager(GraphicsDevice* pDevice)
             : GraphicsResourceManager<Shader>(pDevice) {
 
     }
@@ -56,7 +56,7 @@ namespace Tce {
 
     void ShaderManager::Unload(std::shared_ptr<Shader> &pShader) {
         if (pShader) {
-            m_pDevice.lock()->DisposeShader(pShader->GetHandle());
+            m_pDevice->DisposeShader(pShader->GetHandle());
             GraphicsResourceManager::Unload(pShader);
         }
     }

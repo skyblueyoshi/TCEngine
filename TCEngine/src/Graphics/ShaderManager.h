@@ -7,7 +7,7 @@ namespace Tce {
 
     class ShaderManager : public GraphicsResourceManager<Shader> {
     public:
-        ShaderManager(std::shared_ptr<GraphicsDevice> &pDevice);
+        ShaderManager(GraphicsDevice* pDevice);
 
         virtual ~ShaderManager() = default;
 

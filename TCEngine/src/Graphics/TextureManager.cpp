@@ -2,14 +2,13 @@
 #include "File.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-
 #include <stb/stb_image.h>
 #include <GLES2/gl2.h>
 #include <src/Utils/StringHelper.h>
 #include "GraphicsDevice.h"
 
 namespace Tce {
-    TextureManager::TextureManager(std::shared_ptr<GraphicsDevice> &pDevice)
+    TextureManager::TextureManager(GraphicsDevice* pDevice)
             : GraphicsResourceManager(pDevice) {
 
     }
@@ -48,7 +47,7 @@ namespace Tce {
 
     void TextureManager::Unload(std::shared_ptr<Texture> &pTexture) {
         if (pTexture) {
-            m_pDevice.lock()->DisposeTexture(pTexture->GetHandle());
+            m_pDevice->DisposeTexture(pTexture->GetHandle());
             GraphicsResourceManager::Unload(pTexture);
         }
     }

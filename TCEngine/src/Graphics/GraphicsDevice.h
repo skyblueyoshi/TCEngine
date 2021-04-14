@@ -31,18 +31,15 @@ namespace Tce {
 
     class GraphicsResource;
 
-    class GraphicsDevice : public std::enable_shared_from_this<GraphicsDevice> {
+    class GraphicsDevice {
     public:
         GraphicsDevice();
 
         virtual ~GraphicsDevice();
 
-        // 创建所有设备
-        void InitAllManagers();
-
         // 初始化绘制设备
         // @param pAppState APP状态
-        void Init(std::shared_ptr<AppState> &pAppState);
+        void Init(AppState* pAppState);
 
         // 销毁绘制设备
         void Destroy();
@@ -61,13 +58,21 @@ namespace Tce {
         void Present();
 
         // 获取着色器管理器
-        std::shared_ptr<ShaderManager>& GetShaderManager();
+        ShaderManager* GetShaderManager() const;
 
         // 获取着色程序管理器
-        std::shared_ptr<ProgramManager>& GetProgramManager();
+        ProgramManager* GetProgramManager() const;
 
         // 获取纹理管理器
-        std::shared_ptr<TextureManager>& GetTextureManager();
+        TextureManager* GetTextureManager() const;
+
+        // 获取显示宽度
+        // @return 显示宽度
+        uint GetDisplayWidth() const;
+
+        // 获取显示高度
+        // @return 显示高度
+        uint GetDisplayHeight() const;
 
         // 丢弃着色器
         // @param handle 着色器句柄
@@ -131,16 +136,16 @@ namespace Tce {
             void Free();
         };
 
-        std::weak_ptr<AppState> m_pAppState;            // APP状态
-        int32_t m_width{};                              // APP宽度
-        int32_t m_height{};                             // APP高度
+        AppState* m_pAppState{nullptr};                 // APP状态
+        uint m_width{};                                 // APP宽度
+        uint m_height{};                                // APP高度
         uint64_t m_clearTimes{};                        // 设备清空次数
         bool m_initialized{};                           // 是否完成初始化
         std::list<ResourceHandle> m_nextDisposes;       // 下一帧丢弃资源表
         std::list<ResourceHandle> m_currentDisposes;    // 当前帧丢弃资源表
         std::mutex m_disposeLock;                       // 抛弃操作锁
 
-        std::shared_ptr<ShaderManager> m_pShaderManager;     // 着色器管理器
+        std::unique_ptr<ShaderManager> m_pShaderManager;     // 着色器管理器
         std::shared_ptr<ProgramManager> m_pProgramManager;   // 着色程序管理器
         std::shared_ptr<TextureManager> m_pTextureManager;   // 纹理管理器
 

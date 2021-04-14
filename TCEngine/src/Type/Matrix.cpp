@@ -508,7 +508,7 @@ namespace Tce {
     }
 
     void Matrix::CreateLookAt(const Vector3 &cameraPosition, const Vector3 &cameraTarget,
-                              const Vector3 &cameraUpVector, Matrix & result) {
+                              const Vector3 &cameraUpVector, Matrix &result) {
         auto vector = Vector3::Normalize(cameraPosition - cameraTarget);
         auto vector2 = Vector3::Normalize(Vector3::Cross(cameraUpVector, vector));
         auto vector3 = Vector3::Cross(vector, vector2);
@@ -532,7 +532,7 @@ namespace Tce {
 
     Matrix Matrix::CreateLookAt(const Vector3 &cameraPosition, const Vector3 &cameraTarget,
                                 const Vector3 &cameraUpVector) {
-        Matrix result;
+        Matrix result{};
         CreateLookAt(cameraPosition, cameraTarget, cameraUpVector, result);
         return result;
     }
@@ -555,13 +555,35 @@ namespace Tce {
         result._33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
         result._34 = -1.0f;
         result._41 = result._42 = result._44 = 0;
-        result._43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+        result._43 =
+                (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
     }
 
-    Matrix Matrix::CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
+    Matrix
+    Matrix::CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
                                  float farPlaneDistance) {
-        Matrix result;
+        Matrix result{};
         CreatePerspectiveFOV(fieldOfView, aspectRatio, nearPlaneDistance, farPlaneDistance, result);
+        return result;
+    }
+
+    void Matrix::CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane,
+                                    Matrix &result) {
+        result._11 = 2.0f / width;
+        result._12 = result._13 = result._14 = 0.0f;
+        result._22 = 2.0f / height;
+        result._21 = result._23 = result._24 = 0.0f;
+        result._33 = 1.0f / (zNearPlane - zFarPlane);
+        result._31 = result._32 = result._34 = 0.0f;
+        result._41 = result._42 = 0.0f;
+        result._43 = zNearPlane / (zNearPlane - zFarPlane);
+        result._44 = 1.0f;
+    }
+
+    Matrix
+    Matrix::CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane) {
+        Matrix result{};
+        CreateOrthographic(width, height, zNearPlane, zFarPlane, result);
         return result;
     }
 

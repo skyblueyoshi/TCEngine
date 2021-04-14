@@ -6,20 +6,18 @@
 
 namespace Tce {
 
-    ProgramManager::ProgramManager(std::shared_ptr<GraphicsDevice> &pDevice,
-                                   std::shared_ptr<ShaderManager> &pShaderManager)
+    ProgramManager::ProgramManager(GraphicsDevice* pDevice, ShaderManager* pShaderManager)
             : GraphicsResourceManager<Program>(pDevice), m_pShaderManager(pShaderManager) {
 
     }
 
     uint32_t ProgramManager::Load(const std::string &vertexCode, const std::string &pixelCode) {
         try {
-            auto pShaderManager = m_pShaderManager.lock();
-            int vertexId = pShaderManager->LoadVertexShader(vertexCode);
-            int pixelId = pShaderManager->LoadPixelShader(pixelCode);
+            int vertexId = m_pShaderManager->LoadVertexShader(vertexCode);
+            int pixelId = m_pShaderManager->LoadPixelShader(pixelCode);
 
-            auto &pVertexShader = pShaderManager->Get(vertexId);
-            auto &pPixelShader = pShaderManager->Get(pixelId);
+            auto &pVertexShader = m_pShaderManager->Get(vertexId);
+            auto &pPixelShader = m_pShaderManager->Get(pixelId);
 
             uint32_t handle = glCreateProgram();
 
@@ -46,8 +44,8 @@ namespace Tce {
             glDetachShader(handle, pPixelShader->GetHandle());
 
             // 卸载着色器
-            pShaderManager->UnloadByID(vertexId);
-            pShaderManager->UnloadByID(pixelId);
+            m_pShaderManager->UnloadByID(vertexId);
+            m_pShaderManager->UnloadByID(pixelId);
 
             auto pProgram = std::make_shared<Program>(handle);
             return GraphicsResourceManager::Load(pProgram);
@@ -61,7 +59,7 @@ namespace Tce {
 
     void ProgramManager::Unload(std::shared_ptr<Program> &pProgram) {
         if (pProgram) {
-            m_pDevice.lock()->DisposeProgram(pProgram->GetHandle());
+            m_pDevice->DisposeProgram(pProgram->GetHandle());
             GraphicsResourceManager::Unload(pProgram);
         }
     }

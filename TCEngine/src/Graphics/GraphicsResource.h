@@ -13,7 +13,7 @@ namespace Tce {
 
         GraphicsResource(uint32_t handle);
 
-        GraphicsResource(std::shared_ptr<GraphicsDevice> &pDevice);
+        GraphicsResource(GraphicsDevice* pDevice);
 
         virtual ~GraphicsResource() = default;
 
@@ -47,7 +47,7 @@ namespace Tce {
         }
 
     protected:
-        std::weak_ptr<GraphicsDevice> m_pDevice;    // 设备指针
+        GraphicsDevice* m_pDevice{nullptr};         // 设备指针
     private:
         uint32_t m_id{};                            // 在资源池中的ID
         uint32_t m_handle{};                        // 资源句柄

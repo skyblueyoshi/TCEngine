@@ -7,7 +7,7 @@ namespace Tce {
 
     class TextureManager : public GraphicsResourceManager<Texture> {
     public:
-        TextureManager(std::shared_ptr<GraphicsDevice> &pDevice);
+        TextureManager(GraphicsDevice* pDevice);
         virtual ~TextureManager() = default;
         // 从文件中加载贴图
         // @param path 文件路径

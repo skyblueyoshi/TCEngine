@@ -55,30 +55,30 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src/Game
         src/Utils
         src/Graphics
+		src/Core
 				)
 
 add_subdirectory(libs/glm)
 
 target_include_directories(${PROJECT_NAME} PUBLIC libs/stb)
 
-#find_library(libSDL2 libs/SDL2/libSDL2.so)
-
-add_library(libSDL2 SHARED IMPORTED)
-set_property(TARGET libSDL2 
-		PROPERTY IMPORTED_LOCATION 
-		${PROJECT_SOURCE_DIR}/libs/SDL2/${ANDROID_ABI}/libSDL2.so)
-
-add_library(libhidapi SHARED IMPORTED)
-set_property(TARGET libhidapi 
-		PROPERTY IMPORTED_LOCATION 
-		${PROJECT_SOURCE_DIR}/libs/SDL2/${ANDROID_ABI}/libhidapi.so)
-
-add_library(libSDL2_image SHARED IMPORTED)
-set_property(TARGET libSDL2_image 
-		PROPERTY IMPORTED_LOCATION 
-		${PROJECT_SOURCE_DIR}/libs/SDL2/${ANDROID_ABI}/libSDL2_image.so)
-
-target_include_directories(${PROJECT_NAME} PUBLIC libs/SDL2/include)
+# 暂时不使用SDL库
+#add_library(libSDL2 SHARED IMPORTED)
+#set_property(TARGET libSDL2
+#		PROPERTY IMPORTED_LOCATION
+#		${PROJECT_SOURCE_DIR}/libs/SDL2/${ANDROID_ABI}/libSDL2.so)
+#
+#add_library(libhidapi SHARED IMPORTED)
+#set_property(TARGET libhidapi
+#		PROPERTY IMPORTED_LOCATION
+#		${PROJECT_SOURCE_DIR}/libs/SDL2/${ANDROID_ABI}/libhidapi.so)
+#
+#add_library(libSDL2_image SHARED IMPORTED)
+#set_property(TARGET libSDL2_image
+#		PROPERTY IMPORTED_LOCATION
+#		${PROJECT_SOURCE_DIR}/libs/SDL2/${ANDROID_ABI}/libSDL2_image.so)
+#
+#target_include_directories(${PROJECT_NAME} PUBLIC libs/SDL2/include)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	android
@@ -87,7 +87,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	EGL
 	GLESv2
 	glm
-	libSDL2
-	libhidapi
-	libSDL2_image
+#	libSDL2
+#	libhidapi
+#	libSDL2_image
 )

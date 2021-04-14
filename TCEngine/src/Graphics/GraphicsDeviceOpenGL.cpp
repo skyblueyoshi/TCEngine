@@ -75,7 +75,7 @@ namespace Tce {
          * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
         eglGetConfigAttrib(m_display, config, EGL_NATIVE_VISUAL_ID, &format);
 
-        auto pAndroidState = m_pAppState.lock()->GetAndroidState();
+        auto pAndroidState = m_pAppState->GetAndroidState();
 
         ANativeWindow_setBuffersGeometry(pAndroidState->window, 0, 0, format);
 
@@ -90,8 +90,11 @@ namespace Tce {
 
         eglMakeCurrent(m_display, m_surface, m_surface, m_context);
 
-        eglQuerySurface(m_display, m_surface, EGL_WIDTH, &m_width);
-        eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &m_height);
+        EGLint width, height;
+        eglQuerySurface(m_display, m_surface, EGL_WIDTH, &width);
+        eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &height);
+        m_width = width;
+        m_height = height;
 
         // Check openGL on the system
         auto opengl_info = {GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS};
@@ -109,6 +112,8 @@ namespace Tce {
         glEnable(GL_DEPTH_TEST);
         // 接受离相机更近的片元
         glDepthFunc(GL_LESS);
+        // 剔除不是面朝摄像机的三角形面
+        glEnable(GL_CULL_FACE);
 
         TCE_LOG_INFO("Android OpenGLES Initialize Success!");
         TCE_LOG_INFO("Window size: %d x %d", m_width, m_height);

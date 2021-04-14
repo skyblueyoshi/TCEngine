@@ -25,6 +25,8 @@
 #include <GLES2/gl2ext.h>
 #include <src/Game/AppState.h>
 #include <unistd.h>
+#include "EntityID.h"
+#include "EntityManager.h"
 
 extern "C" {
 
