@@ -1,5 +1,6 @@
 #include "Sprite.h"
 #include "ExceptionHelper.h"
+#include "MathHelper.h"
 
 namespace Tce {
 
@@ -48,7 +49,7 @@ namespace Tce {
             color, 0);
     }
 
-    Sprite::Sprite(GraphicsDevice* pDevice) : GraphicsResource(pDevice) {
+    Sprite::Sprite(GraphicsDevice *pDevice) : GraphicsResource(pDevice) {
 
     }
 
@@ -60,11 +61,9 @@ namespace Tce {
 
         auto &spriteCache = _CreateSpriteCache();
         spriteCache.Set(pTexture, pos, sourceRect, color);
-
-    }
-
-    void Sprite::Begin() {
-        m_running = true;
+        spriteCache.__sortKey =
+                m_eSpriteSortMode == SpriteSortMode::TEXTURE ?
+                (float) pTexture->__sortKey : 0;
     }
 
     void Sprite::_CheckRunning() {
@@ -76,6 +75,34 @@ namespace Tce {
             m_spriteCaches.emplace_back(SpriteCache());
         }
         return m_spriteCaches[m_spriteCacheCount++];
+    }
+
+    void Sprite::Begin() {
+        m_running = true;
+    }
+
+    void Sprite::End() {
+        CHECK_RUNTIME_OR_ERROR(m_running, "Begin must called before calling End.");
+        m_running = false;
+        // TODO shader
+
+        Flush();
+    }
+
+    void Sprite::Flush() {
+        // TODO shader
+
+        if (m_spriteCacheCount > 0) {
+            switch (m_eSpriteSortMode) {
+                case SpriteSortMode::TEXTURE:
+                case SpriteSortMode::BACK_TO_FRONT:
+                case SpriteSortMode::FRONT_TO_BACK:
+                    MathHelper::SortByKey<SpriteCache>(m_spriteCaches);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 }

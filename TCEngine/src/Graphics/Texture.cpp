@@ -4,6 +4,8 @@
 
 namespace Tce {
 
+    uint Texture::sSortKey = 0;
+
     // 计算mipmap层数
     // @param 宽度
     // @param 高度
@@ -29,7 +31,8 @@ namespace Tce {
             : GraphicsResource(handle), m_width(width), m_height(height),
               m_texelWidth(1.0f / width), m_texelHeight(1.0f / height),
               m_eFormat(format),
-              m_levelCount(mipmap ? _CalculateMipLevels(width, height) : 1) {
+              m_levelCount(mipmap ? _CalculateMipLevels(width, height) : 1),
+              m_type(type) {
         CHECK_ARGUMENT_OR_ERROR(width, width > 0);
         CHECK_ARGUMENT_OR_ERROR(height, height > 0);
     }

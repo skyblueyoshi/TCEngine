@@ -36,12 +36,15 @@ namespace Tce {
             Texture *pTexture{nullptr};
             // 四个顶点信息
             VertexPositionColorTexture vertexs[LOCATION_TOTAL];
+            // 排序键
+            float __sortKey{};
 
             SpriteCache() = default;
 
             // 设置信息
             void Set(Texture *_pTexture, const Vector2 &pos,
                      const RectInt &sourceRect, Color color);
+
             // 设置信息
             void Set(Texture *_pTexture, float _x, float _y, float _width, float _height,
                      float _texL, float _texT, float _texR, float _texB,
@@ -49,7 +52,7 @@ namespace Tce {
         };
 
     public:
-        Sprite(GraphicsDevice* pDevice);
+        Sprite(GraphicsDevice *pDevice);
 
         virtual ~Sprite() = default;
 
@@ -74,7 +77,7 @@ namespace Tce {
         void _CheckRunning();
 
         // 增加一个精灵缓存
-        SpriteCache& _CreateSpriteCache();
+        SpriteCache &_CreateSpriteCache();
 
     private:
         bool m_running{};                               // 正在一个精灵渲染的生命周期内

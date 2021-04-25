@@ -77,11 +77,12 @@ namespace Tce {
         uint m_height{};                            // 纹理高度
         float m_texelWidth{};                       // 纹理横向单位
         float m_texelHeight{};                      // 纹理纵向单位
-
-    private:
-        // 纹理纵向单位
+        static uint sSortKey;                       // 静态纹理排序键
         EnumSurfaceFormat m_eFormat{};              // 表面格式
         uint m_levelCount{};                        // MipMap层数
+        EnumSurfaceType m_type{};                   // 表面类型
+    public:
+        uint __sortKey{sSortKey++};                 // 纹理排序键
     };
 
 }
