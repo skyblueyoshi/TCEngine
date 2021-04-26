@@ -38,14 +38,14 @@ namespace Tce {
 
         template<typename T>
         static int CompareBySortKey(const void *pFirst, const void *pSecond) {
-            return reinterpret_cast<T *>(pFirst)->__sortKey -
-                   reinterpret_cast<T *>(pSecond)->__sortKey;
+            return reinterpret_cast<const T *>(pFirst)->__sortKey -
+                   reinterpret_cast<const T *>(pSecond)->__sortKey;
         }
 
         template<typename T>
         static int CompareBySelf(const void *pFirst, const void *pSecond) {
-            return *reinterpret_cast<T *>(pFirst) -
-                   *reinterpret_cast<T *>(pSecond);
+            return *reinterpret_cast<const T *>(pFirst) -
+                   *reinterpret_cast<const T *>(pSecond);
         }
 
         typedef int(*COMPARATOR_FUNCTION)(const void *, const void *);
