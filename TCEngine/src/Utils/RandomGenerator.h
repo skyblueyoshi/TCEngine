@@ -6,8 +6,8 @@
 namespace Tce {
 
     enum EnumRandomGeneratorStrategy {
-        RGS_LINER,
-        RGS_MT19937
+        RGS_LINER,      // 线性同余
+        RGS_MT19937     // 梅森旋转
     };
 
     class RandomGeneratorStrategy {
@@ -48,6 +48,7 @@ namespace Tce {
         size_t GetNext(size_t n);
     };
 
+    // 随机数生成器
     class RandomGenerator {
     private:
         RandomGeneratorStrategy *mpStrategy{nullptr};

@@ -45,6 +45,10 @@ set(TARGET_SOURCE_FILES
 		src/Graphics/ProgramManager.cpp
 		src/Graphics/GraphicsHelper.cpp
 		src/Type/Type.cpp
+		src/NetWork/NetPacket.cpp
+		src/NetWork/NetPacketWriter.cpp
+		src/NetWork/NetPacketReader.cpp
+		src/NetWork/NetSession.cpp
 		)
 
 add_library(${PROJECT_NAME} SHARED ${TARGET_SOURCE_FILES})
@@ -55,6 +59,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src/Utils
         src/Graphics
 		src/Core
+		src/NetWork
 				)
 
 add_subdirectory(libs/glm)
