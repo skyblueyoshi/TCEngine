@@ -25,6 +25,10 @@ namespace Tce {
 
         ~ByteStream() = default;
 
+        bool IsEmpty() const {
+            return GetLength() == 0;
+        }
+
         //从某个指针位置开始，加入一段空间到字节流
         template<typename T2>
         void WriteBatch(const T2 *p, int count) {
@@ -57,6 +61,10 @@ namespace Tce {
 
         size_t GetLength() const {
             return m_arr.size();
+        }
+
+        size_t GetCapacity() const {
+            return m_arr.capacity();
         }
 
         //设置长度，注意如果长度为0，则会清空读取点

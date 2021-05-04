@@ -3,6 +3,9 @@
 #include <exception>
 #include "StringHelper.h"
 
+#define THROW_RUNTIME_ERROR(...) \
+{ throw std::runtime_error(StringHelper::MakeFormat(__VA_ARGS__));}
+
 #define CHECK_RUNTIME_OR_ERROR(expression, ...) \
 if (!(expression)) { throw std::runtime_error(StringHelper::MakeFormat(__VA_ARGS__));}
 

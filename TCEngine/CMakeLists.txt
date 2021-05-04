@@ -45,6 +45,9 @@ set(TARGET_SOURCE_FILES
 		src/Graphics/ProgramManager.cpp
 		src/Graphics/GraphicsHelper.cpp
 		src/Type/Type.cpp
+		src/NetWork/SingleSocketPool.cpp
+		src/NetWork/TCSocket.cpp
+		src/NetWork/NetClient.cpp
 		src/NetWork/NetPacket.cpp
 		src/NetWork/NetPacketWriter.cpp
 		src/NetWork/NetPacketReader.cpp
