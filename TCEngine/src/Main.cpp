@@ -16,14 +16,14 @@
 
 #include <android_native_app_glue.h>
 #include <jni.h>
-#include "src/Game/Application.h"
+#include "Game/Application.h"
 
-#include "src/Utils/Log.h"
+#include "Utils/Log.h"
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-#include <src/Game/AppState.h>
+#include <Game/AppState.h>
 #include <unistd.h>
 #include "EntityID.h"
 #include "EntityManager.h"

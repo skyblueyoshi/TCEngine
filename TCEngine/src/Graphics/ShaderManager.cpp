@@ -1,7 +1,7 @@
-#include <src/Utils/StringHelper.h>
+#include <Utils/StringHelper.h>
 #include <GLES2/gl2.h>
 #include "ShaderManager.h"
-#include <src/Utils/Log.h>
+#include <Utils/Log.h>
 #include "GraphicsDevice.h"
 
 namespace Tce {

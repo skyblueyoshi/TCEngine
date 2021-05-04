@@ -1,7 +1,7 @@
 #include "Shader.h"
 #include <utility>
 #include <vector>
-#include <src/Utils/Log.h>
+#include <Utils/Log.h>
 #include "GraphicsDevice.h"
 
 namespace Tce {

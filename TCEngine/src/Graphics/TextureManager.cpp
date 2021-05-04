@@ -4,7 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 #include <GLES2/gl2.h>
-#include <src/Utils/StringHelper.h>
+#include <Utils/StringHelper.h>
 #include "GraphicsDevice.h"
 
 namespace Tce {

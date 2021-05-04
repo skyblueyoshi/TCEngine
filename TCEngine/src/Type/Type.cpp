@@ -1,147 +1,88 @@
-#include <cmath>
-#include <src/Utils/ExceptionHelper.h>
-#include "Matrix.h"
-#include "StringHelper.h"
-#include "Vector.h"
+#include <Utils/ExceptionHelper.h>
+#include "Type.h"
 
 namespace Tce {
 
-    Matrix const Matrix::identity(1.0f, 0.0f, 0.0f, 0.0f,
-                                  0.0f, 1.0f, 0.0f, 0.0f,
-                                  0.0f, 0.0f, 1.0f, 0.0f,
-                                  0.0f, 0.0f, 0.0f, 1.0f);
-
-    Matrix::Matrix(float m11, float m12, float m13, float m14, float m21, float m22, float m23,
-                   float m24, float m31, float m32, float m33, float m34, float m41, float m42,
-                   float m43, float m44) noexcept :
-            _11(m11), _12(m12), _13(m13), _14(m14),
-            _21(m21), _22(m22), _23(m23), _24(m24),
-            _31(m31), _32(m32), _33(m33), _34(m34),
-            _41(m41), _42(m42), _43(m43), _44(m44) {}
-
-    Matrix::Matrix(const Vector4 &row1, const Vector4 &row2, const Vector4 &row3,
-                   const Vector4 &row4) : Matrix(row1.x, row1.y, row1.z, row1.w,
-                                                 row2.x, row2.y, row2.z, row2.w,
-                                                 row3.x, row3.y, row3.z, row3.w,
-                                                 row4.x, row4.y, row4.z, row4.w) {}
-
-    Matrix Matrix::operator+(const Matrix &matrix) {
-        return {
-                _11 + matrix._11,
-                _12 + matrix._12,
-                _13 + matrix._13,
-                _14 + matrix._14,
-                _21 + matrix._21,
-                _22 + matrix._22,
-                _23 + matrix._23,
-                _24 + matrix._24,
-                _31 + matrix._31,
-                _32 + matrix._32,
-                _33 + matrix._33,
-                _34 + matrix._34,
-                _41 + matrix._41,
-                _42 + matrix._42,
-                _43 + matrix._43,
-                _44 + matrix._44};
+    void Vector2::Transform(const Vector2 &position, const Matrix &matrix, Vector2 &result) {
+        result.x = (position.x * matrix._11) + (position.y * matrix._21) + matrix._41;
+        result.y = (position.x * matrix._12) + (position.y * matrix._22) + matrix._42;
     }
 
-    Matrix &Matrix::operator+=(const Matrix &matrix) {
-        _11 += matrix._11;
-        _12 += matrix._12;
-        _13 += matrix._13;
-        _14 += matrix._14;
-        _21 += matrix._21;
-        _22 += matrix._22;
-        _23 += matrix._23;
-        _24 += matrix._24;
-        _31 += matrix._31;
-        _32 += matrix._32;
-        _33 += matrix._33;
-        _34 += matrix._34;
-        _41 += matrix._41;
-        _42 += matrix._42;
-        _43 += matrix._43;
-        _44 += matrix._44;
-        return *this;
+    Vector2 Vector2::Transform(const Vector2 &position, const Matrix &matrix) {
+        Vector2 result;
+        Transform(position, matrix, result);
+        return result;
     }
 
-    Matrix Matrix::operator-(const Matrix &matrix) {
-        return {
-                _11 - matrix._11,
-                _12 - matrix._12,
-                _13 - matrix._13,
-                _14 - matrix._14,
-                _21 - matrix._21,
-                _22 - matrix._22,
-                _23 - matrix._23,
-                _24 - matrix._24,
-                _31 - matrix._31,
-                _32 - matrix._32,
-                _33 - matrix._33,
-                _34 - matrix._34,
-                _41 - matrix._41,
-                _42 - matrix._42,
-                _43 - matrix._43,
-                _44 - matrix._44};
+    void Vector3::Transform(const Vector3 &position, const Matrix &matrix, Vector3 &result) {
+        result.x =
+                (position.x * matrix._11) + (position.y * matrix._21) + (position.z * matrix._31) +
+                matrix._41;
+        result.y =
+                (position.x * matrix._12) + (position.y * matrix._22) + (position.z * matrix._32) +
+                matrix._42;
+        result.z =
+                (position.x * matrix._13) + (position.y * matrix._23) + (position.z * matrix._33) +
+                matrix._43;
     }
 
-    Matrix &Matrix::operator-=(const Matrix &matrix) {
-        _11 -= matrix._11;
-        _12 -= matrix._12;
-        _13 -= matrix._13;
-        _14 -= matrix._14;
-        _21 -= matrix._21;
-        _22 -= matrix._22;
-        _23 -= matrix._23;
-        _24 -= matrix._24;
-        _31 -= matrix._31;
-        _32 -= matrix._32;
-        _33 -= matrix._33;
-        _34 -= matrix._34;
-        _41 -= matrix._41;
-        _42 -= matrix._42;
-        _43 -= matrix._43;
-        _44 -= matrix._44;
-        return *this;
+    Vector3 Vector3::Transform(const Vector3 &position, const Matrix &matrix) {
+        Vector3 result;
+        Transform(position, matrix, result);
+        return result;
     }
 
-    bool Matrix::operator==(const Matrix &matrix) {
-        return (_11 == matrix._11 &&
-                _12 == matrix._12 &&
-                _13 == matrix._13 &&
-                _14 == matrix._14 &&
-                _21 == matrix._21 &&
-                _22 == matrix._22 &&
-                _23 == matrix._23 &&
-                _24 == matrix._24 &&
-                _31 == matrix._31 &&
-                _32 == matrix._32 &&
-                _33 == matrix._33 &&
-                _34 == matrix._34 &&
-                _41 == matrix._41 &&
-                _42 == matrix._42 &&
-                _43 == matrix._43 &&
-                _44 == matrix._44);
+    void Vector4::Transform(const Vector4 &value, const Matrix &matrix, Vector4 &result) {
+        result.x = (value.x * matrix._11) + (value.y * matrix._21) + (value.z * matrix._31) +
+                   (value.w * matrix._41);
+        result.y = (value.x * matrix._12) + (value.y * matrix._22) + (value.z * matrix._32) +
+                   (value.w * matrix._42);
+        result.z = (value.x * matrix._13) + (value.y * matrix._23) + (value.z * matrix._33) +
+                   (value.w * matrix._43);
+        result.w = (value.x * matrix._14) + (value.y * matrix._24) + (value.z * matrix._34) +
+                   (value.w * matrix._44);
     }
 
-    bool Matrix::operator!=(const Matrix &matrix) {
-        return (_11 != matrix._11 ||
-                _12 != matrix._12 ||
-                _13 != matrix._13 ||
-                _14 != matrix._14 ||
-                _21 != matrix._21 ||
-                _22 != matrix._22 ||
-                _23 != matrix._23 ||
-                _24 != matrix._24 ||
-                _31 != matrix._31 ||
-                _32 != matrix._32 ||
-                _33 != matrix._33 ||
-                _34 != matrix._34 ||
-                _41 != matrix._41 ||
-                _42 != matrix._42 ||
-                _43 != matrix._43 ||
-                _44 != matrix._44);
+    Vector4 Vector4::Transform(const Vector4 &value, const Matrix &matrix) {
+        Vector4 result;
+        Transform(value, matrix, result);
+        return result;
     }
+
+    void Vector4::Transform(const Vector3 &value, const Matrix &matrix, Vector4 &result) {
+        result.x = (value.x * matrix._11) + (value.y * matrix._21) + (value.z * matrix._31) +
+                   (matrix._41);
+        result.y = (value.x * matrix._12) + (value.y * matrix._22) + (value.z * matrix._32) +
+                   (matrix._42);
+        result.z = (value.x * matrix._13) + (value.y * matrix._23) + (value.z * matrix._33) +
+                   (matrix._43);
+        result.w = (value.x * matrix._14) + (value.y * matrix._24) + (value.z * matrix._34) +
+                   (matrix._44);
+    }
+
+    Vector4 Vector4::Transform(const Vector3 &value, const Matrix &matrix) {
+        Vector4 result;
+        Transform(value, matrix, result);
+        return result;
+    }
+
+    void Vector4::Transform(const Vector2 &value, const Matrix &matrix, Vector4 &result) {
+        result.x = (value.x * matrix._11) + (value.y * matrix._21) +
+                   (matrix._41);
+        result.y = (value.x * matrix._12) + (value.y * matrix._22) +
+                   (matrix._42);
+        result.z = (value.x * matrix._13) + (value.y * matrix._23) +
+                   (matrix._43);
+        result.w = (value.x * matrix._14) + (value.y * matrix._24) +
+                   (matrix._44);
+    }
+
+    Vector4 Vector4::Transform(const Vector2 &value, const Matrix &matrix) {
+        Vector4 result;
+        Transform(value, matrix, result);
+        return result;
+    }
+
 
     Matrix Matrix::operator*(const Matrix &matrix) {
         return {(((_11 * matrix._11) + (_12 * matrix._21)) + (_13 * matrix._31)) +
@@ -176,113 +117,6 @@ namespace Tce {
                 (_44 * matrix._43),
                 (((_41 * matrix._14) + (_42 * matrix._24)) + (_43 * matrix._34)) +
                 (_44 * matrix._44)};
-    }
-
-    Matrix Matrix::operator-() {
-        return {-_11, -_12, -_13, -_14,
-                -_21, -_22, -_23, -_24,
-                -_31, -_32, -_33, -_34,
-                -_41, -_42, -_43, -_44};
-    }
-
-    Matrix Matrix::operator/(const Matrix &matrix) {
-        return {
-                _11 / matrix._11,
-                _12 / matrix._12,
-                _13 / matrix._13,
-                _14 / matrix._14,
-                _21 / matrix._21,
-                _22 / matrix._22,
-                _23 / matrix._23,
-                _24 / matrix._24,
-                _31 / matrix._31,
-                _32 / matrix._32,
-                _33 / matrix._33,
-                _34 / matrix._34,
-                _41 / matrix._41,
-                _42 / matrix._42,
-                _43 / matrix._43,
-                _44 / matrix._44};
-    }
-
-    Matrix Matrix::operator/(float divider) {
-        float num = 1.0f / divider;
-        return {
-                _11 * num,
-                _12 * num,
-                _13 * num,
-                _14 * num,
-                _21 * num,
-                _22 * num,
-                _23 * num,
-                _24 * num,
-                _31 * num,
-                _32 * num,
-                _33 * num,
-                _34 * num,
-                _41 * num,
-                _42 * num,
-                _43 * num,
-                _44 * num};
-    }
-
-    Matrix Matrix::operator*(float scaleFactor) {
-        return {
-                _11 * scaleFactor,
-                _12 * scaleFactor,
-                _13 * scaleFactor,
-                _14 * scaleFactor,
-                _21 * scaleFactor,
-                _22 * scaleFactor,
-                _23 * scaleFactor,
-                _24 * scaleFactor,
-                _31 * scaleFactor,
-                _32 * scaleFactor,
-                _33 * scaleFactor,
-                _34 * scaleFactor,
-                _41 * scaleFactor,
-                _42 * scaleFactor,
-                _43 * scaleFactor,
-                _44 * scaleFactor};
-    }
-
-    std::string Matrix::ToString() {
-        return StringHelper::MakeFormat("{M11:%d M12:%d M13:%d M14:%d}"
-                                        " {M21:%d M22:%d M23:%d M24:%d}"
-                                        " {M31:%d M32:%d M33:%d M34:%d}"
-                                        " {M41:%d M42:%d M43:%d M44:%d}",
-                                        _11, _12, _13, _14,
-                                        _21, _22, _23, _24,
-                                        _31, _32, _33, _34,
-                                        _41, _42, _43, _44);
-    }
-
-    Matrix Matrix::Transpose() {
-        return {_11, _21, _31, _41,
-                _12, _22, _32, _42,
-                _13, _23, _33, _43,
-                _14, _24, _34, _44};
-    }
-
-    Matrix Matrix::Lerp(Matrix matrix, float amount) {
-        return {
-                _11 + ((matrix._11 - _11) * amount),
-                _12 + ((matrix._12 - _12) * amount),
-                _13 + ((matrix._13 - _13) * amount),
-                _14 + ((matrix._14 - _14) * amount),
-                _21 + ((matrix._21 - _21) * amount),
-                _22 + ((matrix._22 - _22) * amount),
-                _23 + ((matrix._23 - _23) * amount),
-                _24 + ((matrix._24 - _24) * amount),
-                _31 + ((matrix._31 - _31) * amount),
-                _32 + ((matrix._32 - _32) * amount),
-                _33 + ((matrix._33 - _33) * amount),
-                _34 + ((matrix._34 - _34) * amount),
-                _41 + ((matrix._41 - _41) * amount),
-                _42 + ((matrix._42 - _42) * amount),
-                _43 + ((matrix._43 - _43) * amount),
-                _44 + ((matrix._44 - _44) * amount)
-        };
     }
 
     Matrix Matrix::Invert() {
@@ -437,76 +271,6 @@ namespace Tce {
 
     }
 
-    Vector3 Matrix::GetTranslation() {
-        return {_41, _42, _43};
-    }
-
-    void Matrix::SetTranslation(const Vector3 &vector3) {
-        _41 = vector3.x;
-        _42 = vector3.y;
-        _43 = vector3.z;
-    }
-
-    Vector3 Matrix::GetLeft() {
-        return {-_11, -_12, -_13};
-    }
-
-    void Matrix::SetLeft(const Vector3 &vector3) {
-        _11 = -vector3.x;
-        _12 = -vector3.y;
-        _13 = -vector3.z;
-    }
-
-    Vector3 Matrix::GetRight() {
-        return {_11, _12, _13};
-    }
-
-    void Matrix::SetRight(const Vector3 &vector3) {
-        _11 = vector3.x;
-        _12 = vector3.y;
-        _13 = vector3.z;
-    }
-
-    Vector3 Matrix::GetUp() {
-        return {_21, _22, _23};
-    }
-
-    void Matrix::SetUp(const Vector3 &vector3) {
-        _21 = vector3.x;
-        _22 = vector3.y;
-        _23 = vector3.z;
-    }
-
-    Vector3 Matrix::GetDown() {
-        return {-_21, -_22, -_23};
-    }
-
-    void Matrix::SetDown(const Vector3 &vector3) {
-        _21 = -vector3.x;
-        _22 = -vector3.y;
-        _23 = -vector3.z;
-    }
-
-    Vector3 Matrix::GetForward() {
-        return {-_31, -_32, -_33};
-    }
-
-    void Matrix::SetForward(const Vector3 &vector3) {
-        _31 = -vector3.x;
-        _32 = -vector3.y;
-        _33 = -vector3.z;
-    }
-
-    Vector3 Matrix::GetBackward() {
-        return {_31, _32, _33};
-    }
-
-    void Matrix::SetBackward(const Vector3 &vector3) {
-        _31 = vector3.x;
-        _32 = vector3.y;
-        _33 = vector3.z;
-    }
-
     void Matrix::CreateLookAt(const Vector3 &cameraPosition, const Vector3 &cameraTarget,
                               const Vector3 &cameraUpVector, Matrix &result) {
         auto vector = Vector3::Normalize(cameraPosition - cameraTarget);
@@ -530,15 +294,9 @@ namespace Tce {
         result._44 = 1.0f;
     }
 
-    Matrix Matrix::CreateLookAt(const Vector3 &cameraPosition, const Vector3 &cameraTarget,
-                                const Vector3 &cameraUpVector) {
-        Matrix result{};
-        CreateLookAt(cameraPosition, cameraTarget, cameraUpVector, result);
-        return result;
-    }
-
-    void Matrix::CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
-                                      float farPlaneDistance, Matrix &result) {
+    void
+    Matrix::CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
+                                 float farPlaneDistance, Matrix &result) {
         CHECK_RANGE_OR_ERROR(fieldOfView > 0.0f && fieldOfView < 3.141593f);
         CHECK_RANGE_OR_ERROR(nearPlaneDistance > 0.0f);
         CHECK_RANGE_OR_ERROR(farPlaneDistance > 0.0f);
@@ -559,16 +317,9 @@ namespace Tce {
                 (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
     }
 
-    Matrix
-    Matrix::CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
-                                 float farPlaneDistance) {
-        Matrix result{};
-        CreatePerspectiveFOV(fieldOfView, aspectRatio, nearPlaneDistance, farPlaneDistance, result);
-        return result;
-    }
-
-    void Matrix::CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane,
-                                    Matrix &result) {
+    void
+    Matrix::CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane,
+                               Matrix &result) {
         result._11 = 2.0f / width;
         result._12 = result._13 = result._14 = 0.0f;
         result._22 = 2.0f / height;
@@ -580,11 +331,24 @@ namespace Tce {
         result._44 = 1.0f;
     }
 
-    Matrix
-    Matrix::CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane) {
-        Matrix result{};
-        CreateOrthographic(width, height, zNearPlane, zFarPlane, result);
-        return result;
+    Matrix Matrix::Lerp(Matrix matrix, float amount) {
+        return {
+                _11 + ((matrix._11 - _11) * amount),
+                _12 + ((matrix._12 - _12) * amount),
+                _13 + ((matrix._13 - _13) * amount),
+                _14 + ((matrix._14 - _14) * amount),
+                _21 + ((matrix._21 - _21) * amount),
+                _22 + ((matrix._22 - _22) * amount),
+                _23 + ((matrix._23 - _23) * amount),
+                _24 + ((matrix._24 - _24) * amount),
+                _31 + ((matrix._31 - _31) * amount),
+                _32 + ((matrix._32 - _32) * amount),
+                _33 + ((matrix._33 - _33) * amount),
+                _34 + ((matrix._34 - _34) * amount),
+                _41 + ((matrix._41 - _41) * amount),
+                _42 + ((matrix._42 - _42) * amount),
+                _43 + ((matrix._43 - _43) * amount),
+                _44 + ((matrix._44 - _44) * amount)
+        };
     }
-
 }

@@ -12,21 +12,22 @@ namespace Tce {
         float y{};
 
         // 零向量
-        static const Vector2 kZero;
+        static Vector2 GetZero();
+
         // 全1向量
-        static const Vector2 kOne;
+        static Vector2 GetOne();
+
         // X轴单位向量
-        static const Vector2 kUnitX;
+        static Vector2 GetUnitX();
+
         // Y轴单位向量
-        static const Vector2 kUnitY;
+        static Vector2 GetUnitY();
 
         Vector2() noexcept = default;
 
-        Vector2(float _x, float _y) noexcept
-                : x(_x), y(_y) {}
+        Vector2(float _x, float _y) noexcept;
 
-        Vector2(const Vector2 &value) noexcept
-                : x(value.x), y(value.y) {}
+        Vector2(const Vector2 &value) noexcept = default;
 
         // 返回一个表示向量的字符串
         // @result 字符串
@@ -180,14 +181,6 @@ namespace Tce {
 
         static void Transform(const Vector2 &position, const Matrix &matrix, Vector2 &result);
 
-        // 零向量
-        static const Vector2 ZERO;
-        // 全1向量
-        static const Vector2 ONE;
-        // X轴单位向量
-        static const Vector2 UNIT_X;
-        // Y轴单位向量
-        static const Vector2 UNIT_Y;
     };
 
     // 3维向量{X, Y, Z}
@@ -197,29 +190,30 @@ namespace Tce {
         float z{};
 
         // 零向量
-        static const Vector3 kZero;
+        static Vector3 GetZero();
+
         // 全1向量
-        static const Vector3 kOne;
+        static Vector3 GetOne();
+
         // X轴单位向量
-        static const Vector3 kUnitX;
+        static Vector3 GetUnitX();
+
         // Y轴单位向量
-        static const Vector3 kUnitY;
+        static Vector3 GetUnitY();
+
         // Z轴单位向量
-        static const Vector3 kUnitZ;
+        static Vector3 GetUnitZ();
 
         Vector3() noexcept = default;
 
-        Vector3(float _x, float _y, float _z) noexcept
-                : x(_x), y(_y), z(_z) {}
+        Vector3(float _x, float _y, float _z) noexcept;
 
-        Vector3(const Vector2 &value, float _z) noexcept
-                : x(value.x), y(value.y), z(_z) {}
+        Vector3(const Vector2 &value, float _z) noexcept;
 
         // 构造函数
         // 各个维度填充相同值
         // @param value 每个维度填充值
-        Vector3(float value) noexcept
-                : x(value), y(value), z(value) {}
+        Vector3(float value) noexcept;
 
         // 返回一个表示向量的字符串
         // @result 字符串
@@ -372,7 +366,7 @@ namespace Tce {
         // @param value1 向量1
         // @param value2 向量2
         // @return 叉积结果向量
-        static Vector3 Cross(const Vector3 & vector1, const Vector3 & vector2);
+        static Vector3 Cross(const Vector3 &vector1, const Vector3 &vector2);
 
         // 向量转换
         static Vector3 Transform(const Vector3 &position, const Matrix &matrix);
@@ -389,28 +383,30 @@ namespace Tce {
         float w{};
 
         // 零向量
-        static const Vector4 kZero;
+        static Vector4 GetZero();
+
         // 全1向量
-        static const Vector4 kOne;
+        static Vector4 GetOne();
+
         // X轴单位向量
-        static const Vector4 kUnitX;
+        static Vector4 GetUnitX();
+
         // Y轴单位向量
-        static const Vector4 kUnitY;
+        static Vector4 GetUnitY();
+
         // Z轴单位向量
-        static const Vector4 kUnitZ;
+        static Vector4 GetUnitZ();
+
         // W轴单位向量
-        static const Vector4 kUnitW;
+        static Vector4 GetUnitW();
 
         constexpr Vector4() noexcept = default;
 
-        constexpr Vector4(float _x, float _y, float _z, float _w) noexcept
-                : x(_x), y(_y), z(_z), w(_w) {}
+        constexpr Vector4(float _x, float _y, float _z, float _w) noexcept;
 
-        constexpr Vector4(const Vector3 &value, float _w) noexcept
-                : x(value.x), y(value.y), z(value.z), w(_w) {}
+        constexpr Vector4(const Vector3 &value, float _w) noexcept;
 
-        constexpr Vector4(const Vector2 &value, float _z, float _w) noexcept
-                : x(value.x), y(value.y), z(_z), w(_w) {}
+        constexpr Vector4(const Vector2 &value, float _z, float _w) noexcept;
 
         // 构造函数
         // 各个维度填充相同值
@@ -579,3 +575,4 @@ namespace Tce {
     };
 }
 
+#include "Vector.inl"

@@ -2,7 +2,7 @@
 // Created by cn on 2021/4/3.
 //
 
-#include <src/Type/Matrix.h>
+#include <Type/Matrix.h>
 #include "GameClient.h"
 #include "GraphicsDevice.h"
 
@@ -380,7 +380,7 @@ namespace Tce {
                 Vector3(0, 0, 0),
                 Vector3(0, 1, 0));
 
-        Matrix model = Matrix::identity;
+        Matrix model = Matrix::CreateIdentity();
 
         Matrix mvp = model * view * projection;
 

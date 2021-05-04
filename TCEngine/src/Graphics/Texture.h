@@ -1,6 +1,6 @@
 #pragma once
 
-#include <src/Type/SurfaceFormat.h>
+#include <Type/SurfaceFormat.h>
 #include "GraphicsResource.h"
 
 namespace Tce {

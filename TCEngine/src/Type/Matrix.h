@@ -39,30 +39,30 @@ namespace Tce {
         // 比较两个矩阵是否相同
         // @matrix 另一个矩阵
         // @return 是否相同
-        bool operator==(const Matrix & matrix);
+        bool operator==(const Matrix &matrix);
 
         // 比较两个矩阵是否不同
         // @matrix 另一个矩阵
         // @return 是否不同
-        bool operator!=(const Matrix & matrix);
+        bool operator!=(const Matrix &matrix);
 
         // 矩阵相加
         // @matrix 另一个矩阵
         // @return 结果矩阵
-        Matrix operator+(const Matrix & matrix);
+        Matrix operator+(const Matrix &matrix);
 
         // 矩阵相加
         // @matrix 另一个矩阵
-        Matrix& operator+=(const Matrix & matrix);
+        Matrix &operator+=(const Matrix &matrix);
 
         // 矩阵相减
         // @matrix 另一个矩阵
         // @return 结果矩阵
-        Matrix operator-(const Matrix & matrix);
+        Matrix operator-(const Matrix &matrix);
 
         // 矩阵相减
         // @matrix 另一个矩阵
-        Matrix& operator-=(const Matrix & matrix);
+        Matrix &operator-=(const Matrix &matrix);
 
         // 矩阵取反
         // @return 结果矩阵
@@ -71,7 +71,7 @@ namespace Tce {
         // 矩阵相乘
         // @matrix 另一个矩阵
         // @return 结果矩阵
-        Matrix operator*(const Matrix & matrix);
+        Matrix operator*(const Matrix &matrix);
 
         // 矩阵每个元素乘以一个数值
         // @scaleFactor 数值
@@ -81,7 +81,7 @@ namespace Tce {
         // 矩阵相除
         // @matrix 另一个矩阵
         // @return 结果矩阵
-        Matrix operator/(const Matrix & matrix);
+        Matrix operator/(const Matrix &matrix);
 
         // 矩阵每个元素除以一个数值
         // @divider 数值
@@ -115,57 +115,59 @@ namespace Tce {
         Vector3 GetTranslation();
 
         // 写入存储坐标{M41, M42, M43}
-        void SetTranslation(const Vector3 & vector3);
+        void SetTranslation(const Vector3 &vector3);
 
         // 获取左向量{-M11, -M12, -M13}
         Vector3 GetLeft();
 
         // 写入左向量{-M11, -M12, -M13}
-        void SetLeft(const Vector3 & vector3);
+        void SetLeft(const Vector3 &vector3);
 
         // 获取右向量{M11, M12, M13}
         Vector3 GetRight();
 
         // 写入右向量{M11, M12, M13}
-        void SetRight(const Vector3 & vector3);
+        void SetRight(const Vector3 &vector3);
 
         // 获取上向量{M21, M22, M23}
         Vector3 GetUp();
 
         // 写入上向量{M21, M22, M23}
-        void SetUp(const Vector3 & vector3);
+        void SetUp(const Vector3 &vector3);
 
         // 获取下向量{-M21, -M22, -M23}
         Vector3 GetDown();
 
         // 写入下向量{-M21, -M22, -M23}
-        void SetDown(const Vector3 & vector3);
+        void SetDown(const Vector3 &vector3);
 
         // 获取前向量{-M31, -M32, -M33}
         Vector3 GetForward();
 
         // 写入前向量{-M31, -M32, -M33}
-        void SetForward(const Vector3 & vector3);
+        void SetForward(const Vector3 &vector3);
 
         // 获取后向量{M31, M32, M33}
         Vector3 GetBackward();
 
         // 写入后向量{M31, M32, M33}
-        void SetBackward(const Vector3 & vector3);
+        void SetBackward(const Vector3 &vector3);
 
         // 构造一个VIEW矩阵
         // @param cameraPosition 摄像机坐标
         // @param cameraTarget 摄像机目标向量
         // @param cameraUpVector 摄像机上边缘方向
         // @return 结果VIEW矩阵
-        static Matrix CreateLookAt(const Vector3 & cameraPosition, const Vector3 & cameraTarget, const Vector3 & cameraUpVector);
+        static Matrix CreateLookAt(const Vector3 &cameraPosition, const Vector3 &cameraTarget,
+                                   const Vector3 &cameraUpVector);
 
         // 构造一个VIEW矩阵
         // @param cameraPosition 摄像机坐标
         // @param cameraTarget 摄像机目标向量
         // @param cameraUpVector 摄像机上边缘方向
         // @param result 结果VIEW矩阵
-        static void CreateLookAt(const Vector3 & cameraPosition, const Vector3 & cameraTarget, const Vector3 & cameraUpVector, Matrix & result);
+        static void CreateLookAt(const Vector3 &cameraPosition, const Vector3 &cameraTarget,
+                                 const Vector3 &cameraUpVector, Matrix &result);
 
         // 构造一个透视投影矩阵
         // @param fieldOfView y轴方向上的视场角度（弧度制）
@@ -173,7 +175,9 @@ namespace Tce {
         // @param nearPlaneDistance 沿z轴方向的两截面之间距离的近处
         // @param farPlaneDistance 沿z轴方向的两截面之间距离的远处
         // @param result 结果PERSPECTIVE矩阵
-        static Matrix CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance);
+        static Matrix
+        CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
+                             float farPlaneDistance);
 
         // 构造一个透视投影矩阵
         // @param fieldOfView y轴方向上的视场角度（弧度制）
@@ -181,7 +185,9 @@ namespace Tce {
         // @param nearPlaneDistance 沿z轴方向的两截面之间距离的近处
         // @param farPlaneDistance 沿z轴方向的两截面之间距离的远处
         // @param result 结果PERSPECTIVE矩阵
-        static void CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance, Matrix & result);
+        static void
+        CreatePerspectiveFOV(float fieldOfView, float aspectRatio, float nearPlaneDistance,
+                             float farPlaneDistance, Matrix &result);
 
         // 构造一个正视投影矩阵
         // @param width 视图宽度
@@ -189,7 +195,8 @@ namespace Tce {
         // @param nearPlaneDistance 近平面深度
         // @param farPlaneDistance 远平面深度
         // @return 结果正视投影矩阵
-        static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane);
+        static Matrix
+        CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane);
 
         // 构造一个正视投影矩阵
         // @param width 视图宽度
@@ -197,10 +204,14 @@ namespace Tce {
         // @param nearPlaneDistance 近平面深度
         // @param farPlaneDistance 远平面深度
         // @param result 结果正视投影矩阵
-        static void CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane, Matrix & result);
+        static void CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane,
+                                       Matrix &result);
 
-        //单位矩阵
-        static const Matrix identity;
+        // 构造一个单位矩阵
+        // @return 单位矩阵
+        static Matrix CreateIdentity();
     };
 
 }
+
+#include "Matrix.inl"

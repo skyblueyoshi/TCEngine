@@ -58,12 +58,12 @@ namespace Tce {
         // 构造函数
         // @param color 颜色
         // @param alpha alpha通道[0, 255]
-        Color(const Color& color, int _alpha);
+        Color(const Color &color, int _alpha);
 
         // 构造函数
         // @param color 颜色
         // @param alpha alpha通道[0.0f, 1.0f]
-        Color(const Color& color, float _alpha);
+        Color(const Color &color, float _alpha);
 
         // 构造函数
         // @param vector3 三维向量XYZ(RGB)
@@ -79,13 +79,10 @@ namespace Tce {
         // 返回四维向量XYZW(RGBA)
         Vector4 ToVector4();
 
-        bool operator==(const Color& color) const {
-            return _value == color._value;
-        }
+        bool operator==(const Color &color) const;
 
-        bool operator!=(const Color& color) const {
-            return _value != color._value;
-        }
+        bool operator!=(const Color &color) const;
     };
-
 }
+
+#include "Color.inl"

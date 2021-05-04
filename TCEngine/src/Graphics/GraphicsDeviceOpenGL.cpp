@@ -1,5 +1,5 @@
 #include "GraphicsDevice.h"
-#include <src/Utils/Log.h>
+#include <Utils/Log.h>
 
 namespace Tce {
 

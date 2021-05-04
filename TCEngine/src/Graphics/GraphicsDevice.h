@@ -18,12 +18,12 @@
 
 #endif
 
-#include <src/Game/AppState.h>
+#include <Game/AppState.h>
 #include <memory>
 #include <list>
 #include <mutex>
 #include "ShaderManager.h"
-#include "src/Type/Color.h"
+#include "Type/Color.h"
 #include "ProgramManager.h"
 #include "TextureManager.h"
 

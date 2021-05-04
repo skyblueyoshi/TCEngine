@@ -1,8 +1,8 @@
 #include "ProgramManager.h"
 #include "GraphicsDevice.h"
 #include <utility>
-#include <src/Utils/Log.h>
-#include <src/Utils/StringHelper.h>
+#include <Utils/Log.h>
+#include <Utils/StringHelper.h>
 
 namespace Tce {
 

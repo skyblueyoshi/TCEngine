@@ -1,8 +1,8 @@
 
 #include <exception>
-#include <src/Utils/TickRunner.h>
+#include <Utils/TickRunner.h>
 #include "Game.h"
-#include "../Utils/Log.h"
+#include "Utils/Log.h"
 
 #define GET_SERVER_CLIENT_NAME(isServer) ((isServer) ? "Server" : "Client")
 

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../Type/Rect.h"
-#include <src/Type/Vector.h>
-#include <src/Type/Color.h>
-#include <src/Type/VertexFormat.h>
+#include <Type/Vector.h>
+#include <Type/Color.h>
+#include <Type/VertexFormat.h>
 #include <vector>
 #include "GraphicsResource.h"
 #include "Texture.h"

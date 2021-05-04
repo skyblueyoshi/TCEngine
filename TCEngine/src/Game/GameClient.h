@@ -1,6 +1,6 @@
 #pragma once
 
-#include <src/Graphics/GraphicsDevice.h>
+#include <Graphics/GraphicsDevice.h>
 #include "Game.h"
 
 namespace Tce {

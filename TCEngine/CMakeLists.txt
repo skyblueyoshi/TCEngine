@@ -11,12 +11,14 @@ if(ANDROID)
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -funwind-tables")
 endif()
 
-add_library(native_app_glue STATIC
-		${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
-target_include_directories(native_app_glue PUBLIC
-		${ANDROID_NDK}/sources/android/native_app_glue)
+if(ANDROID)
+	add_library(native_app_glue STATIC
+			${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+	target_include_directories(native_app_glue PUBLIC
+			${ANDROID_NDK}/sources/android/native_app_glue)
 
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+endif()
 
 set(TARGET_SOURCE_FILES
 		src/Main.cpp
@@ -42,15 +44,12 @@ set(TARGET_SOURCE_FILES
 		src/Graphics/Program.cpp
 		src/Graphics/ProgramManager.cpp
 		src/Graphics/GraphicsHelper.cpp
-		src/Type/Color.cpp
-		src/Type/Vector.cpp
-		src/Type/Matrix.cpp
+		src/Type/Type.cpp
 		)
 
 add_library(${PROJECT_NAME} SHARED ${TARGET_SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-        .
         src
         src/Game
         src/Utils
@@ -81,13 +80,18 @@ target_include_directories(${PROJECT_NAME} PUBLIC libs/stb)
 #target_include_directories(${PROJECT_NAME} PUBLIC libs/SDL2/include)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-	android
-	native_app_glue
-	log
-	EGL
-	GLESv2
 	glm
 #	libSDL2
 #	libhidapi
 #	libSDL2_image
 )
+
+if(ANDROID)
+	target_link_libraries(${PROJECT_NAME} PRIVATE
+	android
+	native_app_glue
+	log
+	EGL
+	GLESv2
+	)
+endif()
