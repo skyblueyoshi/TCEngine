@@ -1,4 +1,4 @@
-#include "MathHelper.h"
+#include "TCMath.h"
 #include "Color.h"
 
 
@@ -13,10 +13,10 @@ namespace Tce {
 
     inline Color::Color(int a, int r, int g, int b) {
         if (((a | r | g | b) & 0xFFFFFF00) != 0) {
-            alpha = (uint8_t) MathHelper::Clamp(a, 0, 255);
-            red = (uint8_t) MathHelper::Clamp(r, 0, 255);
-            green = (uint8_t) MathHelper::Clamp(g, 0, 255);
-            blue = (uint8_t) MathHelper::Clamp(b, 0, 255);
+            alpha = (uint8_t) TCMath::Clamp(a, 0, 255);
+            red = (uint8_t) TCMath::Clamp(r, 0, 255);
+            green = (uint8_t) TCMath::Clamp(g, 0, 255);
+            blue = (uint8_t) TCMath::Clamp(b, 0, 255);
         } else {
             alpha = (uint8_t) a;
             red = (uint8_t) r;
@@ -34,7 +34,7 @@ namespace Tce {
     inline Color::Color(const Color &color, int _alpha) {
         _value = color._value;
         if ((_alpha & 0xFFFFFF00) != 0) {
-            alpha = (uint8_t) MathHelper::Clamp(_alpha, 0, 255);
+            alpha = (uint8_t) TCMath::Clamp(_alpha, 0, 255);
         } else {
             alpha = (uint8_t) _alpha;
         }

@@ -324,4 +324,14 @@ namespace Tce {
                 0.0f, 0.0f, 0.0f, 1.0f};
     }
 
+    inline void Matrix::TransformVector2(const Vector2 &position, Vector2 &result) const {
+        result.x = (position.x * _11) + (position.y * _21) + _41;
+        result.y = (position.x * _12) + (position.y * _22) + _42;
+    }
+
+    inline Vector2 Matrix::TransformVector2(const Vector2 &position) const {
+        Vector2 result;
+        TransformVector2(position, result);
+        return result;
+    }
 }

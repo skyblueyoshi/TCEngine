@@ -19,6 +19,7 @@
 #include "Game/Application.h"
 
 #include "Utils/Log.h"
+#include "Utils/RandomGenerator.h"
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>

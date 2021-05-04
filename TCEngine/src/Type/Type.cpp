@@ -3,83 +3,66 @@
 
 namespace Tce {
 
-    void Vector2::Transform(const Vector2 &position, const Matrix &matrix, Vector2 &result) {
-        result.x = (position.x * matrix._11) + (position.y * matrix._21) + matrix._41;
-        result.y = (position.x * matrix._12) + (position.y * matrix._22) + matrix._42;
+    void Matrix::TransformVector3(const Vector3 &position, Vector3 &result) const {
+        result.x = (position.x * _11) + (position.y * _21) + (position.z * _31) + _41;
+        result.y = (position.x * _12) + (position.y * _22) + (position.z * _32) + _42;
+        result.z = (position.x * _13) + (position.y * _23) + (position.z * _33) + _43;
     }
 
-    Vector2 Vector2::Transform(const Vector2 &position, const Matrix &matrix) {
-        Vector2 result;
-        Transform(position, matrix, result);
-        return result;
-    }
-
-    void Vector3::Transform(const Vector3 &position, const Matrix &matrix, Vector3 &result) {
-        result.x =
-                (position.x * matrix._11) + (position.y * matrix._21) + (position.z * matrix._31) +
-                matrix._41;
-        result.y =
-                (position.x * matrix._12) + (position.y * matrix._22) + (position.z * matrix._32) +
-                matrix._42;
-        result.z =
-                (position.x * matrix._13) + (position.y * matrix._23) + (position.z * matrix._33) +
-                matrix._43;
-    }
-
-    Vector3 Vector3::Transform(const Vector3 &position, const Matrix &matrix) {
+    Vector3 Matrix::TransformVector3(const Vector3 &position) const {
         Vector3 result;
-        Transform(position, matrix, result);
+        TransformVector3(position, result);
         return result;
     }
 
-    void Vector4::Transform(const Vector4 &value, const Matrix &matrix, Vector4 &result) {
-        result.x = (value.x * matrix._11) + (value.y * matrix._21) + (value.z * matrix._31) +
-                   (value.w * matrix._41);
-        result.y = (value.x * matrix._12) + (value.y * matrix._22) + (value.z * matrix._32) +
-                   (value.w * matrix._42);
-        result.z = (value.x * matrix._13) + (value.y * matrix._23) + (value.z * matrix._33) +
-                   (value.w * matrix._43);
-        result.w = (value.x * matrix._14) + (value.y * matrix._24) + (value.z * matrix._34) +
-                   (value.w * matrix._44);
+    void Matrix::TransformVector4(const Vector4 &value, Vector4 &result) const {
+        result.x = (value.x * _11) + (value.y * _21) + (value.z * _31) +
+                   (value.w * _41);
+        result.y = (value.x * _12) + (value.y * _22) + (value.z * _32) +
+                   (value.w * _42);
+        result.z = (value.x * _13) + (value.y * _23) + (value.z * _33) +
+                   (value.w * _43);
+        result.w = (value.x * _14) + (value.y * _24) + (value.z * _34) +
+                   (value.w * _44);
     }
 
-    Vector4 Vector4::Transform(const Vector4 &value, const Matrix &matrix) {
+    Vector4 Matrix::TransformVector4(const Vector4 &value) const {
         Vector4 result;
-        Transform(value, matrix, result);
+        TransformVector4(value, result);
         return result;
     }
 
-    void Vector4::Transform(const Vector3 &value, const Matrix &matrix, Vector4 &result) {
-        result.x = (value.x * matrix._11) + (value.y * matrix._21) + (value.z * matrix._31) +
-                   (matrix._41);
-        result.y = (value.x * matrix._12) + (value.y * matrix._22) + (value.z * matrix._32) +
-                   (matrix._42);
-        result.z = (value.x * matrix._13) + (value.y * matrix._23) + (value.z * matrix._33) +
-                   (matrix._43);
-        result.w = (value.x * matrix._14) + (value.y * matrix._24) + (value.z * matrix._34) +
-                   (matrix._44);
+    void Matrix::TransformVector4(const Vector3 &value, Vector4 &result) const {
+        result.x = (value.x * _11) + (value.y * _21) + (value.z * _31) +
+                   (_41);
+        result.y = (value.x * _12) + (value.y * _22) + (value.z * _32) +
+                   (_42);
+        result.z = (value.x * _13) + (value.y * _23) + (value.z * _33) +
+                   (_43);
+        result.w = (value.x * _14) + (value.y * _24) + (value.z * _34) +
+                   (_44);
     }
 
-    Vector4 Vector4::Transform(const Vector3 &value, const Matrix &matrix) {
+    Vector4 Matrix::TransformVector4(const Vector3 &value) const {
         Vector4 result;
-        Transform(value, matrix, result);
+        TransformVector4(value, result);
         return result;
     }
 
-    void Vector4::Transform(const Vector2 &value, const Matrix &matrix, Vector4 &result) {
-        result.x = (value.x * matrix._11) + (value.y * matrix._21) +
-                   (matrix._41);
-        result.y = (value.x * matrix._12) + (value.y * matrix._22) +
-                   (matrix._42);
-        result.z = (value.x * matrix._13) + (value.y * matrix._23) +
-                   (matrix._43);
-        result.w = (value.x * matrix._14) + (value.y * matrix._24) +
-                   (matrix._44);
+    void Matrix::TransformVector4(const Vector2 &value, Vector4 &result) const {
+        result.x = (value.x * _11) + (value.y * _21) +
+                   (_41);
+        result.y = (value.x * _12) + (value.y * _22) +
+                   (_42);
+        result.z = (value.x * _13) + (value.y * _23) +
+                   (_43);
+        result.w = (value.x * _14) + (value.y * _24) +
+                   (_44);
     }
 
-    Vector4 Vector4::Transform(const Vector2 &value, const Matrix &matrix) {
+    Vector4 Matrix::TransformVector4(const Vector2 &value) const {
         Vector4 result;
-        Transform(value, matrix, result);
+        TransformVector4(value, result);
         return result;
     }
 

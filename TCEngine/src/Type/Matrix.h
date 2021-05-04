@@ -210,6 +210,27 @@ namespace Tce {
         // 构造一个单位矩阵
         // @return 单位矩阵
         static Matrix CreateIdentity();
+
+        // 向量转换
+        Vector2 TransformVector2(const Vector2 &position) const;
+
+        void TransformVector2(const Vector2 &position, Vector2 &result) const;
+
+        Vector3 TransformVector3(const Vector3 &position) const;
+
+        void TransformVector3(const Vector3 &position, Vector3 &result) const;
+
+        Vector4 TransformVector4(const Vector4 &value) const;
+
+        Vector4 TransformVector4(const Vector3 &value) const;
+
+        Vector4 TransformVector4(const Vector2 &value) const;
+
+        void TransformVector4(const Vector4 &value, Vector4 &result) const;
+
+        void TransformVector4(const Vector3 &value, Vector4 &result) const;
+
+        void TransformVector4(const Vector2 &value, Vector4 &result) const;
     };
 
 }

@@ -1,6 +1,6 @@
 #include "Sprite.h"
 #include "ExceptionHelper.h"
-#include "MathHelper.h"
+#include "TCMath.h"
 
 namespace Tce {
 
@@ -97,7 +97,7 @@ namespace Tce {
                 case SpriteSortMode::TEXTURE:
                 case SpriteSortMode::BACK_TO_FRONT:
                 case SpriteSortMode::FRONT_TO_BACK:
-                    MathHelper::SortByKey<SpriteCache>(m_spriteCaches);
+                    TCMath::SortByKey<SpriteCache>(m_spriteCaches);
                     break;
                 default:
                     break;

@@ -7,98 +7,95 @@ namespace Tce {
     struct Matrix;
 
     // 2维向量{X, Y}
-    struct Vector2 {
-        float x{};
-        float y{};
+    template <typename Type>
+    struct Vector2T {
+        Type x{};
+        Type y{};
 
         // 零向量
-        static Vector2 GetZero();
+        static Vector2T GetZero();
 
         // 全1向量
-        static Vector2 GetOne();
+        static Vector2T GetOne();
 
         // X轴单位向量
-        static Vector2 GetUnitX();
+        static Vector2T GetUnitX();
 
         // Y轴单位向量
-        static Vector2 GetUnitY();
+        static Vector2T GetUnitY();
 
-        Vector2() noexcept = default;
+        Vector2T() noexcept = default;
 
-        Vector2(float _x, float _y) noexcept;
+        Vector2T(Type _x, Type _y) noexcept;
 
-        Vector2(const Vector2 &value) noexcept = default;
-
-        // 返回一个表示向量的字符串
-        // @result 字符串
-        std::string ToString() const;
+        Vector2T(const Vector2T &value) noexcept = default;
 
         // 判断两个向量是否相同
         // @param value 另一个向量
         // @return 结果
-        bool operator==(const Vector2 &value) const;
+        bool operator==(const Vector2T &value) const;
 
         // 判断两个向量是否不同
         // @param value 另一个向量
         // @return 结果
-        bool operator!=(const Vector2 &value) const;
+        bool operator!=(const Vector2T &value) const;
 
         // 向量相加
         // @param value 另一个向量
         // @return 结果
-        Vector2 operator+(const Vector2 &value) const;
+        Vector2T operator+(const Vector2T &value) const;
 
         // 向量相加
         // @param value 另一个向量
-        Vector2 &operator+=(const Vector2 &value);
+        Vector2T &operator+=(const Vector2T &value);
 
         // 向量相减
         // @param value 另一个向量
         // @return 结果
-        Vector2 operator-(const Vector2 &value) const;
+        Vector2T operator-(const Vector2T &value) const;
 
         // 向量相减
         // @param value 另一个向量
-        Vector2 &operator-=(const Vector2 &value);
+        Vector2T &operator-=(const Vector2T &value);
 
         // 向量取反
-        Vector2 operator-();
+        Vector2T operator-();
 
         // 向量相乘
         // @param value 另一个向量
         // @return 结果
-        Vector2 operator*(const Vector2 &value) const;
+        Vector2T operator*(const Vector2T &value) const;
 
         // 向量相乘
         // @param value 另一个向量
-        Vector2 &operator*=(const Vector2 &value);
+        Vector2T &operator*=(const Vector2T &value);
 
         // 向量每个维度乘以一个数值
         // @param value 数值
         // @return 结果
-        Vector2 operator*(float value) const;
+        Vector2T operator*(Type value) const;
 
         // 向量每个维度乘以一个数值
         // @param value 数值
-        Vector2 &operator*=(float value);
+        Vector2T &operator*=(Type value);
 
         // 向量相除
         // @param value 另一个向量
         // @return 结果
-        Vector2 operator/(const Vector2 &value) const;
+        Vector2T operator/(const Vector2T &value) const;
 
         // 向量相除
         // @param value 另一个向量
-        Vector2 &operator/=(const Vector2 &value);
+        Vector2T &operator/=(const Vector2T &value);
 
         // 向量每个维度除以一个数值
         // @param value 数值
         // @return 结果
-        Vector2 operator/(float value) const;
+        Vector2T operator/(Type value) const;
 
         // 向量每个维度除以一个数值
         // @param value 数值
-        Vector2 &operator/=(float value);
+        Vector2T &operator/=(Type value);
 
         // 向量单位化
         void Normalize();
@@ -106,27 +103,27 @@ namespace Tce {
         // 向量单位化
         // @param value 原向量
         // @return 单位向量
-        static Vector2 Normalize(const Vector2 &value);
+        static Vector2T Normalize(const Vector2T &value);
 
         // 获取两个向量的最大值向量
         // @param value1 向量1
         // @param value2 向量2
         // @return 结果向量
-        static Vector2 Max(const Vector2 &value1, const Vector2 &value2);
+        static Vector2T Max(const Vector2T &value1, const Vector2T &value2);
 
         // 获取两个向量的最小值向量
         // @param value1 向量1
         // @param value2 向量2
         // @return 结果向量
-        static Vector2 Min(const Vector2 &value1, const Vector2 &value2);
+        static Vector2T Min(const Vector2T &value1, const Vector2T &value2);
 
         // 获取向量长度
         // @return 向量长度
-        float GetLength() const;
+        Type GetLength() const;
 
         // 获取向量长度的平方
         // @return 向量长度的平方
-        float GetLengthSquared() const;
+        Type GetLengthSquared() const;
 
         // 将每个维度向下取整
         void Floor();
@@ -134,7 +131,7 @@ namespace Tce {
         // 将向量每个维度向下取整
         // @param value 原向量
         // @return 结果向量
-        static Vector2 Floor(const Vector2 &value);
+        static Vector2T Floor(const Vector2T &value);
 
         // 将每个维度向上取整
         void Ceil();
@@ -142,46 +139,44 @@ namespace Tce {
         // 将向量每个维度向上取整
         // @param value 原向量
         // @return 结果向量
-        static Vector2 Ceil(const Vector2 &value);
+        static Vector2T Ceil(const Vector2T &value);
 
         // 限制向量到给定范围
         // @param value 原向量
         // @param min 最小量
         // @param max 最大量
         // @return 结果向量
-        void Clamp(const Vector2 &min, const Vector2 &max);
+        void Clamp(const Vector2T &min, const Vector2T &max);
 
         // 限制向量到给定范围
         // @param value 原向量
         // @param min 最小量
         // @param max 最大量
         // @return 结果向量
-        static Vector2 Clamp(const Vector2 &value, const Vector2 &min, const Vector2 &max);
+        static Vector2T Clamp(const Vector2T &value, const Vector2T &min, const Vector2T &max);
 
         // 获取向量之间的距离
         // @param value1 向量1
         // @param value2 向量2
         // @return 距离
-        static float GetDistance(const Vector2 &value1, const Vector2 &value2);
+        static Type GetDistance(const Vector2T &value1, const Vector2T &value2);
 
         // 获取向量之间的距离平方
         // @param value1 向量1
         // @param value2 向量2
         // @return 距离平方
-        static float GetDistanceSquared(const Vector2 &value1, const Vector2 &value2);
+        static Type GetDistanceSquared(const Vector2T &value1, const Vector2T &value2);
 
         // 将两个向量点乘，即每个维度乘积之和
         // @param value1 向量1
         // @param value2 向量2
         // @return 点乘结果
-        static float Dot(const Vector2 &value1, const Vector2 &value2);
-
-        // 向量转换
-        static Vector2 Transform(const Vector2 &position, const Matrix &matrix);
-
-        static void Transform(const Vector2 &position, const Matrix &matrix, Vector2 &result);
+        static Type Dot(const Vector2T &value1, const Vector2T &value2);
 
     };
+
+    typedef Vector2T<float> Vector2;
+    typedef Vector2T<double> Vector2D;
 
     // 3维向量{X, Y, Z}
     struct Vector3 {
@@ -367,11 +362,6 @@ namespace Tce {
         // @param value2 向量2
         // @return 叉积结果向量
         static Vector3 Cross(const Vector3 &vector1, const Vector3 &vector2);
-
-        // 向量转换
-        static Vector3 Transform(const Vector3 &position, const Matrix &matrix);
-
-        static void Transform(const Vector3 &position, const Matrix &matrix, Vector3 &result);
 
     };
 
@@ -559,19 +549,6 @@ namespace Tce {
         // @param value2 向量2
         // @return 点乘结果
         static float Dot(const Vector4 &value1, const Vector4 &value2);
-
-        // 向量转换
-        static Vector4 Transform(const Vector4 &value, const Matrix &matrix);
-
-        static Vector4 Transform(const Vector3 &value, const Matrix &matrix);
-
-        static Vector4 Transform(const Vector2 &value, const Matrix &matrix);
-
-        static void Transform(const Vector4 &value, const Matrix &matrix, Vector4 &result);
-
-        static void Transform(const Vector3 &value, const Matrix &matrix, Vector4 &result);
-
-        static void Transform(const Vector2 &value, const Matrix &matrix, Vector4 &result);
     };
 }
 
