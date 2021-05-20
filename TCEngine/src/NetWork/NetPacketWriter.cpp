@@ -8,7 +8,7 @@ namespace Tce {
     }
 
     void NetPacketWriter::Write(NetSession &netSession, NetPacket *pNetPacket) {
-        mTempStream.SetLength(0);
+        mTempStream.Clear();
         pNetPacket->WriteToStream(mTempStream);
         auto &sendStream = netSession.mSendStream;
         sendStream.WriteVarInt(pNetPacket->_packetId);

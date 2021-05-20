@@ -1,20 +1,19 @@
-#include "Log.h"
-#include <cstring>
-#include <mutex>
-#include <ctime>
-#include <cstdio>
-#include <android/log.h>
-#include "StringHelper.h"
+#define _CRT_SECURE_NO_WARNINGS
 
+#include "TCLog.h"
+
+#ifdef _TC_ANDROID
+#include <android/log.h>
 #define LOG_TAG "TCEngine"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#endif
 
 namespace Tce {
 
     static std::mutex s_logMutex;
 
-#if defined(__ANDROID__)
+#ifdef _TC_ANDROID
     static int _GetAndroidLevel(EnumLogLevel level) {
         switch (level) {
             case LOG_LEVEL_INFO:
@@ -36,27 +35,24 @@ namespace Tce {
 
     void Log::_Logging(EnumLogLevel level, bool showLabel, const char *label, bool showSysTime, const char *format, va_list list) {
         std::lock_guard<std::mutex> lockGuard(s_logMutex);
-        std::string content;
+        String content;
         if (showLabel) {
             content = label;
             if (showSysTime) {
                 time_t t = time(nullptr);
                 auto _tm = *localtime(&t);
-                //int year = _tm.tm_year + 1900;
-                //int month = _tm.tm_mon + 1;
-                //int date = _tm.tm_mday;
                 int hh = _tm.tm_hour;
                 int mm = _tm.tm_min;
                 int ss = _tm.tm_sec;
-                content += StringHelper::MakeFormat("[%02d:%02d:%02d]", hh,mm,ss);
+                content += String::Format("[%02d:%02d:%02d]", hh,mm,ss);
             }
         }
-        content += StringHelper::MakeFormatFromList(format, list);
+        content += String::FormatFromList(format, list);
         // 打印
 #if     !defined(__ANDROID__)
-        std::printf("%s", content.c_str());
+        std::printf("%s", content.Data());
 #else
-        __android_log_print(_GetAndroidLevel(level), LOG_TAG, "%s", content.c_str());
+        __android_log_print(_GetAndroidLevel(level), LOG_TAG, "%s", content.Data());
 #endif
     }
 

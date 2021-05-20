@@ -1,6 +1,4 @@
-#include "TCMath.h"
 #include "Color.h"
-
 
 namespace Tce {
 

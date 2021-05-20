@@ -1,11 +1,10 @@
 
 #include "Rect.h"
-#include <algorithm>
 
 namespace Tce {
 
     template<typename T>
-    Rect<T>::Rect(T _x, T _y, uint_t _width, uint_t _height)
+    Rect<T>::Rect(T _x, T _y, uint32_t _width, uint32_t _height)
             : x(_x), y(_y), width(_width), height(_height) {}
 
     template<typename T>
@@ -62,32 +61,32 @@ namespace Tce {
 
     template<typename T>
     Rect <T> Rect<T>::Union(const Rect &other) {
-        int minX = std::min(x, other.x);
-        int minY = std::min(y, other.y);
+        int minX = TCMath::Min(x, other.x);
+        int minY = TCMath::Min(y, other.y);
         return {minX, minY,
-                (uint_t) (std::max(GetRight(), other.GetRight()) - minX),
-                (uint_t) (std::max(GetBottom(), other.GetBottom()) - minY)};
+                (uint_t) (TCMath::Max(GetRight(), other.GetRight()) - minX),
+                (uint_t) (TCMath::Max(GetBottom(), other.GetBottom()) - minY)};
     }
 
     template<typename T>
     Rect <T> Rect<T>::Intersect(const Rect &other) {
         if (IsOverlapping(other)) {
-            T left = std::max(x, other.x);
-            T top = std::max(y, other.y);
+            T left = TCMath::Max(x, other.x);
+            T top = TCMath::Max(y, other.y);
             return {left, top,
-                    (uint_t) (std::min(GetRight(), other.GetRight()) - left),
-                    (uint_t) (std::min(GetBottom(), other.GetBottom()) - top)};
+                    (uint_t) (TCMath::Min(GetRight(), other.GetRight()) - left),
+                    (uint_t) (TCMath::Min(GetBottom(), other.GetBottom()) - top)};
         }
         return {(T) 0, (T) 0, 0, 0};
     }
 
     template<typename T>
     T Rect<T>::GetRight() const {
-        return x + width;
+        return (T)(x + width);
     }
 
     template<typename T>
     T Rect<T>::GetBottom() const {
-        return y + height;
+        return (T)(y + height);
     }
 }

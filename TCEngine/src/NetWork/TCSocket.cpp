@@ -1,11 +1,6 @@
 #include "TCSocket.h"
-#include <exception>
 
-#ifdef _WINDOWS
-#include <Windows.h>
-#else
-
-#include <unistd.h>          /* for close() */
+#ifndef _TC_WINDOWS
 #include<sys/types.h>
 #include<sys/socket.h>
 #include<netinet/in.h>
@@ -13,13 +8,18 @@
 #include <utility>
 #include <fstream>
 #include <arpa/inet.h>
-
 #endif
 
 #include "ExceptionHelper.h"
 
 namespace Tce {
 
+    TCSocket& TCSocket::operator=(const TCSocket& s) {
+        if (this != &s) {
+            _socket = s._socket;
+        }
+        return *this;
+    }
 
     TCSocket TCSocket::CreateTCPSocket() {
         TCSocket result(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
@@ -36,13 +36,13 @@ namespace Tce {
     }
 
     bool TCSocket::IsEnabled() const {
-        return _socket != TC_INVALID_SOCKET;
+        return _socket != kInvalidSocket;
     }
 
     void TCSocket::SetTimeOut(long sec, long usec) {
         timeval tm{};        //设置超时
-        tm.tv_sec = 100;
-        tm.tv_usec = 0;
+        tm.tv_sec = sec;
+        tm.tv_usec = usec;
         int iResult = setsockopt(_socket, SOL_SOCKET, SO_RCVTIMEO, (char *) &tm, sizeof(tm));
         if (iResult < 0) {
             THROW_RUNTIME_ERROR("Failed to set timeout socket. Error code: %d",
@@ -61,8 +61,12 @@ namespace Tce {
     void TCSocket::Close() {
         if (IsEnabled()) {
             //TODO CLOSE SOCKET
+#ifdef _WINDOWS
+            closesocket(_socket);
+#else
             close(_socket);
-            _socket = TC_INVALID_SOCKET;
+#endif
+            _socket = kInvalidSocket;
         }
 
     }
@@ -72,12 +76,13 @@ namespace Tce {
         serAddr.sin_family = address.sinFamily;
         serAddr.sin_port = htons(address.port);
 
-        if (inet_pton(AF_INET, address.ip.c_str(), &serAddr.sin_addr) <= 0) {
+#ifndef _TC_WINDOWS
+        if (inet_pton(AF_INET, address.ip.Data(), &serAddr.sin_addr) <= 0) {
             THROW_RUNTIME_ERROR("Failed to call inet_pton from ip \"%s\". Error code: %d",
-                                address.ip.c_str(),
+                                address.ip.Data(),
                                 GetErrorCode());
         }
-
+#endif
 
         if (connect(_socket, (sockaddr *) &serAddr, sizeof(serAddr)) < 0) {
             //连接失败
@@ -86,23 +91,23 @@ namespace Tce {
         }
     }
 
-    void TCSocket::Send(const char *buffer, int size) {
-        send(_socket, buffer, size, 0);
+    void TCSocket::Send(const char *buffer, size_t size) {
+        send(_socket, buffer, (int)size, 0);
     }
 
-    size_t TCSocket::Recieve(char *buffer, int maxSize) {
+    size_t TCSocket::Recieve(char *buffer, size_t maxSize) {
         int iResult = 0;
-#ifdef _WINDOWS
-        iResult = recv(_socket, buffer, maxSize, 0);
+#ifdef _TC_WINDOWS
+        iResult = recv(_socket, buffer, (int)maxSize, 0);
 #else
         iResult = read(_socket, buffer, maxSize);
 #endif
         if (iResult > 0)
-            return iResult;
+            return (size_t)iResult;
         return 0;
     }
 
-    TCSocketAddress::TCSocketAddress(std::string _ip, u_short _port)
+    TCSocketAddress::TCSocketAddress(String _ip, u_short _port)
             : sinFamily(AF_INET), ip(std::move(_ip)), port(_port) {
 
     }

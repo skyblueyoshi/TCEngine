@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TCUtils.h"
+
 namespace Tce {
 
     // 实体ID

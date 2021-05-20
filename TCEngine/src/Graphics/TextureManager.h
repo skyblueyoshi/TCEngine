@@ -12,7 +12,7 @@ namespace Tce {
         // 从文件中加载贴图
         // @param path 文件路径
         // @return 贴图ID
-        uint32_t LoadTextureFromFile(const std::string & path);
+        uint32_t LoadTextureFromFile(const String & path);
 
         // 卸载并清除指定贴图
         // @param pTexture 贴图指针

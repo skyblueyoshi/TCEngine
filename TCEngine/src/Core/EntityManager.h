@@ -2,7 +2,6 @@
 
 #include "ObjectPool.h"
 #include "EntityID.h"
-#include <stdint.h>
 
 namespace Tce {
 

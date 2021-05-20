@@ -1,6 +1,6 @@
-#include <Utils/Log.h>
 #include "GraphicsHelper.h"
 #include "GraphicsDevice.h"
+#include "TCLog.h"
 
 namespace Tce {
 

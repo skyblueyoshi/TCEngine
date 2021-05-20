@@ -1,13 +1,15 @@
 #pragma once
 
-#include <exception>
-#include "StringHelper.h"
+#include "TCString.h"
+
+#define THROW_ERROR_CAPTION(caption, ex) \
+{ throw std::runtime_error(Tce::String::Format(#caption ":\n%s", ex.what()).Data());}
 
 #define THROW_RUNTIME_ERROR(...) \
-{ throw std::runtime_error(StringHelper::MakeFormat(__VA_ARGS__));}
+{ throw std::runtime_error(Tce::String::Format(__VA_ARGS__).Data());}
 
 #define CHECK_RUNTIME_OR_ERROR(expression, ...) \
-if (!(expression)) { throw std::runtime_error(StringHelper::MakeFormat(__VA_ARGS__));}
+if (!(expression)) { throw std::runtime_error(Tce::String::Format(__VA_ARGS__).Data());}
 
 #define CHECK_RANGE_OR_ERROR(expression) \
 if (!(expression)) { throw std::range_error("Out of Range Exception: " #expression);}

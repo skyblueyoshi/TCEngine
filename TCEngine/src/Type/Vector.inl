@@ -1,10 +1,5 @@
-#include "StringHelper.h"
-#include <cmath>
-#include <algorithm>
-#include "TCMath.h"
-#include "Matrix.h"
-#include "Vector.h"
 
+#include "Vector.h"
 
 namespace Tce {
 
@@ -146,31 +141,31 @@ namespace Tce {
 
     template <typename Type>
     inline Vector2T<Type>Vector2T<Type>::Max(const Vector2T &value1, const Vector2T &value2) {
-        return {std::max(value1.x, value2.x),
-                std::max(value1.y, value2.y)};
+        return {TCMath::Max(value1.x, value2.x),
+                TCMath::Max(value1.y, value2.y)};
     }
 
     template <typename Type>
     inline Vector2T<Type> Vector2T<Type>::Min(const Vector2T &value1, const Vector2T &value2) {
-        return {std::min(value1.x, value2.x),
-                std::min(value1.y, value2.y)};
+        return {TCMath::Min(value1.x, value2.x),
+                TCMath::Min(value1.y, value2.y)};
     }
 
     template <typename Type>
     inline Type Vector2T<Type>::GetLength() const {
-        return (Type) sqrt(GetLengthSquared());
+        return (Type) TCMath::Sqrt(GetLengthSquared());
     }
 
     template <typename Type>
     inline Type Vector2T<Type>::GetLengthSquared() const {
-        return std::powf(x, 2) +
-               std::powf(y, 2);
+        return TCMath::Pow(x, 2) +
+               TCMath::Pow(y, 2);
     }
 
     template <typename Type>
     inline void Vector2T<Type>::Floor() {
-        x = floorf(x);
-        y = floorf(y);
+        x = TCMath::Floor(x);
+        y = TCMath::Floor(y);
     }
 
     template <typename Type>
@@ -188,19 +183,19 @@ namespace Tce {
 
     template <typename Type>
     inline Type Vector2T<Type>::GetDistance(const Vector2T &value1, const Vector2T &value2) {
-        return std::sqrtf(GetDistanceSquared(value1, value2));
+        return TCMath::Sqrt(GetDistanceSquared(value1, value2));
     }
 
     template <typename Type>
     inline Type Vector2T<Type>::GetDistanceSquared(const Vector2T &value1, const Vector2T &value2) {
-        return std::powf(value1.x - value2.x, 2) +
-               std::powf(value1.y - value2.y, 2);
+        return TCMath::Pow(value1.x - value2.x, 2) +
+               TCMath::Pow(value1.y - value2.y, 2);
     }
 
     template <typename Type>
     inline void Vector2T<Type>::Ceil() {
-        x = ceilf(x);
-        y = ceilf(y);
+        x = TCMath::Ceil(x);
+        y = TCMath::Ceil(y);
     }
 
     template <typename Type>
@@ -252,8 +247,8 @@ namespace Tce {
         return {0.0f, 0.0f, 1.0f};
     }
 
-    inline std::string Vector3::ToString() const {
-        return StringHelper::MakeFormat("{X:%d Y:%d Z:%d}", x, y, z);
+    inline String Vector3::ToString() const {
+        return String::Format("{X:%d Y:%d Z:%d}", x, y, z);
     }
 
     inline bool Vector3::operator==(const Vector3 &value) const {
@@ -367,31 +362,31 @@ namespace Tce {
     }
 
     inline Vector3 Vector3::Max(const Vector3 &value1, const Vector3 &value2) {
-        return {std::max(value1.x, value2.x),
-                std::max(value1.y, value2.y),
-                std::max(value1.z, value2.z)};
+        return {TCMath::Max(value1.x, value2.x),
+                TCMath::Max(value1.y, value2.y),
+                TCMath::Max(value1.z, value2.z)};
     }
 
     inline Vector3 Vector3::Min(const Vector3 &value1, const Vector3 &value2) {
-        return {std::min(value1.x, value2.x),
-                std::min(value1.y, value2.y),
-                std::min(value1.z, value2.z)};
+        return {TCMath::Min(value1.x, value2.x),
+                TCMath::Min(value1.y, value2.y),
+                TCMath::Min(value1.z, value2.z)};
     }
 
     inline float Vector3::GetLength() const {
-        return (float) sqrt(GetLengthSquared());
+        return (float) TCMath::Sqrt(GetLengthSquared());
     }
 
     inline float Vector3::GetLengthSquared() const {
-        return std::powf(x, 2) +
-               std::powf(y, 2) +
-               std::powf(z, 2);
+        return TCMath::Pow(x, 2) +
+               TCMath::Pow(y, 2) +
+               TCMath::Pow(z, 2);
     }
 
     inline void Vector3::Floor() {
-        x = floorf(x);
-        y = floorf(y);
-        z = floorf(z);
+        x = TCMath::Floor(x);
+        y = TCMath::Floor(y);
+        z = TCMath::Floor(z);
     }
 
     inline Vector3 Vector3::Floor(const Vector3 &value) {
@@ -407,19 +402,19 @@ namespace Tce {
     }
 
     inline float Vector3::GetDistance(const Vector3 &value1, const Vector3 &value2) {
-        return std::sqrtf(GetDistanceSquared(value1, value2));
+        return TCMath::Sqrt(GetDistanceSquared(value1, value2));
     }
 
     inline float Vector3::GetDistanceSquared(const Vector3 &value1, const Vector3 &value2) {
-        return std::powf(value1.x - value2.x, 2) +
-               std::powf(value1.y - value2.y, 2) +
-               std::powf(value1.z - value2.z, 2);
+        return TCMath::Pow(value1.x - value2.x, 2) +
+               TCMath::Pow(value1.y - value2.y, 2) +
+               TCMath::Pow(value1.z - value2.z, 2);
     }
 
     inline void Vector3::Ceil() {
-        x = ceilf(x);
-        y = ceilf(y);
-        z = ceilf(z);
+        x = TCMath::Ceil(x);
+        y = TCMath::Ceil(y);
+        z = TCMath::Ceil(z);
     }
 
     inline Vector3 Vector3::Ceil(const Vector3 &value) {
@@ -435,7 +430,7 @@ namespace Tce {
     }
 
     inline Vector3 Vector3::Clamp(const Vector3 &value, const Vector3 &min, const Vector3 &max) {
-        Vector3 result;
+        Vector3 result = value;
         result.Clamp(min, max);
         return result;
     }
@@ -470,8 +465,8 @@ namespace Tce {
         return {0.0f, 0.0f, 0.0f, 1.0f};
     };
 
-    inline std::string Vector4::ToString() const {
-        return StringHelper::MakeFormat("{X:%d Y:%d Z:%d W:%d}", x, y, z, w);
+    inline String Vector4::ToString() const {
+        return String::Format("{X:%d Y:%d Z:%d W:%d}", x, y, z, w);
     }
 
     inline bool Vector4::operator==(const Vector4 &value) const {
@@ -600,35 +595,35 @@ namespace Tce {
     }
 
     inline Vector4 Vector4::Max(const Vector4 &value1, const Vector4 &value2) {
-        return {std::max(value1.x, value2.x),
-                std::max(value1.y, value2.y),
-                std::max(value1.z, value2.z),
-                std::max(value1.w, value2.w)};
+        return {TCMath::Max(value1.x, value2.x),
+                TCMath::Max(value1.y, value2.y),
+                TCMath::Max(value1.z, value2.z),
+                TCMath::Max(value1.w, value2.w)};
     }
 
     inline Vector4 Vector4::Min(const Vector4 &value1, const Vector4 &value2) {
-        return {std::min(value1.x, value2.x),
-                std::min(value1.y, value2.y),
-                std::min(value1.z, value2.z),
-                std::min(value1.w, value2.w)};
+        return {TCMath::Min(value1.x, value2.x),
+                TCMath::Min(value1.y, value2.y),
+                TCMath::Min(value1.z, value2.z),
+                TCMath::Min(value1.w, value2.w)};
     }
 
     inline float Vector4::GetLength() const {
-        return (float) sqrt(GetLengthSquared());
+        return (float) TCMath::Sqrt(GetLengthSquared());
     }
 
     inline float Vector4::GetLengthSquared() const {
-        return std::powf(x, 2) +
-               std::powf(y, 2) +
-               std::powf(z, 2) +
-               std::powf(w, 2);
+        return TCMath::Pow(x, 2) +
+               TCMath::Pow(y, 2) +
+               TCMath::Pow(z, 2) +
+               TCMath::Pow(w, 2);
     }
 
     inline void Vector4::Floor() {
-        x = floorf(x);
-        y = floorf(y);
-        z = floorf(z);
-        w = floorf(w);
+        x = TCMath::Floor(x);
+        y = TCMath::Floor(y);
+        z = TCMath::Floor(z);
+        w = TCMath::Floor(w);
     }
 
     inline Vector4 Vector4::Floor(const Vector4 &value) {
@@ -645,21 +640,21 @@ namespace Tce {
     }
 
     inline float Vector4::GetDistance(const Vector4 &value1, const Vector4 &value2) {
-        return std::sqrtf(GetDistanceSquared(value1, value2));
+        return TCMath::Sqrt(GetDistanceSquared(value1, value2));
     }
 
     inline float Vector4::GetDistanceSquared(const Vector4 &value1, const Vector4 &value2) {
-        return std::powf(value1.x - value2.x, 2) +
-               std::powf(value1.y - value2.y, 2) +
-               std::powf(value1.z - value2.z, 2) +
-               std::powf(value1.w - value2.w, 2);
+        return TCMath::Pow(value1.x - value2.x, 2) +
+               TCMath::Pow(value1.y - value2.y, 2) +
+               TCMath::Pow(value1.z - value2.z, 2) +
+               TCMath::Pow(value1.w - value2.w, 2);
     }
 
     inline void Vector4::Ceil() {
-        x = ceilf(x);
-        y = ceilf(y);
-        z = ceilf(z);
-        w = ceilf(w);
+        x = TCMath::Ceil(x);
+        y = TCMath::Ceil(y);
+        z = TCMath::Ceil(z);
+        w = TCMath::Ceil(w);
     }
 
     inline Vector4 Vector4::Ceil(const Vector4 &value) {
@@ -676,7 +671,7 @@ namespace Tce {
     }
 
     inline Vector4 Vector4::Clamp(const Vector4 &value, const Vector4 &min, const Vector4 &max) {
-        Vector4 result;
+        Vector4 result = value;
         result.Clamp(min, max);
         return result;
     }

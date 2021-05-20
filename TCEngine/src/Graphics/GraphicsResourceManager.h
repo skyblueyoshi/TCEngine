@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include "GraphicsResource.h"
+#include "TCArrayListShared.h"
 
 namespace Tce {
 
@@ -12,7 +12,7 @@ namespace Tce {
                 : GraphicsResource(pDevice) {}
 
         virtual ~GraphicsResourceManager() {
-            m_elements.clear();
+            m_elements.FreeMemory();
         }
 
         // 获取
@@ -29,7 +29,7 @@ namespace Tce {
         // @return 资源在管理器内的ID
         uint32_t Load(std::shared_ptr<T> &pElement) {
             assert(pElement);
-            int id = _Add(pElement);
+            uint32_t id = _Add(pElement);
             pElement->SetID(id);
             return id;
         }
@@ -63,9 +63,9 @@ namespace Tce {
         // @return 资源在管理器内的ID
         uint32_t _Add(std::shared_ptr<T> &pElement) {
             assert(pElement);
-            if (!m_freeIds.empty()) {
-                auto id = m_freeIds[m_freeIds.size() - 1];
-                m_freeIds.resize(m_freeIds.size() - 1);
+            if (!m_freeIds.Empty()) {
+                auto id = m_freeIds[m_freeIds.Count() - 1];
+                m_freeIds.SetCount(m_freeIds.Count() - 1);
                 auto &p = Get(id);
                 assert(p);
                 p = pElement;
@@ -81,26 +81,26 @@ namespace Tce {
             auto &p = Get(id);
             if (p) {
                 p = nullptr;
-                m_freeIds.push_back(id);
+                m_freeIds.Add(id);
             }
         }
 
         // 由ID获取元素
         inline std::shared_ptr<T> &_InnerGet(uint32_t id) {
-            return m_elements.at(id - 1);
+            return m_elements[id - 1];
         }
 
         // 添加元素，返回新的ID
         inline uint32_t _InnerAdd(std::shared_ptr<T> &pElement) {
-            m_elements.push_back(pElement);
-            return m_elements.size();
+            m_elements.Add(pElement);
+            return (uint32_t)m_elements.Count();
         }
 
     protected:
-        std::vector<std::shared_ptr<T>> m_elements;     // 元素表
+        ArrayListShared<T> m_elements;                  // 元素表
 
     private:
-        std::vector<uint32_t> m_freeIds;                // ID回收表
+        ArrayList<uint32_t> m_freeIds;                  // ID回收表
     };
 
 }

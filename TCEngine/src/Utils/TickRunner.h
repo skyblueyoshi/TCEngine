@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include "SysConfig.h"
 
 namespace Tce {
     class TickRunner {

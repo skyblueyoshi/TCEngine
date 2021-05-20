@@ -22,7 +22,7 @@ namespace Tce {
         while (m_isRunning) {
             // 服务端主循环
             _StateTrigger();
-            //主逻辑
+            // 主逻辑
             tickTemp.BeginLoopUpdate();
             while (tickTemp.CanLoopUpdate()) {
                 _MainUpdate();

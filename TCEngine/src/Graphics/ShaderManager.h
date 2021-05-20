@@ -14,12 +14,12 @@ namespace Tce {
         // 加载顶点着色器，返回着色器在管理器的ID
         // @param code 顶点着色器代码
         // @return ID
-        uint32_t LoadVertexShader(const std::string &code);
+        uint32_t LoadVertexShader(const String &code);
 
         // 加载像素着色器，返回着色器在管理器的ID
         // @param code 顶点着色器代码
         // @return ID
-        uint32_t LoadPixelShader(const std::string &code);
+        uint32_t LoadPixelShader(const String &code);
 
         // 卸载并清除指定着色器
         // @param pShader 着色器指针
@@ -31,7 +31,7 @@ namespace Tce {
         // @param eStage 着色器类型
         // @param code 顶点着色器代码
         // @return ID
-        uint32_t _LoadShader(Shader::EnumStage eStage, const std::string &code);
+        uint32_t _LoadShader(Shader::EnumStage eStage, const String &code);
     };
 
 }

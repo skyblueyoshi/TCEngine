@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Type/Rect.h"
+#include "Type/Rect.h"
 #include <Type/Vector.h>
 #include <Type/Color.h>
 #include <Type/VertexFormat.h>

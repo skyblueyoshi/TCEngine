@@ -1,15 +1,24 @@
+
+#include <stdio.h>
+#include "EntityManager.h"
+
+int main() {
+    Tce::EntityManager<int> ee;
+    printf("ok");
+}
+
 //#define JUST_SAMPLE2
 #if !defined(JUST_SAMPLE) && !defined(JUST_SAMPLE2)
 
 #if defined(__unix__) || defined(__APPLE__) || defined(__HAIKU__) || defined(__ANDROID__)
-#   define FileMapper_POSIX
-#   if defined(__ANDROID__)
-#       define FileMapper_AndroidExtras
-#   endif
+#define FileMapper_POSIX
+#if defined(__ANDROID__)
+#define FileMapper_AndroidExtras
+#endif
 #elif _WINDOWS
-#   define FileMapper_Windows
+#define FileMapper_Windows
 #else
-#   error Unsupported operating system!
+#error Unsupported operating system!
 #endif
 
 #ifdef __ANDROID__
@@ -18,7 +27,7 @@
 #include <jni.h>
 #include "Game/Application.h"
 
-#include "Utils/Log.h"
+#include "TCLog.h"
 #include "Utils/RandomGenerator.h"
 
 #include <EGL/egl.h>
@@ -29,34 +38,39 @@
 #include "EntityID.h"
 #include "EntityManager.h"
 
-extern "C" {
+extern "C"
+{
 
-void android_main(struct android_app *pApp) {
-    using namespace Tce;
+    void android_main(struct android_app *pApp)
+    {
+        using namespace Tce;
 
-    TCE_LOG_INFO("Android Main Start.");
+        TCE_LOG_INFO("Android Main Start.");
 
-    std::shared_ptr<AppState> pAppState = std::make_shared<AppState>(pApp);
-    Tce::Application application(pAppState, Tce::Application::SOLUTION_CLIENT);
+        std::shared_ptr<AppState> pAppState = std::make_shared<AppState>(pApp);
+        Tce::Application application(pAppState, Tce::Application::SOLUTION_CLIENT);
 
-    TCE_LOG_INFO("Init Application.");
+        TCE_LOG_INFO("Init Application.");
 
-    if (application.Init()) {
-        TCE_LOG_INFO("Start Running Application.");
-        application.Run();
-    }
-
-
-    int events;
-    android_poll_source *pSource;
-    do {
-        if (ALooper_pollAll(0, nullptr, &events, (void **) &pSource) >= 0) {
-            if (pSource) {
-                pSource->process(pApp, pSource);
-            }
+        if (application.Init())
+        {
+            TCE_LOG_INFO("Start Running Application.");
+            application.Run();
         }
-    } while (!pApp->destroyRequested);
-}
+
+        int events;
+        android_poll_source *pSource;
+        do
+        {
+            if (ALooper_pollAll(0, nullptr, &events, (void **)&pSource) >= 0)
+            {
+                if (pSource)
+                {
+                    pSource->process(pApp, pSource);
+                }
+            }
+        } while (!pApp->destroyRequested);
+    }
 }
 
 #endif
@@ -135,7 +149,7 @@ struct block
  */
 struct engine
 {
-    struct android_app* app;
+    struct android_app *app;
 
     EGLDisplay display;
     EGLSurface surface;
@@ -155,11 +169,11 @@ struct engine
     block blocks[NUM_BLOCKS];
 };
 
-static void engine_init_blocks(struct engine* engine)
+static void engine_init_blocks(struct engine *engine)
 {
-    float blockYPos[] = { 0.8f, 0.675f, 0.55f };
+    float blockYPos[] = {0.8f, 0.675f, 0.55f};
 
-    for (int32_t i=0; i<NUM_BLOCKS; ++i)
+    for (int32_t i = 0; i < NUM_BLOCKS; ++i)
     {
         engine->blocks[i].x = BLOCK_START_POSITION + ((BLOCK_WIDTH + BLOCK_HORIZONTAL_GAP) * (i % NUM_BLOCKS_ROW));
         engine->blocks[i].y = blockYPos[i / NUM_BLOCKS_ROW];
@@ -174,7 +188,7 @@ GLuint LoadShader(const char *shaderSrc, GLenum type)
 
     // Create the shader object
     shader = glCreateShader(type);
-    if(shader != 0)
+    if (shader != 0)
     {
         // Load the shader source
         glShaderSource(shader, 1, &shaderSrc, NULL);
@@ -184,14 +198,14 @@ GLuint LoadShader(const char *shaderSrc, GLenum type)
         // Check the compile status
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 
-        if(!compiled)
+        if (!compiled)
         {
             GLint infoLen = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
 
-            if(infoLen > 1)
+            if (infoLen > 1)
             {
-                char* infoLog = new char[infoLen];
+                char *infoLog = new char[infoLen];
                 glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
                 LOGW("Error compiling shader:\n%s\n", infoLog);
                 delete[] infoLog;
@@ -206,7 +220,8 @@ GLuint LoadShader(const char *shaderSrc, GLenum type)
 /**
  * Initialize an EGL context for the current display.
  */
-static int engine_init_display(struct engine* engine) {
+static int engine_init_display(struct engine *engine)
+{
     // initialize OpenGL ES and EGL
 
     /*
@@ -215,14 +230,13 @@ static int engine_init_display(struct engine* engine) {
      * component compatible with on-screen windows
      */
     const EGLint attribs[] =
-            {
-                    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-                    EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                    EGL_BLUE_SIZE, 8,
-                    EGL_GREEN_SIZE, 8,
-                    EGL_RED_SIZE, 8,
-                    EGL_NONE
-            };
+        {
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+            EGL_BLUE_SIZE, 8,
+            EGL_GREEN_SIZE, 8,
+            EGL_RED_SIZE, 8,
+            EGL_NONE};
 
     EGLint w, h, dummy, format;
     EGLint numConfigs;
@@ -250,13 +264,13 @@ static int engine_init_display(struct engine* engine) {
     surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
 
     EGLint contextAttribs[] =
-            {
-                    EGL_CONTEXT_CLIENT_VERSION, 2,
-                    EGL_NONE
-            };
+        {
+            EGL_CONTEXT_CLIENT_VERSION, 2,
+            EGL_NONE};
     context = eglCreateContext(display, config, NULL, contextAttribs);
 
-    if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
+    if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
+    {
         LOGW("Unable to eglMakeCurrent");
         return -1;
     }
@@ -284,22 +298,22 @@ static int engine_init_display(struct engine* engine) {
     glDisable(GL_DEPTH_TEST);
 
     char vShaderStr[] =
-            "attribute vec4 a_vPosition;   \n"
-            "attribute vec4 a_vColor;	   \n"
-            "varying vec4 v_vColor;		   \n"
-            "void main()                   \n"
-            "{                             \n"
-            "   gl_Position = a_vPosition; \n"
-            "	v_vColor = a_vColor;       \n"
-            "}                             \n";
+        "attribute vec4 a_vPosition;   \n"
+        "attribute vec4 a_vColor;	   \n"
+        "varying vec4 v_vColor;		   \n"
+        "void main()                   \n"
+        "{                             \n"
+        "   gl_Position = a_vPosition; \n"
+        "	v_vColor = a_vColor;       \n"
+        "}                             \n";
 
     char fShaderStr[] =
-            "precision mediump float;                   \n"
-            "varying vec4 v_vColor;		 				\n"
-            "void main()                                \n"
-            "{                                          \n"
-            "  gl_FragColor = v_vColor;					\n"
-            "}                                          \n";
+        "precision mediump float;                   \n"
+        "varying vec4 v_vColor;		 				\n"
+        "void main()                                \n"
+        "{                                          \n"
+        "  gl_FragColor = v_vColor;					\n"
+        "}                                          \n";
 
     GLuint vertexShader;
     GLuint fragmentShader;
@@ -312,7 +326,7 @@ static int engine_init_display(struct engine* engine) {
 
     // Create the program object
     engine->programObject = glCreateProgram();
-    if(engine->programObject == 0)
+    if (engine->programObject == 0)
     {
         return -1;
     }
@@ -330,14 +344,14 @@ static int engine_init_display(struct engine* engine) {
 
     // Check the link status
     glGetProgramiv(engine->programObject, GL_LINK_STATUS, &linked);
-    if(!linked)
+    if (!linked)
     {
         GLint infoLen = 0;
         glGetProgramiv(engine->programObject, GL_INFO_LOG_LENGTH, &infoLen);
 
-        if(infoLen > 1)
+        if (infoLen > 1)
         {
-            char* infoLog = new char[infoLen];
+            char *infoLog = new char[infoLen];
             glGetProgramInfoLog(engine->programObject, infoLen, NULL, infoLog);
             LOGW("Error linking program:\n%s\n", infoLog);
 
@@ -353,7 +367,7 @@ static int engine_init_display(struct engine* engine) {
     return 0;
 }
 
-static void engine_update_frame(struct engine* engine)
+static void engine_update_frame(struct engine *engine)
 {
     if (engine->touchIsDown)
     {
@@ -424,9 +438,9 @@ static void engine_update_frame(struct engine* engine)
     }
 
     bool anyBlockActive = false;
-    for (int32_t i=0; i<NUM_BLOCKS; ++i)
+    for (int32_t i = 0; i < NUM_BLOCKS; ++i)
     {
-        block& currentBlock = engine->blocks[i];
+        block &currentBlock = engine->blocks[i];
         if (currentBlock.isActive)
         {
             const float blockLeft = currentBlock.x - BLOCK_HALF_WIDTH;
@@ -461,7 +475,7 @@ static void engine_update_frame(struct engine* engine)
 /**
  * Just the current frame in the display.
  */
-static void engine_draw_frame(struct engine* engine)
+static void engine_draw_frame(struct engine *engine)
 {
     if (engine->display == NULL)
     {
@@ -487,7 +501,7 @@ static void engine_draw_frame(struct engine* engine)
                             buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3],
                             -0.9f, 0.8f, z,
                             buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3],
-                            -0.85f,  0.85f, z,
+                            -0.85f, 0.85f, z,
                             buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3]};
 
     // Load the vertex data
@@ -495,11 +509,11 @@ static void engine_draw_frame(struct engine* engine)
     glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, &leftButton[3]);
     glDrawArrays(GL_TRIANGLES, 0, TRIANGLE_NUM_VERTICES);
 
-    GLfloat rightButton[] = {0.85f,  0.75f, z,
+    GLfloat rightButton[] = {0.85f, 0.75f, z,
                              buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3],
                              0.9f, 0.8f, z,
                              buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3],
-                             0.85f,  0.85f, z,
+                             0.85f, 0.85f, z,
                              buttonColor[0], buttonColor[1], buttonColor[2], buttonColor[3]};
 
     glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, rightButton);
@@ -533,27 +547,27 @@ static void engine_draw_frame(struct engine* engine)
     top = engine->ballY - BALL_HALF_HEIGHT;
     bottom = engine->ballY + BALL_HALF_HEIGHT;
     const float ballColor[] = {1.0f, 0.0f, 0.0f, 1.0f};
-    GLfloat ball[] = {left,  top, z,
+    GLfloat ball[] = {left, top, z,
                       ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      left, bottom,  z,
+                      left, bottom, z,
                       ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      right,   top, z,
+                      right, top, z,
                       ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      right,   top, z,
+                      right, top, z,
                       ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      left, bottom,  z,
+                      left, bottom, z,
                       ballColor[0], ballColor[1], ballColor[2], ballColor[3],
-                      right,  bottom, z,
+                      right, bottom, z,
                       ballColor[0], ballColor[1], ballColor[2], ballColor[3]};
 
     glVertexAttribPointer(POSITION_PARAMETER_INDEX, POSITION_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, ball);
     glVertexAttribPointer(COLOR_PARAMETER_INDEX, COLOR_NUM_ELEMENTS, GL_FLOAT, GL_FALSE, VERTEX_SIZE, &ball[3]);
     glDrawArrays(GL_TRIANGLES, 0, QUAD_NUM_VERTICES);
 
-    GLfloat blockColors[][4] = { {0.0f, 1.0f, 0.0f, 1.0f},{0.0f, 0.0f, 1.0f, 1.0f} };
-    for (int32_t i=0; i<NUM_BLOCKS; ++i)
+    GLfloat blockColors[][4] = {{0.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}};
+    for (int32_t i = 0; i < NUM_BLOCKS; ++i)
     {
-        block& currentBlock = engine->blocks[i];
+        block &currentBlock = engine->blocks[i];
         if (currentBlock.isActive)
         {
             const int32_t colorIndex = i % 2;
@@ -593,7 +607,7 @@ static void engine_draw_frame(struct engine* engine)
 /**
  * Tear down the EGL context currently associated with the display.
  */
-static void engine_term_display(struct engine* engine)
+static void engine_term_display(struct engine *engine)
 {
     if (engine->display != EGL_NO_DISPLAY)
     {
@@ -616,9 +630,9 @@ static void engine_term_display(struct engine* engine)
 /**
  * Process the next input event.
  */
-static int32_t engine_handle_input(struct android_app* app, AInputEvent* event)
+static int32_t engine_handle_input(struct android_app *app, AInputEvent *event)
 {
-    struct engine* engine = (struct engine*)app->userData;
+    struct engine *engine = (struct engine *)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION)
     {
         int32_t ret = 0;
@@ -648,23 +662,23 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event)
 /**
  * Process the next main command.
  */
-static void engine_handle_cmd(struct android_app* app, int32_t cmd)
+static void engine_handle_cmd(struct android_app *app, int32_t cmd)
 {
-    auto* engine = static_cast<struct engine*>(app->userData);
+    auto *engine = static_cast<struct engine *>(app->userData);
     switch (cmd)
     {
-        case APP_CMD_INIT_WINDOW:
-            // The window is being shown, get it ready.
-            if (engine->app->window != NULL)
-            {
-                engine_init_display(engine);
-                engine_draw_frame(engine);
-            }
-            break;
-        case APP_CMD_TERM_WINDOW:
-            // The window is being hidden or closed, clean it up.
-            engine_term_display(engine);
-            break;
+    case APP_CMD_INIT_WINDOW:
+        // The window is being shown, get it ready.
+        if (engine->app->window != NULL)
+        {
+            engine_init_display(engine);
+            engine_draw_frame(engine);
+        }
+        break;
+    case APP_CMD_TERM_WINDOW:
+        // The window is being hidden or closed, clean it up.
+        engine_term_display(engine);
+        break;
     }
 }
 
@@ -673,9 +687,11 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
  * android_native_app_glue.  It runs in its own thread, with its own
  * event loop for receiving input events and doing other things.
  */
-void android_main(struct android_app* state)
+void android_main(struct android_app *state)
 {
-    struct engine engine{};
+    struct engine engine
+    {
+    };
 
     LOGI("SSSSSTART");
 
@@ -689,16 +705,17 @@ void android_main(struct android_app* state)
     engine.app = state;
 
     // loop waiting for stuff to do.
-    while (true) {
+    while (true)
+    {
         // Read all pending events.
         int ident;
         int events;
-        struct android_poll_source* source;
+        struct android_poll_source *source;
 
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
-        while ((ident=ALooper_pollAll(0, nullptr, &events, reinterpret_cast<void**>(&source))) >= 0)
+        while ((ident = ALooper_pollAll(0, nullptr, &events, reinterpret_cast<void **>(&source))) >= 0)
         {
             // Process this event.
             if (source != nullptr)
@@ -724,7 +741,6 @@ void android_main(struct android_app* state)
 
 #elif defined(JUST_SAMPLE2)
 
-
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *
@@ -742,8 +758,6 @@ void android_main(struct android_app* state)
  *
  */
 
-
-
 #include <jni.h>
 
 #include <EGL/egl.h>
@@ -756,51 +770,58 @@ void android_main(struct android_app* state)
 
 #include <cstring>
 
-
-#define LOGI(...)((void) __android_log_print(ANDROID_LOG_INFO, "AndroidProject1.NativeActivity", __VA_ARGS__))
-#define LOGW(...)((void) __android_log_print(ANDROID_LOG_WARN, "AndroidProject1.NativeActivity", __VA_ARGS__))
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "AndroidProject1.NativeActivity", __VA_ARGS__))
+#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "AndroidProject1.NativeActivity", __VA_ARGS__))
 
 #define LOG_TAG "libgl2jni"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
-static void printGLString(const char *name, GLenum s) {
-    const char *v = (const char *) glGetString(s);
+static void printGLString(const char *name, GLenum s)
+{
+    const char *v = (const char *)glGetString(s);
     LOGI("GL %s = %s\n", name, v);
 }
 
-static void checkGlError(const char *op) {
-    for (GLint error = glGetError(); error; error = glGetError()) {
+static void checkGlError(const char *op)
+{
+    for (GLint error = glGetError(); error; error = glGetError())
+    {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
 }
 
 static const char gVertexShader[] =
-        "attribute vec4 vPosition;\n"
-        "void main() {\n"
-        " gl_Position = vPosition;\n"
-        "}\n";
+    "attribute vec4 vPosition;\n"
+    "void main() {\n"
+    " gl_Position = vPosition;\n"
+    "}\n";
 
 static const char gFragmentShader[] =
-        "precision mediump float;\n"
-        "void main() {\n"
-        " gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-        "}\n";
+    "precision mediump float;\n"
+    "void main() {\n"
+    " gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+    "}\n";
 
 GLuint loadShader(GLenum shaderType,
-                  const char *pSource) {
+                  const char *pSource)
+{
     GLuint shader = glCreateShader(shaderType);
-    if (shader) {
+    if (shader)
+    {
         glShaderSource(shader, 1, &pSource, NULL);
         glCompileShader(shader);
         GLint compiled = 0;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-        if (!compiled) {
+        if (!compiled)
+        {
             GLint infoLen = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-            if (infoLen) {
-                char *buf = (char *) malloc(infoLen);
-                if (buf) {
+            if (infoLen)
+            {
+                char *buf = (char *)malloc(infoLen);
+                if (buf)
+                {
                     glGetShaderInfoLog(shader, infoLen, NULL, buf);
                     LOGE("Could not compile shader %d:\n%s\n",
                          shaderType, buf);
@@ -815,19 +836,23 @@ GLuint loadShader(GLenum shaderType,
 }
 
 GLuint createProgram(const char *pVertexSource,
-                     const char *pFragmentSource) {
+                     const char *pFragmentSource)
+{
     GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
-    if (!vertexShader) {
+    if (!vertexShader)
+    {
         return 0;
     }
 
     GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
-    if (!pixelShader) {
+    if (!pixelShader)
+    {
         return 0;
     }
 
     GLuint program = glCreateProgram();
-    if (program) {
+    if (program)
+    {
         glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
         glAttachShader(program, pixelShader);
@@ -835,12 +860,15 @@ GLuint createProgram(const char *pVertexSource,
         glLinkProgram(program);
         GLint linkStatus = GL_FALSE;
         glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-        if (linkStatus != GL_TRUE) {
+        if (linkStatus != GL_TRUE)
+        {
             GLint bufLength = 0;
             glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
-            if (bufLength) {
-                char *buf = (char *) malloc(bufLength);
-                if (buf) {
+            if (bufLength)
+            {
+                char *buf = (char *)malloc(bufLength);
+                if (buf)
+                {
                     glGetProgramInfoLog(program, bufLength, NULL, buf);
                     LOGE("Could not link program:\n%s\n", buf);
                     free(buf);
@@ -859,7 +887,8 @@ GLuint gvPositionHandle;
 /**
  * Our saved state data.
  */
-struct saved_state {
+struct saved_state
+{
     float angle;
     int32_t x;
     int32_t y;
@@ -868,7 +897,8 @@ struct saved_state {
 /**
  * Shared state for our app.
  */
-struct engine {
+struct engine
+{
     struct android_app *app;
 
     ASensorManager *sensorManager;
@@ -887,7 +917,8 @@ struct engine {
 /**
  * Initialize an EGL context for the current display.
  */
-static int engine_init_display(struct engine *engine) {
+static int engine_init_display(struct engine *engine)
+{
     // initialize OpenGL ES and EGL
 
     /*
@@ -896,16 +927,15 @@ static int engine_init_display(struct engine *engine) {
      * component compatible with on-screen windows
      */
     const EGLint attribs[] = {
-            EGL_SURFACE_TYPE,
-            EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE,
-            8,
-            EGL_GREEN_SIZE,
-            8,
-            EGL_RED_SIZE,
-            8,
-            EGL_NONE
-    };
+        EGL_SURFACE_TYPE,
+        EGL_WINDOW_BIT,
+        EGL_BLUE_SIZE,
+        8,
+        EGL_GREEN_SIZE,
+        8,
+        EGL_RED_SIZE,
+        8,
+        EGL_NONE};
     EGLint w, h, format;
     EGLint numConfigs;
     EGLConfig config;
@@ -932,12 +962,12 @@ static int engine_init_display(struct engine *engine) {
     surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
 
     const EGLint contextAttribs[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 2,
-            EGL_NONE
-    };
+        EGL_CONTEXT_CLIENT_VERSION, 2,
+        EGL_NONE};
     context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);
 
-    if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
+    if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
+    {
         LOGW("Unable to eglMakeCurrent");
         return -1;
     }
@@ -966,19 +996,20 @@ static int engine_init_display(struct engine *engine) {
 }
 
 const GLfloat gTriangleVertices[] = {
-        0.0f,
-        0.5f,
-        -0.5f,
-        -0.5f,
-        0.5f,
-        -0.5f
-};
+    0.0f,
+    0.5f,
+    -0.5f,
+    -0.5f,
+    0.5f,
+    -0.5f};
 
 /**
  * Just the current frame in the display.
  */
-static void engine_draw_frame(struct engine *engine) {
-    if (engine->display == NULL) {
+static void engine_draw_frame(struct engine *engine)
+{
+    if (engine->display == NULL)
+    {
         // No display.
         return;
     }
@@ -1002,13 +1033,17 @@ static void engine_draw_frame(struct engine *engine) {
 /**
  * Tear down the EGL context currently associated with the display.
  */
-static void engine_term_display(struct engine *engine) {
-    if (engine->display != EGL_NO_DISPLAY) {
+static void engine_term_display(struct engine *engine)
+{
+    if (engine->display != EGL_NO_DISPLAY)
+    {
         eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-        if (engine->context != EGL_NO_CONTEXT) {
+        if (engine->context != EGL_NO_CONTEXT)
+        {
             eglDestroyContext(engine->display, engine->context);
         }
-        if (engine->surface != EGL_NO_SURFACE) {
+        if (engine->surface != EGL_NO_SURFACE)
+        {
             eglDestroySurface(engine->display, engine->surface);
         }
         eglTerminate(engine->display);
@@ -1022,9 +1057,11 @@ static void engine_term_display(struct engine *engine) {
 /**
  * Process the next input event.
  */
-static int32_t engine_handle_input(struct android_app *app, AInputEvent *event) {
-    struct engine *engine = (struct engine *) app->userData;
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+static int32_t engine_handle_input(struct android_app *app, AInputEvent *event)
+{
+    struct engine *engine = (struct engine *)app->userData;
+    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION)
+    {
         engine->state.x = AMotionEvent_getX(event, 0);
         engine->state.y = AMotionEvent_getY(event, 0);
         return 1;
@@ -1035,47 +1072,52 @@ static int32_t engine_handle_input(struct android_app *app, AInputEvent *event) 
 /**
  * Process the next main command.
  */
-static void engine_handle_cmd(struct android_app *app, int32_t cmd) {
-    struct engine *engine = (struct engine *) app->userData;
-    switch (cmd) {
-        case APP_CMD_SAVE_STATE:
-            // The system has asked us to save our current state. Do so.
-            engine->app->savedState = malloc(sizeof(struct saved_state));
-            *((struct saved_state *) engine->app->savedState) = engine->state;
-            engine->app->savedStateSize = sizeof(struct saved_state);
-            break;
-        case APP_CMD_INIT_WINDOW:
-            // The window is being shown, get it ready.
-            if (engine->app->window != NULL) {
-                engine_init_display(engine);
-                engine_draw_frame(engine);
-            }
-            break;
-        case APP_CMD_TERM_WINDOW:
-            // The window is being hidden or closed, clean it up.
-            engine_term_display(engine);
-            break;
-        case APP_CMD_GAINED_FOCUS:
-            // When our app gains focus, we start monitoring the accelerometer.
-            if (engine->accelerometerSensor != NULL) {
-                ASensorEventQueue_enableSensor(engine->sensorEventQueue,
-                                               engine->accelerometerSensor);
-                // We'd like to get 60 events per second (in us).
-                ASensorEventQueue_setEventRate(engine->sensorEventQueue,
-                                               engine->accelerometerSensor, (1000L / 60) *1000);
-            }
-            break;
-        case APP_CMD_LOST_FOCUS:
-            // When our app loses focus, we stop monitoring the accelerometer.
-            // This is to avoid consuming battery while not being used.
-            if (engine->accelerometerSensor != NULL) {
-                ASensorEventQueue_disableSensor(engine->sensorEventQueue,
-                                                engine->accelerometerSensor);
-            }
-            // Also stop animating.
-            engine->animating = 0;
+static void engine_handle_cmd(struct android_app *app, int32_t cmd)
+{
+    struct engine *engine = (struct engine *)app->userData;
+    switch (cmd)
+    {
+    case APP_CMD_SAVE_STATE:
+        // The system has asked us to save our current state. Do so.
+        engine->app->savedState = malloc(sizeof(struct saved_state));
+        *((struct saved_state *)engine->app->savedState) = engine->state;
+        engine->app->savedStateSize = sizeof(struct saved_state);
+        break;
+    case APP_CMD_INIT_WINDOW:
+        // The window is being shown, get it ready.
+        if (engine->app->window != NULL)
+        {
+            engine_init_display(engine);
             engine_draw_frame(engine);
-            break;
+        }
+        break;
+    case APP_CMD_TERM_WINDOW:
+        // The window is being hidden or closed, clean it up.
+        engine_term_display(engine);
+        break;
+    case APP_CMD_GAINED_FOCUS:
+        // When our app gains focus, we start monitoring the accelerometer.
+        if (engine->accelerometerSensor != NULL)
+        {
+            ASensorEventQueue_enableSensor(engine->sensorEventQueue,
+                                           engine->accelerometerSensor);
+            // We'd like to get 60 events per second (in us).
+            ASensorEventQueue_setEventRate(engine->sensorEventQueue,
+                                           engine->accelerometerSensor, (1000L / 60) * 1000);
+        }
+        break;
+    case APP_CMD_LOST_FOCUS:
+        // When our app loses focus, we stop monitoring the accelerometer.
+        // This is to avoid consuming battery while not being used.
+        if (engine->accelerometerSensor != NULL)
+        {
+            ASensorEventQueue_disableSensor(engine->sensorEventQueue,
+                                            engine->accelerometerSensor);
+        }
+        // Also stop animating.
+        engine->animating = 0;
+        engine_draw_frame(engine);
+        break;
     }
 }
 
@@ -1084,7 +1126,8 @@ static void engine_handle_cmd(struct android_app *app, int32_t cmd) {
  * android_native_app_glue. It runs in its own thread, with its own
  * event loop for receiving input events and doing other things.
  */
-void android_main(struct android_app *state) {
+void android_main(struct android_app *state)
+{
     struct engine engine;
 
     memset(&engine, 0, sizeof(engine));
@@ -1100,40 +1143,46 @@ void android_main(struct android_app *state) {
     engine.sensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,
                                                               state->looper, LOOPER_ID_USER, NULL, NULL);
 
-    if (state->savedState != NULL) {
+    if (state->savedState != NULL)
+    {
         // We are starting with a previous saved state; restore from it.
-        engine.state = * (struct saved_state * ) state->savedState;
+        engine.state = *(struct saved_state *)state->savedState;
     }
 
     engine.animating = 1;
 
     // loop waiting for stuff to do.
 
-    while (1) {
+    while (1)
+    {
         // Read all pending events.
         int ident;
         int events;
-        struct android_poll_source * source;
+        struct android_poll_source *source;
 
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
-        while ((ident = ALooper_pollAll(engine.animating ? 0 : -1, NULL, & events,
-                                        (void * * ) & source)) >= 0) {
+        while ((ident = ALooper_pollAll(engine.animating ? 0 : -1, NULL, &events,
+                                        (void **)&source)) >= 0)
+        {
 
             // Process this event.
-            if (source != NULL) {
+            if (source != NULL)
+            {
                 source->process(state, source);
             }
 
             // Check if we are exiting.
-            if (state->destroyRequested != 0) {
-                engine_term_display( & engine);
+            if (state->destroyRequested != 0)
+            {
+                engine_term_display(&engine);
                 return;
             }
         }
 
-        if (engine.animating) {
+        if (engine.animating)
+        {
             // Drawing is throttled to the screen update rate, so there
             // is no need to do timing here.
             engine_draw_frame(&engine);

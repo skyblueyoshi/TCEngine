@@ -1,5 +1,3 @@
-#include <cmath>
-#include "StringHelper.h"
 #include "Matrix.h"
 
 namespace Tce {
@@ -207,8 +205,8 @@ namespace Tce {
                 _44 * scaleFactor};
     }
 
-    inline std::string Matrix::ToString() {
-        return StringHelper::MakeFormat("{M11:%d M12:%d M13:%d M14:%d}"
+    inline String Matrix::ToString() {
+        return String::Format("{M11:%d M12:%d M13:%d M14:%d}"
                                         " {M21:%d M22:%d M23:%d M24:%d}"
                                         " {M31:%d M32:%d M33:%d M34:%d}"
                                         " {M41:%d M42:%d M43:%d M44:%d}",

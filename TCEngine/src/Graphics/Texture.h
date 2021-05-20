@@ -18,14 +18,14 @@ namespace Tce {
         // 构造函数
         // @param width 纹理宽度
         // @param height 纹理高度
-        Texture(uint32_t handle, uint width, uint height);
+        Texture(uint32_t handle, uint32_t width, uint32_t height);
 
         // 构造函数
         // @param width 纹理宽度
         // @param height 纹理高度
         // @param mipmap 是否使用MipMap
         // @param format 纹理表面格式
-        Texture(uint32_t handle, uint width, uint height, bool mipmap, EnumSurfaceFormat format);
+        Texture(uint32_t handle, uint32_t width, uint32_t height, bool mipmap, EnumSurfaceFormat format);
 
         // 构造函数
         // @param width 纹理宽度
@@ -33,7 +33,7 @@ namespace Tce {
         // @param mipmap 是否使用MipMap
         // @param format 纹理表面格式
         // @param type 纹理表面类型
-        Texture(uint32_t handle, uint width, uint height, bool mipmap, EnumSurfaceFormat format,
+        Texture(uint32_t handle, uint32_t width, uint32_t height, bool mipmap, EnumSurfaceFormat format,
                 EnumSurfaceType type);
 
         // 获取表面格式
@@ -44,19 +44,19 @@ namespace Tce {
 
         // 获取层数
         // @return mipmap层数
-        inline uint GetLevelCount() const {
+        inline uint32_t GetLevelCount() const {
             return m_levelCount;
         }
 
         // 获取纹理宽度
         // @return 纹理宽度
-        inline uint GetWidth() const {
+        inline uint32_t GetWidth() const {
             return m_width;
         }
 
         // 获取纹理高度
         // @return 纹理高度
-        inline uint GetHeight() const {
+        inline uint32_t GetHeight() const {
             return m_height;
         }
 
@@ -73,16 +73,16 @@ namespace Tce {
         }
 
     private:
-        uint m_width{};                             // 纹理宽度
-        uint m_height{};                            // 纹理高度
+        uint32_t m_width{};                             // 纹理宽度
+        uint32_t m_height{};                            // 纹理高度
         float m_texelWidth{};                       // 纹理横向单位
         float m_texelHeight{};                      // 纹理纵向单位
-        static uint sSortKey;                       // 静态纹理排序键
+        static uint32_t sSortKey;                       // 静态纹理排序键
         EnumSurfaceFormat m_eFormat{};              // 表面格式
-        uint m_levelCount{};                        // MipMap层数
+        uint32_t m_levelCount{};                        // MipMap层数
         EnumSurfaceType m_type{};                   // 表面类型
     public:
-        uint __sortKey{sSortKey++};                 // 纹理排序键
+        uint32_t __sortKey{sSortKey++};                 // 纹理排序键
     };
 
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include "TCUtils.h"
 #include "GameState.h"
 
 namespace Tce {
@@ -27,14 +27,14 @@ namespace Tce {
 		uint64_t nextFrameTick{currentTick};		                    		//下一次帧绘制计时器
 		uint64_t lastSecondGameTick{currentTick};		                		//上一秒游戏更新计时器
 		uint64_t lastSecondFrameTick{currentTick};		                		//上一帧绘制计时器
-		int frameIndexInCurrentSecond{};	                        			//当前秒绘制累积器
-		int updateIndexInCurrentSecond{};	                        			//当前秒更新累积器
+		uint32_t frameIndexInCurrentSecond{};	                        			//当前秒绘制累积器
+		uint32_t updateIndexInCurrentSecond{};	                        			//当前秒更新累积器
 		unsigned long sleepTime{};		                                		//休眠时间
 		int loops{};	                                            			//跳帧内次数
 	};
 
 	struct GameWindowMessage {
-#if defined(_WINDOWS)
+#ifdef _TC_WINDOWS
 		MSG msg{};
 #endif
 	};

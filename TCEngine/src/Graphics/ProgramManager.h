@@ -15,7 +15,7 @@ namespace Tce {
         // @param vertexCode 顶点着色器代码
         // @param pixelCode 像素着色器代码
         // @return ID
-        uint32_t Load(const std::string &vertexCode, const std::string &pixelCode);
+        uint32_t Load(const String &vertexCode, const String &pixelCode);
 
         // 卸载着色程序
         // @param pProgram 着色程序指针

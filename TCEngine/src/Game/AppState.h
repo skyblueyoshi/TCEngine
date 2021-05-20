@@ -1,7 +1,8 @@
 #pragma once
 
+#include "TCUtils.h"
 
-#if defined(__ANDROID__)
+#ifdef _TC_ANDROID
 #include <android_native_app_glue.h>
 #endif
 
@@ -11,14 +12,14 @@ namespace Tce {
 	class AppState {
 	public:
 		AppState() = default;
-#	if defined(__ANDROID__)
+#	if defined(_TC_ANDROID)
 		AppState(android_app * pAndroidState) : m_pAndroidState(pAndroidState) {}
 		android_app * GetAndroidState() const {
 			return m_pAndroidState;
 		}
 #	endif
 	private:
-#   if defined(__ANDROID__)
+#   if defined(_TC_ANDROID)
 		android_app * m_pAndroidState;		//安卓APP状态
 #	endif
 	};

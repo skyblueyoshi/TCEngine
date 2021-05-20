@@ -21,10 +21,64 @@ namespace Tce {
         return (a < b ? a : b);
     }
 
+    inline float TCMath::Pow(float a, float b) {
+        return std::powf(a, b);
+    }
+
+    inline float TCMath::Pow(float a, int b) {
+        return std::powf(a, (float)b);
+    }
+
+    inline double TCMath::Pow(double a, double b) {
+        return std::pow(a, b);
+    }
+
+    inline double TCMath::Pow(double a, int b) {
+        return std::pow(a, b);
+    }
+
+    inline double TCMath::Sqrt(double a) {
+        return std::sqrt(a);
+    }
+
+    inline float TCMath::Sqrt(float a) {
+        return std::sqrtf(a);
+    }
+
+    inline float TCMath::Floor(float a) {
+        return std::floorf(a);
+    }
+
+    inline double TCMath::Floor(double a) {
+        return std::floor(a);
+    }
+
+    inline float TCMath::Ceil(float a) {
+        return std::ceilf(a);
+    }
+
+    inline double TCMath::Ceil(double a) {
+        return std::ceil(a);
+    }
+
+    inline int TCMath::Pow(int a, int b) {
+        int result = 1;
+        while (b) {
+            if (b % 2)
+            result *= a;
+            b /= 2;
+            a *= a;
+        }
+        return result;
+    }
+
     template<typename T>
     inline int TCMath::CompareBySortKey(const void *pFirst, const void *pSecond) {
-        return reinterpret_cast<const T *>(pFirst)->__sortKey -
-               reinterpret_cast<const T *>(pSecond)->__sortKey;
+        auto &firstKey = reinterpret_cast<const T *>(pFirst)->__sortKey;
+        auto &secondKey = reinterpret_cast<const T *>(pSecond)->__sortKey;
+        if (firstKey == secondKey) return 0;
+        if (firstKey > secondKey) return 1;
+        return -1;
     }
 
     template<typename T>

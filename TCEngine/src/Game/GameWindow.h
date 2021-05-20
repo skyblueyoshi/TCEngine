@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "AppState.h"
 #include "GraphicsDevice.h"
 

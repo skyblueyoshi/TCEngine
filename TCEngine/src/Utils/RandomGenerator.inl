@@ -1,6 +1,5 @@
 
-#include "RandomGenerator.h"
-#include "Utils/Memory.h"
+#include "Memory.h"
 
 namespace Tce {
 
@@ -11,7 +10,7 @@ namespace Tce {
             return (size_t)((r1 << 16) | r2);
         }
         else {
-            return (size_t)_GetNextWord(n);
+            return (size_t)_GetNextWord((uint16_t)n);
         }
     }
 
@@ -56,7 +55,7 @@ namespace Tce {
     }
 
     inline int RandomGenerator::GetNextArea(int begin, size_t n) {
-        return begin + GetNext(n);
+        return begin + (int)GetNext(n);
     }
 
     inline double RandomGenerator::GetNextDouble(double value) {

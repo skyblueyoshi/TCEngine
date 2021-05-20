@@ -28,11 +28,12 @@ set(TARGET_SOURCE_FILES
 		src/Game/GameServer.cpp
 		src/Game/GameState.cpp
 		src/Game/GameWindow.cpp
-		src/Utils/Log.cpp
-		src/Utils/StringHelper.cpp
+		src/Utils/TCLog.cpp
     	src/Utils/TickRunner.cpp
 		src/Utils/FileMapper.cpp
-		src/Utils/File.cpp
+		src/Utils/TCFile.cpp
+		src/Utils/TCImage.cpp
+		src/Utils/TCString.cpp
 		src/Graphics/GraphicsDevice.cpp
 		src/Graphics/GraphicsDeviceOpenGL.cpp
 		src/Graphics/GraphicsResource.cpp

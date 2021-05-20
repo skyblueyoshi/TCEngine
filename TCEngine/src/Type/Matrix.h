@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstring>
 #include "Vector.h"
 
 namespace Tce {
@@ -90,7 +89,7 @@ namespace Tce {
 
         // 返回一个表示矩阵的字符串
         // @return 字符串
-        std::string ToString();
+        String ToString();
 
         // 转置矩阵，即行列交换
         // @return 结果矩阵

@@ -1,5 +1,7 @@
 #include "GraphicsDevice.h"
-#include <Utils/Log.h>
+#include "TCLog.h"
+#include "TCImage.h"
+#include "TCString.h"
 
 namespace Tce {
 
@@ -118,6 +120,7 @@ namespace Tce {
         TCE_LOG_INFO("Android OpenGLES Initialize Success!");
         TCE_LOG_INFO("Window size: %d x %d", m_width, m_height);
 
+        glViewport(0, 0, m_width, m_height);
     }
 
     void GraphicsDevice::_PlatformDestroy() {
@@ -154,6 +157,103 @@ namespace Tce {
 
     void GraphicsDevice::_PlatformPresent() {
         eglSwapBuffers(m_display, m_surface);
+    }
+
+    std::shared_ptr<Texture> GraphicsDevice::_PlatformCreateTexture(const ImageData& data) {
+        // 创建纹理
+        uint32_t handle = 0;
+        glGenTextures(1, &handle);
+        glBindTexture(GL_TEXTURE_2D, handle);
+        // 传入纹理
+        glTexImage2D(GL_TEXTURE_2D,
+                     0, GL_RGBA,
+                     data.m_width, data.m_height,
+                     0, GL_RGBA,
+                     GL_UNSIGNED_BYTE, data.m_data.Data());
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        return std::make_shared<Texture>(handle, data.m_width, data.m_height);
+    }
+
+    std::shared_ptr<Shader> GraphicsDevice::_PlatformCreateShader(Shader::EnumStage eStage, const String &code) {
+        try {
+            // 创建并获取着色器ID句柄
+            GLuint handle = glCreateShader(
+                    eStage == Shader::STAGE_VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
+
+            // 编译着色器
+            char const *pSourceCode = code.Data();
+            glShaderSource(handle, 1, &pSourceCode, nullptr);
+            glCompileShader(handle);
+
+            GLint compileResult = GL_FALSE;
+            int infoLogLength = 0;
+
+            // 检测着色器
+            glGetShaderiv(handle, GL_COMPILE_STATUS, &compileResult);
+            glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &infoLogLength);
+            if (infoLogLength) {
+                std::string errorMessage;
+                errorMessage.resize(infoLogLength);
+                glGetShaderInfoLog(handle, infoLogLength, nullptr, &errorMessage[0]);
+                TCE_LOG_ERROR("%s\n", &errorMessage[0]);
+                throw std::runtime_error(errorMessage.c_str());
+            }
+            return std::make_shared<Shader>(eStage, code, handle);
+        }
+        catch (const std::exception &ex) {
+            throw std::runtime_error(String::Format(
+                    "Failed to load %s shader: \n%s",
+                    (eStage == Shader::STAGE_VERTEX ? "vertex" : "pixel"),
+                    ex.what()).Data());
+        }
+    }
+
+    std::shared_ptr<Tce::Program> GraphicsDevice::_PlatformCreateProgram(const String &vertexCode, const String &pixelCode) {
+        try {
+            int vertexId = m_pShaderManager->LoadVertexShader(vertexCode);
+            int pixelId = m_pShaderManager->LoadPixelShader(pixelCode);
+
+            auto &pVertexShader = m_pShaderManager->Get(vertexId);
+            auto &pPixelShader = m_pShaderManager->Get(pixelId);
+
+            uint32_t handle = glCreateProgram();
+
+            // 连接着色器
+            glAttachShader(handle, pVertexShader->GetHandle());
+            glAttachShader(handle, pPixelShader->GetHandle());
+            glLinkProgram(handle);
+
+            // 检查
+            GLint result = GL_FALSE;
+            int infoLogLength;
+            glGetProgramiv(handle, GL_LINK_STATUS, &result);
+            glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &infoLogLength);
+            if (infoLogLength > 0) {
+                std::string errorMessage;
+                errorMessage.resize(infoLogLength);
+                glGetProgramInfoLog(handle, infoLogLength, nullptr, &errorMessage[0]);
+                TCE_LOG_ERROR("%s\n", &errorMessage[0]);
+                throw std::runtime_error(errorMessage.c_str());
+            }
+
+            // 解除附着
+            glDetachShader(handle, pVertexShader->GetHandle());
+            glDetachShader(handle, pPixelShader->GetHandle());
+
+            // 卸载着色器
+            m_pShaderManager->UnloadByID(vertexId);
+            m_pShaderManager->UnloadByID(pixelId);
+
+            return std::make_shared<Program>(handle);
+        }
+        catch (const std::exception & ex) {
+            throw std::runtime_error(String::Format(
+                    "Failed to load shader program: \n%s",
+                    ex.what()).Data());
+        }
     }
 
 #endif

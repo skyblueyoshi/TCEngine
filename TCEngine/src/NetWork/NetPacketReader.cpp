@@ -17,7 +17,7 @@ namespace Tce {
         }
         catch (...) {
             recvStream.SetReadPos(lastPos);
-            mTempStream.Reset();
+            mTempStream.Clear();
             _failTimes++;
             if (_failTimes > MAX_WAIT_NEXT_TIMES) {
                 _failTimes = 0;

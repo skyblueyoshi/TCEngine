@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ByteStream.h"
+#include "TCUtils.h"
+#include "TCByteStream.h"
 
 namespace Tce {
 

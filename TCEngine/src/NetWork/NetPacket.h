@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
-#include "ByteStream.h"
+#include "TCUtils.h"
+#include "TCByteStream.h"
 
 namespace Tce {
 

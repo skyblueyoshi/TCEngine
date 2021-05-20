@@ -29,6 +29,8 @@
 
 namespace Tce {
 
+    class ImageData;
+
     class GraphicsResource;
 
     class GraphicsDevice {
@@ -68,11 +70,15 @@ namespace Tce {
 
         // 获取显示宽度
         // @return 显示宽度
-        uint GetDisplayWidth() const;
+        uint32_t GetDisplayWidth() const {
+            return m_width;
+        }
 
         // 获取显示高度
         // @return 显示高度
-        uint GetDisplayHeight() const;
+        uint32_t GetDisplayHeight() const {
+            return m_height;
+        }
 
         // 丢弃着色器
         // @param handle 着色器句柄
@@ -85,6 +91,15 @@ namespace Tce {
         // 丢弃纹理
         // @param handle 纹理句柄
         void DisposeTexture(uint32_t handle);
+
+        // 创建纹理
+        std::shared_ptr<Texture> CreateTextureFromFile(const String &path);
+        
+        // 创建着色器
+        std::shared_ptr<Shader> CreateShader(Shader::EnumStage eStage, const String &code);
+        
+        // 创建着色程序
+        std::shared_ptr<Program> CreateProgram(const String &vertexCode, const String &pixelCode);
 
     private:
         void _PlatformInit();
@@ -99,6 +114,11 @@ namespace Tce {
 
         void _PlatformPresent();
 
+        std::shared_ptr<Texture> _PlatformCreateTexture(const ImageData& data);
+
+        std::shared_ptr<Shader> _PlatformCreateShader(Shader::EnumStage eStage, const String &code);
+
+        std::shared_ptr<Program> _PlatformCreateProgram(const String &vertexCode, const String &pixelCode);
     private:
 
         enum EnumResourceType {
@@ -137,8 +157,8 @@ namespace Tce {
         };
 
         AppState* m_pAppState{nullptr};                 // APP状态
-        uint m_width{};                                 // APP宽度
-        uint m_height{};                                // APP高度
+        uint32_t m_width{};                                 // APP宽度
+        uint32_t m_height{};                                // APP高度
         uint64_t m_clearTimes{};                        // 设备清空次数
         bool m_initialized{};                           // 是否完成初始化
         std::list<ResourceHandle> m_nextDisposes;       // 下一帧丢弃资源表

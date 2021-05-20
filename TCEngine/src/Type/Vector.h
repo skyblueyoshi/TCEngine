@@ -1,10 +1,8 @@
 #pragma once
 
-#include <string>
+#include "TCUtils.h"
 
 namespace Tce {
-
-    struct Matrix;
 
     // 2维向量{X, Y}
     template <typename Type>
@@ -212,7 +210,7 @@ namespace Tce {
 
         // 返回一个表示向量的字符串
         // @result 字符串
-        std::string ToString() const;
+        String ToString() const;
 
         // 判断两个向量是否相同
         // @param value 另一个向量
@@ -405,7 +403,7 @@ namespace Tce {
 
         // 返回一个表示向量的字符串
         // @result 字符串
-        std::string ToString() const;
+        String ToString() const;
 
         // 判断两个向量是否相同
         // @param value 另一个向量

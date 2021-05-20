@@ -1,10 +1,8 @@
 #pragma once
 
-#include <cstdint>
-#include <mutex>
-#include <Utils/ByteStream.h>
 #include "TCSocket.h"
-#include <array>
+#include "TCArray.h"
+#include "TCByteStream.h"
 
 namespace Tce {
 
@@ -18,14 +16,14 @@ namespace Tce {
     class NetClient {
     private:
         TCSocket mSocket;                   //客户端SOCKET
-        std::array<uint8_t, MAX_RECV_TEMP_BUFFER_SIZE> mTempBuffer;
+        Array<uint8_t, MAX_RECV_TEMP_BUFFER_SIZE> mTempBuffer;
         ByteStream mSendBuffer;
         ByteStream mRecvBuffer;
         std::mutex mRecvLock;
         bool mIsRunning{};
     public:
         // 开始连接
-        void StartConnection(const char * serverIP, int serverPort);
+        bool StartConnection(const char * serverIP, uint16_t serverPort);
         // 发送缓存
         void SendAll();
         // 接收缓存

@@ -1,15 +1,12 @@
 #pragma once
 
-#include <vector>
-#include "Memory.h"
-#include <cstring>
+#include "TCArrayList.h"
 
 namespace Tce {
 
-    class ByteStream {
+    class ByteStream : public ArrayList<uint8_t> {
     private:
-        std::vector<uint8_t> m_arr;
-        size_t m_readPos{};        //读取点
+        size_t _readPos{};        //读取点
     public:
         ByteStream() = default;
 
@@ -17,87 +14,68 @@ namespace Tce {
 
         ByteStream(ByteStream &&bs) = default;
 
-        ByteStream(const std::vector<uint8_t> &arr)
-                : m_arr(arr) {}
+        virtual ~ByteStream() = default;
 
-        ByteStream(std::vector<uint8_t> &&arr)
-                : m_arr(std::move(arr)) {}
 
-        ~ByteStream() = default;
+        ByteStream& operator=(const ByteStream& bs) {
+            if (this != &bs) {
+                _arr = bs._arr;
+                _readPos = bs._readPos;
+            }
+            return *this;
+        }
 
-        bool IsEmpty() const {
-            return GetLength() == 0;
+        ByteStream& operator=(ByteStream &&bs) {
+            if (this != &bs) {
+                _arr = std::move(bs._arr);
+                _readPos = bs._readPos;
+            }
+            return *this;
         }
 
         //从某个指针位置开始，加入一段空间到字节流
         template<typename T2>
-        void WriteBatch(const T2 *p, int count) {
+        void WriteBatch(const T2 *p, size_t count) {
             assert(count > 0);
-            int addByteSize = count * sizeof(T2);
+            size_t addByteSize = count * sizeof(T2);
             //拓容
-            int oldLength = m_arr.size();
-            m_arr.resize(oldLength + addByteSize);
-            Memory::CopyArray((uint8_t *) &m_arr[oldLength], (uint8_t *) p, addByteSize);
+            size_t oldLength = Count();
+            SetCount(oldLength + addByteSize);
+            Memory::CopyArray((uint8_t *) &GetAt(oldLength), (uint8_t *) p, addByteSize);
         }
 
         //还有可读数据
         bool CanRead() const {
-            return m_readPos < m_arr.size();
+            return _readPos < Count();
         }
 
         //判断是否可读接下来的长度（长度必需大于0）
         bool CanReadNextLength(int nextLength) const {
             assert(nextLength > 0);
-            return m_readPos + nextLength <= m_arr.size();
+            return _readPos + nextLength <= Count();
         }
 
-        uint8_t *GetBase() {
-            return m_arr.data();
-        }
-
-        const uint8_t *GetBase() const {
-            return m_arr.data();
-        }
-
-        size_t GetLength() const {
-            return m_arr.size();
-        }
-
-        size_t GetCapacity() const {
-            return m_arr.capacity();
-        }
-
-        //设置长度，注意如果长度为0，则会清空读取点
-        void SetLength(size_t nNewLength, bool freeMemory = false) {
-            if (nNewLength == 0)
-                m_readPos = 0;
-            if (nNewLength > 0) {
-                m_arr.resize(nNewLength);
-            } else if (freeMemory) {
-                FreeMemory();
-            } else {
-                m_arr.resize(nNewLength);
-            }
-            if (m_readPos > m_arr.size())
-                m_readPos = m_arr.size();
+        void SetCount(size_t count) {
+            ArrayList<uint8_t>::SetCount(count);
+            if (_readPos > Count()) _readPos = Count();
         }
 
         void FreeMemory() {
-            std::vector<uint8_t> temp;
-            m_arr.swap(temp);
-            m_readPos = 0;
+            ArrayList<uint8_t>::FreeMemory();
+            _readPos = 0;
         }
 
-        void Reset() {
-            SetLength(0);
+        void Clear() {
+            ArrayList<uint8_t>::Clear();
+            _readPos = 0;
         }
 
     private:
         //批量获取元素到指定位置
         template<typename T2>
-        void InnerGetBatch(T2 *p, int begin, int count) const {
-            if ((int) (begin + count * sizeof(T2)) <= m_arr.size()) {
-                Memory::CopyArray((uint8_t *) p, (uint8_t *) &m_arr.at(begin), count * sizeof(T2));
+        void InnerGetBatch(T2 *p, size_t begin, size_t count) const {
+            if ((begin + count * sizeof(T2)) <= Count()) {
+                Memory::CopyArray((uint8_t *) p, (uint8_t *) &GetAt(begin), count * sizeof(T2));
             } else {
                 throw std::overflow_error("ByteStream.GetBatch() overflow!");
             }
@@ -106,22 +84,22 @@ namespace Tce {
     public:
         //获取读取位置指针
         size_t GetReadPos() const {
-            return m_readPos;
+            return _readPos;
         }
 
         //设置读取位置指针
-        void SetReadPos(int x) {
-            m_readPos = x;
+        void SetReadPos(size_t x) {
+            _readPos = x;
         }
 
         //读取位置指针清零
         void ZeroReadPos() {
-            m_readPos = 0;
+            _readPos = 0;
         }
 
         //推进读取位置指针
-        void MoveReadPos(int n) {
-            m_readPos += n;
+        void MoveReadPos(size_t n) {
+            _readPos += n;
         }
 
         //加入一个变量到字节流
@@ -132,8 +110,8 @@ namespace Tce {
 
         //读取指针批量获取变量，并使读取指针自动跳过读取部分
         template<typename T2>
-        void ReadBatch(T2 *p, int count) {
-            InnerGetBatch(p, m_readPos, count);
+        void ReadBatch(T2 *p, size_t count) {
+            InnerGetBatch(p, _readPos, count);
             MoveReadPos(count * sizeof(T2));
         }
 
@@ -147,7 +125,7 @@ namespace Tce {
         template<typename T2>
         void ReadArrayList(std::vector<T2> &arr, int count) {
             arr.resize(count);
-            InnerGetBatch(arr.GetBasePointer(), m_readPos, count);
+            InnerGetBatch(arr.GetBasePointer(), _readPos, count);
             MoveReadPos(count * sizeof(T2));
         }
 
@@ -177,27 +155,27 @@ namespace Tce {
 
         template<>
         void Write<ByteStream>(const ByteStream &bs) {
-            size_t len = bs.GetLength();
-            WriteVarInt(len);
+            size_t len = bs.Count();
+            WriteVarInt((uint32_t)len);
             if (len > 0) {
-                WriteBatch(bs.GetBase(), len);
+                WriteBatch(bs.Data(), len);
             }
         }
 
         template<>
         void Read<ByteStream>(ByteStream &bs) {
-            size_t len = 0;
+            uint32_t len = 0;
             ReadVarInt(len);
-            bs.SetLength(len);
+            bs.SetCount((size_t)len);
             if (len > 0) {
-                ReadBatch(bs.GetBase(), len);
+                ReadBatch(bs.Data(), (size_t)len);
             }
         }
 
 //        template<>
 //        void Write<std::string>(const std::string &value) {
 //            size_t len = value.size();
-//            WriteVarInt(len);
+//            WriteVarInt((uint32_t)len);
 //            if (len != 0) {
 //                WriteBatch(value.data(), len);
 //            }
@@ -216,7 +194,7 @@ namespace Tce {
         template<typename T2>
         void WriteArray(const std::vector<T2> &_arr) {
             size_t len = _arr.size();
-            WriteVarInt(len);
+            WriteVarInt((uint32_t)len);
             if (len != 0) {
                 for (size_t i = 0; i < len; i++) {
                     Write(_arr[i]);
@@ -236,6 +214,10 @@ namespace Tce {
             }
         }
 
+        void WriteVarInt(uint32_t value) {
+            WriteVarInt((int)value);
+        }
+
         void WriteVarInt(int value) {
             unsigned int v = (unsigned int) value;
             do {
@@ -248,10 +230,10 @@ namespace Tce {
             } while (v != 0);
         }
 
-        void ReadVarInt(size_t &value) {
+        void ReadVarInt(uint32_t &value) {
             int _value;
             ReadVarInt(_value);
-            value = (size_t) _value;
+            value = (uint32_t) _value;
         }
 
         void ReadVarInt(int &value) {

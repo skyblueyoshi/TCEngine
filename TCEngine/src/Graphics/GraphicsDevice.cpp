@@ -1,5 +1,6 @@
-#include <Utils/Log.h>
 #include "GraphicsDevice.h"
+#include "TCLog.h"
+#include "TCImage.h"
 
 namespace Tce {
 
@@ -45,7 +46,6 @@ namespace Tce {
     }
 
     void GraphicsDevice::Clear(Color color) {
-        glViewport(0, 0, m_width, m_height);
         _PlatformClear(color);
         m_clearTimes++;
     }
@@ -92,11 +92,16 @@ namespace Tce {
         return m_pTextureManager.get();
     }
 
-    uint GraphicsDevice::GetDisplayWidth() const {
-        return m_width;
+    std::shared_ptr<Texture> GraphicsDevice::CreateTextureFromFile(const String &path) {
+        ImageData imgData = Image::LoadPngFromFile(path);
+        return _PlatformCreateTexture(imgData);
     }
 
-    uint GraphicsDevice::GetDisplayHeight() const {
-        return m_height;
+    std::shared_ptr<Shader> GraphicsDevice::CreateShader(Shader::EnumStage eStage, const String &code) {
+        return _PlatformCreateShader(eStage, code);
+    }
+
+    std::shared_ptr<Program> GraphicsDevice::CreateProgram(const String &vertexCode, const String &pixelCode) {
+        return _PlatformCreateProgram(vertexCode, pixelCode);
     }
 }

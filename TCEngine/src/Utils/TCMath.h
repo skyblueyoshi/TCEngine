@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include "SysConfig.h"
 
 namespace Tce {
 
@@ -28,8 +28,27 @@ namespace Tce {
         template<typename T>
         static T Min(T a, T b);
 
+        // 获取幂次
+        static float Pow(float a, float b);
+        static float Pow(float a, int b);
+        static double Pow(double a, double b);
+        static double Pow(double a, int b);
+        static int Pow(int a, int b);
+
+        //求平方根
+        static float Sqrt(float a);
+        static double Sqrt(double a);
+
+        //向下取整
+        static float Floor(float a);
+        static double Floor(double a);
+
+        //向上取整
+        static float Ceil(float a);
+        static double Ceil(double a);
+
         //求余获取正数（a % b 得到非负数）
-        inline int PositiveMod(int a, int b);
+        static int PositiveMod(int a, int b);
 
         template<typename T>
         static int CompareBySortKey(const void *pFirst, const void *pSecond);

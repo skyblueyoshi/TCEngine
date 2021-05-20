@@ -1,16 +1,8 @@
 
 #pragma once
 
-#include <array>
-#include <cstddef>
-#include <cstdlib>
-#include <memory>
-#include <new>
-#include <type_traits>
-#include <vector>
-#include <list>
-#include <assert.h>
-#include "Memory.h"
+#include "TCArray.h"
+#include "TCArrayList.h"
 
 namespace Tce {
 
@@ -28,9 +20,9 @@ namespace Tce {
 
         ~ObjectPool() {
             for (auto &p : m_buffers) {
-                SafeDelete(p);
+                Memory::SafeDelete(p);
             }
-            m_buffers.clear();
+            m_buffers.Clear();
         }
 
         // 在对象池中增加对象
@@ -56,10 +48,10 @@ namespace Tce {
         void Remove(T *pObject) {
             if (std::is_trivially_destructible<T>())
                 pObject->~T();
-            m_frees.push_back(pObject);
+            m_frees.Add(pObject);
             assert(m_totals > 0);
             m_totals--;
-            assert(m_frees.size() + m_totals == kCount * m_buffers.size());
+            assert(m_frees.Count() + m_totals == kCount * m_buffers.Count());
         }
 
     private:
@@ -71,25 +63,25 @@ namespace Tce {
             auto *pObject = m_frees.back();
             m_frees.pop_back();
             m_totals++;
-            assert(m_frees.size() + m_totals == kCount * m_buffers.size());
+            assert(m_frees.Count() + m_totals == kCount * m_buffers.Count());
             return pObject;
         }
 
         // 增加对象池缓冲区
         void _AddBuffer() {
             auto *pBuffer = new Buffer();
-            m_buffers.emplace_back(pBuffer);
+            m_buffers.EmAdd(pBuffer);
             auto *p = reinterpret_cast<T *>(pBuffer);
             p += kCount - 1;
             for (size_t i = kCount; i > 0; i--, p--)
-                m_frees.push_back(p);
+                m_frees.Add(p);
         }
 
         struct Buffer {
-            alignas(T) std::array<uint8_t, sizeof(T) * kCount> buffer;
+            alignas(T) Array<uint8_t, sizeof(T) * kCount> buffer;
         };
-        std::vector<Buffer *> m_buffers;                        // 缓冲区列表
-        std::vector<T *> m_frees;                           // 可用列表
+        ArrayList<Buffer *> m_buffers;                        // 缓冲区列表
+        ArrayList<T *> m_frees;                           // 可用列表
         size_t m_totals{};
     };
 }

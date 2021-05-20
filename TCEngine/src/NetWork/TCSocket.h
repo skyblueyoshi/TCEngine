@@ -1,32 +1,33 @@
 #pragma once
 
-#include <string>
+#include "TCUtils.h"
 
 namespace Tce {
-
-#define TC_INVALID_SOCKET (int)(~0)
-#define TC_SOCKET_ERROR (-1)
 
     // SOCKET地址
     class TCSocketAddress {
     public:
         short sinFamily;      //协议簇
-        std::string ip;         //IP地址
-        u_short port;         //端口号
+        String ip;         //IP地址
+        uint16_t port;         //端口号
         // 构建一个SOCKET地址
-        TCSocketAddress(std::string _ip, u_short _port);
+        TCSocketAddress(String _ip, uint16_t _port);
     };
 
     // SOCKET(TCP)实现
     class TCSocket {
+    public:
+        const TceSocketHandler kInvalidSocket = (TceSocketHandler)(~0);
     private:
-        int _socket{TC_INVALID_SOCKET};
+        TceSocketHandler _socket{kInvalidSocket};
         bool _isSingle{false};
-
-        TCSocket(int socket) : _socket(socket) {}
 
     public:
         TCSocket() = default;
+        TCSocket(const TCSocket& s) = default;
+        TCSocket(TceSocketHandler socket) : _socket(socket) {}
+
+        TCSocket& operator=(const TCSocket& s);
 
         // 创建一个TCP协议的SOCKET
         // @return SOCKET对象
@@ -51,13 +52,13 @@ namespace Tce {
         // 发送数据
         // @param buffer 缓冲区起点
         // @param size 缓冲区长度
-        void Send(const char *buffer, int size);
+        void Send(const char *buffer, size_t size);
 
         // 接收数据，返回是否接收数据长度
         // @param buffer 缓冲区起点
         // @param size 缓冲区长度
         // @return 接收数据长度
-        size_t Recieve(char *buffer, int maxSize);
+        size_t Recieve(char *buffer, size_t maxSize);
 
         // 判断当前SOCKET是否可用
         bool IsEnabled() const;

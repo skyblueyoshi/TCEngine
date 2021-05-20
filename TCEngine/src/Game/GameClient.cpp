@@ -5,6 +5,7 @@
 #include <Type/Matrix.h>
 #include "GameClient.h"
 #include "GraphicsDevice.h"
+#include "TCLog.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "Program.h"
@@ -331,7 +332,8 @@ namespace Tce {
 
 
             auto pTextureManager = m_pGraphicsDevice->GetTextureManager();
-            pTextureManager->LoadTextureFromFile("oo.png");
+            uint32_t ti = pTextureManager->LoadTextureFromFile("oo.png");
+            Log::Info("hhhhddd %d", pTextureManager->Get(ti)->GetHandle());
         }
 
 

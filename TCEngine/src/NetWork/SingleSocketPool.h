@@ -1,14 +1,15 @@
 #pragma once
 
-#include <vector>
-#include <Utils/ByteStream.h>
+#include "TCUtils.h"
+#include "TCArrayList.h"
+#include "TCByteStream.h"
 
 namespace Tce {
 
     class SingleSocketPool {
     private:
-        std::vector<int> mSocketIndexs;
-        std::vector<ByteStream> mSocketStreams;
+        ArrayList<int> mSocketIndexs;
+        ArrayList<ByteStream> mSocketStreams;
     public:
         static SingleSocketPool &GetInstance() {
             static SingleSocketPool _pool;

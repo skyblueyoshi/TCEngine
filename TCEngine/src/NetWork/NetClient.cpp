@@ -1,38 +1,40 @@
-#include <exception>
+#include <thread>
 #include "NetClient.h"
 #include "NetPacketReader.h"
-#include <thread>
+#include "TCLog.h"
 
 namespace Tce {
 
 
-    void NetClient::StartConnection(const char *serverIP, int serverPort) {
+    bool NetClient::StartConnection(const char *serverIP, uint16_t serverPort) {
         try {
             mSocket = TCSocket::CreateTCPSocket();
             mSocket.SetTimeOut(120);
             mSocket.Connect(TCSocketAddress(serverIP, serverPort));
             StartRecieveThread();
+            return true;
         }
         catch (const std::exception &ex) {
-
+            Log::Error(ex.what());
+            return false;
         }
     }
 
     void NetClient::SendAll() {
-        if (!mSendBuffer.IsEmpty()) {
-            mSocket.Send((char *) mSendBuffer.GetBase(),
-                         mSendBuffer.GetLength());
-            mSendBuffer.Reset();
+        if (!mSendBuffer.Empty()) {
+            mSocket.Send((char *) mSendBuffer.Data(),
+                         mSendBuffer.Count());
+            mSendBuffer.Clear();
         }
     }
 
     void NetClient::_RecieveThreadFunction() {
         while (mIsRunning) {
-            int count = mSocket.Recieve((char *) mTempBuffer.data(),
-                                        mTempBuffer.size());
+            size_t count = mSocket.Recieve((char *) mTempBuffer.Data(),
+                                        mTempBuffer.Count());
             if (count > 0) {
                 std::lock_guard<std::mutex> lockGuard(mRecvLock);
-                mRecvBuffer.WriteBatch(mTempBuffer.data(), count);
+                mRecvBuffer.WriteBatch(mTempBuffer.Data(), count);
             }
         }
         mSocket.Close();
@@ -52,11 +54,11 @@ namespace Tce {
             break;
             //result = pNetPacketReader->ReadPacket();
         }
-        if (mRecvBuffer.GetLength() > 0 && !mRecvBuffer.CanRead()) {
-            mRecvBuffer.SetLength(0);
+        if (mRecvBuffer.Count() > 0 && !mRecvBuffer.CanRead()) {
+            mRecvBuffer.SetCount(0);
         }
-        if (mRecvBuffer.IsEmpty() &&
-            mRecvBuffer.GetCapacity() > MAX_ALLOW_BUFFER_SIZE) {
+        if (mRecvBuffer.Empty() &&
+            mRecvBuffer.Capacity() > MAX_ALLOW_BUFFER_SIZE) {
             mRecvBuffer.FreeMemory();
         }
     }

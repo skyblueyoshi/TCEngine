@@ -31,15 +31,15 @@ namespace Tce {
 
         float texW = 0, texH = 0, texL = 0, texT = 0, texR = 1, texB = 1;
         if (!sourceRect.Empty()) {
-            texW = sourceRect.width;
-            texH = sourceRect.height;
+            texW = (float)sourceRect.width;
+            texH = (float)sourceRect.height;
             texL = sourceRect.x * pTexture->GetTexelWidth();
             texT = sourceRect.y * pTexture->GetTexelHeight();
             texR = sourceRect.GetRight() * pTexture->GetTexelWidth();
             texB = sourceRect.GetBottom() * pTexture->GetTexelHeight();
         } else {
-            texW = pTexture->GetWidth();
-            texH = pTexture->GetHeight();
+            texW = (float)pTexture->GetWidth();
+            texH = (float)pTexture->GetHeight();
         }
         Set(pTexture,
             pos.x, pos.y,

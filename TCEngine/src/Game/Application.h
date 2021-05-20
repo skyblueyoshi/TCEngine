@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include "TCArray.h"
 #include "Game.h"
 #include "GameWindow.h"
 
@@ -30,7 +30,7 @@ namespace Tce {
 	    };
         EnumSolution m_eSolution{SOLUTION_CLIENT};	                        // APP方案
 		std::shared_ptr<AppState> m_pAppState;					            // 应用状态
-		std::array<std::unique_ptr<Game>, GAME_INDEX_MAX> m_pGames;         // 游戏示例表
+		Array<std::unique_ptr<Game>, GAME_INDEX_MAX> m_pGames;         // 游戏示例表
 
 		std::shared_ptr<GraphicsDevice> m_pGraphicsDevice;					// 主渲染类
 		std::unique_ptr<GameWindow> m_pGameWindow;                          // 游戏屏幕类

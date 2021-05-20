@@ -1,10 +1,32 @@
+//#include "TextureManager.h"
+//#include "GraphicsDevice.h"
+//
+//namespace Tce {
+//    TextureManager::TextureManager(GraphicsDevice* pDevice)
+//            : GraphicsResourceManager(pDevice) {
+//
+//    }
+//
+//    uint32_t TextureManager::LoadTextureFromFile(const String &path) {
+//        auto pTexture = m_pDevice->CreateTextureFromFile(path);
+//        return GraphicsResourceManager::Load(pTexture);
+//    }
+//
+//    void TextureManager::Unload(std::shared_ptr<Texture> &pTexture) {
+//        if (pTexture) {
+//            m_pDevice->DisposeTexture(pTexture->GetHandle());
+//            GraphicsResourceManager::Unload(pTexture);
+//        }
+//    }
+//}
+
 #include "TextureManager.h"
-#include "File.h"
+#include "TCFile.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 #include <GLES2/gl2.h>
-#include <Utils/StringHelper.h>
+#include <Utils/TCString.h>
 #include "GraphicsDevice.h"
 
 namespace Tce {
@@ -13,16 +35,15 @@ namespace Tce {
 
     }
 
-    uint32_t TextureManager::LoadTextureFromFile(const std::string &path) {
-        std::vector<uint8_t> fileBits;
+    uint32_t TextureManager::LoadTextureFromFile(const String &path) {
+        ArrayList<uint8_t> fileBits;
         if (!File::Open(path, fileBits)) {
-            throw std::runtime_error(
-                    StringHelper::MakeFormat("Cannot open texture file: %s\n", path.c_str()));
+
         }
         int32_t imgWidth, imgHeight, imgChannelCount;
         stbi_set_flip_vertically_on_load(1);
         uint8_t *imageBits = stbi_load_from_memory(
-                fileBits.data(), fileBits.size(),
+                fileBits.Data(), fileBits.Count(),
                 &imgWidth, &imgHeight, &imgChannelCount,
                 STBI_rgb_alpha);
         // 创建纹理

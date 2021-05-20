@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <random>
+#include "TCUtils.h"
 
 namespace Tce {
 

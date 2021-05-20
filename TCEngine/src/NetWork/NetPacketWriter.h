@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "NetPacket.h"
 
 namespace Tce {

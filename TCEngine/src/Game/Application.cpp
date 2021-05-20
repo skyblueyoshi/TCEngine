@@ -6,14 +6,16 @@
 #include "GameClient.h"
 #include "GameServer.h"
 #include "GameWindow.h"
-#include "File.h"
+#include "TCFile.h"
 
 namespace Tce {
 
     Application::Application(std::shared_ptr<AppState> &pAppState,
                              Application::EnumSolution eSolution)
             : m_eSolution(eSolution), m_pAppState(pAppState) {
+#ifdef _TC_ANDROID
         File::SetAssetManager(pAppState->GetAndroidState()->activity->assetManager);
+#endif
     }
 
     bool Application::Init() {

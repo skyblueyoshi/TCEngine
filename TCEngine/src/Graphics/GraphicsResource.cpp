@@ -1,5 +1,4 @@
 #include "GraphicsResource.h"
-#include "GraphicsDevice.h"
 
 namespace Tce {
     GraphicsResource::GraphicsResource(GraphicsDevice* pDevice)

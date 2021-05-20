@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include "TCUtils.h"
 
 namespace Tce {
 
