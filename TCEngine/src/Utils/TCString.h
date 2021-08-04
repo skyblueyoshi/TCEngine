@@ -173,11 +173,23 @@ namespace Tce {
             return _s.empty();
         }
 
+        bool HasText() const {
+            return !Empty();
+        }
+
         ITER begin() {
             return _s.begin();
         }
 
         ITER end() {
+            return _s.end();
+        }
+
+        ITER begin() const {
+            return _s.begin();
+        }
+
+        ITER end() const {
             return _s.end();
         }
 
@@ -400,6 +412,14 @@ namespace Tce {
                 }
             }
             return std::move(v);
+        }
+
+        TS & StdStr() {
+            return _s;
+        }
+
+        const TS & StdStr() const {
+            return _s;
         }
 
     private:

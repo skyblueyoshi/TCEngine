@@ -277,19 +277,6 @@ namespace Tce {
         if (!init) {
             init = true;
 
-            const std::string svs = "attribute vec3 vertexPosition_modelspace;\n"
-                                    "attribute vec3 vertexColor;\n"
-                                    "uniform mat4 MVP;\n"
-                                    "varying vec3 fragmentColor;\n"
-                                    "void main(){\n"
-                                    "  fragmentColor = vertexColor;\n"
-                                    "  gl_Position = MVP * vec4(vertexPosition_modelspace,1);\n"
-                                    "}";
-            const std::string sPS = "precision mediump float;\n"
-                                    "varying vec3 fragmentColor;\n"
-                                    "void main(){\n"
-                                    "  gl_FragColor.xyz = fragmentColor;\n"
-                                    "}";
             const std::string svs2 = "attribute vec3 vertexPosition_modelspace;\n"
                                      "attribute vec2 vertexUV;\n"
                                      "uniform mat4 MVP;\n"

@@ -18,6 +18,8 @@
 #include <type_traits>
 #include <list>
 #include <cwchar>
+#include <map>
+#include <unordered_map>
 
 #if defined(_WIN32)
 	#define _TC_WINDOWS
@@ -36,6 +38,11 @@
 	#define TceSocketHandler SOCKET
 #else
 	#define TceSocketHandler int
+#endif
+
+#define _TC_OPENGL
+#ifdef _TC_ANDROID
+#define _TC_OPENGLES
 #endif
 
 inline void TC_Sleep(unsigned long milliseconds) {

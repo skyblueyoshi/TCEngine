@@ -45,10 +45,22 @@ namespace Tce {
         T& GetAt(size_t index) {
             return _arr.at(index);
         }
+        const T& Back() const {
+            return _arr.back();
+        }
+        T& Back() {
+            return _arr.back();
+        }
         typename std::vector<T>::iterator begin() {
             return _arr.begin();
         }
         typename std::vector<T>::iterator end() {
+            return _arr.end();
+        }
+        typename std::vector<T>::const_iterator begin() const {
+            return _arr.begin();
+        }
+        typename std::vector<T>::const_iterator end() const {
             return _arr.end();
         }
         size_t Add(const T& value) {
@@ -78,6 +90,9 @@ namespace Tce {
         size_t Count() const {
             return _arr.size();
         }
+        size_t CountInByte() const {
+            return Count() * sizeof(T);
+        }
 
         virtual void SetCount(size_t count) {
             _arr.resize(count);
@@ -94,45 +109,47 @@ namespace Tce {
         void Swap(ArrayList & arr) {
             _arr.swap(arr._arr);
         }
-//        int IndexOf(const T& value, size_t startIndex, size_t count, bool findLast) const {
-//            size_t end = startIndex + count;
-//            if (!findLast) {
-//                for (size_t i = startIndex; i < end; i++)
-//                    if (_arr.at(i) == value) return (int)i;
-//            }
-//            else {
-//                for (size_t i = end - 1; i >= startIndex; i--)
-//                    if (_arr.at(i) == value) return (int)i;
-//            }
-//            return -1;
-//        }
-//        int IndexOf(const T& value, size_t startIndex, size_t count) const {
-//            return IndexOf(value, startIndex, count, false);
-//        }
-//        int IndexOf(const T& value, size_t startIndex) const {
-//            return IndexOf(value, startIndex, Count() - startIndex);
-//        }
-//        int IndexOf(const T& value) const {
-//            return IndexOf(value, 0);
-//        }
-//        int LastIndexOf(const T& value) const {
-//            return IndexOf(value, 0, Count(), true);
-//        }
-//        int LastIndexOf(const T& value, int startIndex) const {
-//            return IndexOf(value, startIndex, Count() - startIndex, true);
-//        }
-//        int LastIndexOf(const T& value, int startIndex, int count) const {
-//            return IndexOf(value, startIndex, count, true);
-//        }
-//        bool Contains(const T& value) const {
-//            return IndexOf(value) != -1;
-//        }
-//        void Remove(const T& value) {
-//            int index = IndexOf(value);
-//            if (index != -1) {
-//                RemoveAt((size_t)index);
-//            }
-//        }
+       int IndexOf(const T& value, size_t startIndex, size_t count, bool findLast) const {
+           size_t end = startIndex + count;
+           if (!findLast) {
+               for (size_t i = startIndex; i < end; i++)
+                   if (_arr.at(i) == value) return (int)i;
+           }
+           else {
+               for (size_t i = end - 1; i >= startIndex; i--)
+                   if (_arr.at(i) == value) return (int)i;
+           }
+           return -1;
+       }
+       int IndexOf(const T& value, size_t startIndex, size_t count) const {
+           return IndexOf(value, startIndex, count, false);
+       }
+       int IndexOf(const T& value, size_t startIndex) const {
+           return IndexOf(value, startIndex, Count() - startIndex);
+       }
+       int IndexOf(const T& value) const {
+           return IndexOf(value, 0);
+       }
+       int LastIndexOf(const T& value) const {
+           return IndexOf(value, 0, Count(), true);
+       }
+       int LastIndexOf(const T& value, int startIndex) const {
+           return IndexOf(value, startIndex, Count() - startIndex, true);
+       }
+       int LastIndexOf(const T& value, int startIndex, int count) const {
+           return IndexOf(value, startIndex, count, true);
+       }
+       bool Contains(const T& value) const {
+           return IndexOf(value) != -1;
+       }
+       bool Remove(const T& value) {
+           int index = IndexOf(value);
+           if (index != -1) {
+               RemoveAt((size_t)index);
+               return true;
+           }
+           return false;
+       }
         void RemoveAt(size_t index) {
             _arr.erase(_arr.begin() + (int)index);
         }

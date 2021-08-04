@@ -1,31 +1,18 @@
 #pragma once
 
-#if defined(_WINDOWS)
-#   define DIRECTX
-#else
-#   define OPENGL
-#   if defined(__ANDROID__)
-#       define GLES
+#include "TCUtils.h"
+#include "Type/Color.h"
+#include "Type/PrimitiveType.h"
+#include "Game/AppState.h"
+#include "ShaderManager.h"
+#include "ProgramManager.h"
+#include "TextureManager.h"
 
-#   endif
-#endif
-
-#if defined(GLES)
-
+#ifdef _TC_OPENGLES
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-
 #endif
-
-#include <Game/AppState.h>
-#include <memory>
-#include <list>
-#include <mutex>
-#include "ShaderManager.h"
-#include "Type/Color.h"
-#include "ProgramManager.h"
-#include "TextureManager.h"
 
 namespace Tce {
 
@@ -114,6 +101,8 @@ namespace Tce {
 
         void _PlatformPresent();
 
+        void _PlatformDrawIndexedPrimitiveUP(PrimitiveType primitiveType, const void* pVertexs, size_t vertexElementSize, size_t vertexOffset, size_t numVertices, short *pIndexs, size_t indexOffset, size_t primitiveCount);
+
         std::shared_ptr<Texture> _PlatformCreateTexture(const ImageData& data);
 
         std::shared_ptr<Shader> _PlatformCreateShader(Shader::EnumStage eStage, const String &code);
@@ -169,7 +158,7 @@ namespace Tce {
         std::shared_ptr<ProgramManager> m_pProgramManager;   // 着色程序管理器
         std::shared_ptr<TextureManager> m_pTextureManager;   // 纹理管理器
 
-#ifdef GLES
+#ifdef _TC_OPENGLES
         EGLDisplay m_display{EGL_NO_DISPLAY};
         EGLContext m_context{EGL_NO_CONTEXT};
         EGLSurface m_surface{EGL_NO_SURFACE};

@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "TCArray.h"
-#include "TCArrayList.h"
+#include "Utils/TCArray.h"
+#include "Utils/TCArrayList.h"
 
 namespace Tce {
 
@@ -58,10 +58,10 @@ namespace Tce {
 
         // 创建一个空对象内存
         T *_CreateEmpty() {
-            if (m_frees.empty())
+            if (m_frees.Empty())
                 _AddBuffer();
-            auto *pObject = m_frees.back();
-            m_frees.pop_back();
+            auto *pObject = m_frees.Back();
+            m_frees.RemoveBack();
             m_totals++;
             assert(m_frees.Count() + m_totals == kCount * m_buffers.Count());
             return pObject;
@@ -70,7 +70,7 @@ namespace Tce {
         // 增加对象池缓冲区
         void _AddBuffer() {
             auto *pBuffer = new Buffer();
-            m_buffers.EmAdd(pBuffer);
+            m_buffers.Add(pBuffer);
             auto *p = reinterpret_cast<T *>(pBuffer);
             p += kCount - 1;
             for (size_t i = kCount; i > 0; i--, p--)

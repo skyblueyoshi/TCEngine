@@ -2,10 +2,11 @@
 #include "TCLog.h"
 #include "TCImage.h"
 #include "TCString.h"
+#include "GraphicsHelper.h"
 
 namespace Tce {
 
-#if defined(GLES)
+#ifdef _TC_OPENGL
 
     void GraphicsDevice::ResourceHandle::Free() {
         auto pHandle = const_cast<GLuint *>(&m_handle);
@@ -159,7 +160,7 @@ namespace Tce {
         eglSwapBuffers(m_display, m_surface);
     }
 
-    std::shared_ptr<Texture> GraphicsDevice::_PlatformCreateTexture(const ImageData& data) {
+    std::shared_ptr<Texture> GraphicsDevice::_PlatformCreateTexture(const ImageData &data) {
         // 创建纹理
         uint32_t handle = 0;
         glGenTextures(1, &handle);
@@ -177,7 +178,8 @@ namespace Tce {
         return std::make_shared<Texture>(handle, data.m_width, data.m_height);
     }
 
-    std::shared_ptr<Shader> GraphicsDevice::_PlatformCreateShader(Shader::EnumStage eStage, const String &code) {
+    std::shared_ptr<Shader>
+    GraphicsDevice::_PlatformCreateShader(Shader::EnumStage eStage, const String &code) {
         try {
             // 创建并获取着色器ID句柄
             GLuint handle = glCreateShader(
@@ -211,7 +213,8 @@ namespace Tce {
         }
     }
 
-    std::shared_ptr<Tce::Program> GraphicsDevice::_PlatformCreateProgram(const String &vertexCode, const String &pixelCode) {
+    std::shared_ptr<Tce::Program>
+    GraphicsDevice::_PlatformCreateProgram(const String &vertexCode, const String &pixelCode) {
         try {
             int vertexId = m_pShaderManager->LoadVertexShader(vertexCode);
             int pixelId = m_pShaderManager->LoadPixelShader(pixelCode);
@@ -249,11 +252,26 @@ namespace Tce {
 
             return std::make_shared<Program>(handle);
         }
-        catch (const std::exception & ex) {
+        catch (const std::exception &ex) {
             throw std::runtime_error(String::Format(
                     "Failed to load shader program: \n%s",
                     ex.what()).Data());
         }
+    }
+
+
+    void GraphicsDevice::_PlatformDrawIndexedPrimitiveUP(PrimitiveType primitiveType,
+                                                         const void *pVertexs,
+                                                         size_t vertexElementSize,
+                                                         size_t vertexOffset, size_t numVertices,
+                                                         short *pIndexs, size_t indexOffset,
+                                                         size_t primitiveCount) {
+        // 不绑定VBO
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        GraphicsHelper::CheckError();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        GraphicsHelper::CheckError();
+
     }
 
 #endif

@@ -32,6 +32,12 @@ namespace Tce {
         typename std::array<T, TSIZE>::iterator end() {
             return _arr.end();
         }
+        typename std::array<T, TSIZE>::const_iterator begin() const {
+            return _arr.begin();
+        }
+        typename std::array<T, TSIZE>::const_iterator end() const {
+            return _arr.end();
+        }
         void Swap(Array & arr) {
             _arr.swap(arr._arr);
         }
@@ -73,11 +79,13 @@ namespace Tce {
         bool Contains(const T& value) const {
             return IndexOf(value) != -1;
         }
-        void Remove(const T& value) {
+        bool Remove(const T& value) {
             int index = IndexOf(value);
             if (index != -1) {
                 RemoveAt(index);
+                return true;
             }
+            return false;
         }
         void RemoveAt(size_t index) {
             GetAt(index).~T();

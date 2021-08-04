@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Game\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Game\Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Game\GameClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Game\GameServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Game\GameState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Game\GameWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Utils\TCLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Utils\TickRunner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Utils\FileMapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Utils\TCFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Utils\TCImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\GraphicsDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\GraphicsDeviceOpenGL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\GraphicsResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\Sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\TextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\ShaderManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\Program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\ProgramManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\Graphics\GraphicsHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\NetWork\SingleSocketPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\NetWork\TCSocket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\NetWork\NetClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\NetWork\NetPacket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\NetWork\NetPacketWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\NetWork\NetPacketReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\VS\TCEngine\TCEngine\TCEngine\src\NetWork\NetSession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\VS\TCEngine\TCEngine\TCEngine\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{38C567FB-CA76-31D0-A75C-020DC515F064}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

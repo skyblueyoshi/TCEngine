@@ -43,7 +43,7 @@ namespace Tce {
 	// 可作为客户端或者服务端
 	class Game {
 	public:
-		Game(bool isServer);
+		Game(bool isServer = true);
 		virtual ~Game() = default;
 		// 初始化当前游戏
 		// @return 返回是否初始化成功

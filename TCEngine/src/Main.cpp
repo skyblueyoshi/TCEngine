@@ -1,6 +1,8 @@
 
 #include <stdio.h>
 #include "EntityManager.h"
+#include "TCJson.h"
+#include "TCDictionary.h"
 
 int main() {
     Tce::EntityManager<int> ee;

@@ -12,6 +12,7 @@ namespace Tce {
         uint32_t width{};
         uint32_t height{};
 
+        Rect() = default;
         Rect(T _x, T _y, uint32_t _width, uint32_t _height);
 
         bool operator==(const Rect &other) const;
@@ -50,15 +51,20 @@ namespace Tce {
         // @return 是否在矩形内
         bool IsPointIn(const Vector2 &vector2) const;
 
+        // 判断当前矩形是否完全包含另一个矩形
+        // @param other 另一个矩形
+        // @return 是否完全包含
+        bool Contains(const Rect &other) const;
+
         // 获取与另一个矩形的最小包围矩形
         // @param other 另一个矩形
         // @return 最小包围矩形
-        Rect Union(const Rect &other);
+        Rect Union(const Rect &other) const;
 
         // 获取与另一个矩形的交集矩形
         // @param other 另一个矩形
         // @return 交集矩形
-        Rect Intersect(const Rect &other);
+        Rect Intersect(const Rect &other) const;
 
         // 获取矩形右侧横坐标
         // return 右侧横坐标
@@ -67,6 +73,14 @@ namespace Tce {
         // 获取矩形底侧纵坐标
         // return 底侧纵坐标
         T GetBottom() const;
+
+        // 获取矩形中心横坐标
+        // return 中心横坐标
+        T GetCenterX() const;
+
+        // 获取矩形中心纵坐标
+        // return 中心纵坐标
+        T GetCenterY() const;
     };
 
     typedef Rect<int> RectInt;

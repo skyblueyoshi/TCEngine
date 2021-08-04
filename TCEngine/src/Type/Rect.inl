@@ -31,27 +31,27 @@ namespace Tce {
 
     template<typename T>
     bool Rect<T>::IsOverlapping(const Rect &other) const {
-        return ((y + height > other.y) && (other.y + other.height > y))
-               ? ((x + width > other.x) && (other.x + other.width > x))
+        return ((GetBottom() > other.y) && (other.GetBottom() > y))
+               ? ((GetRight() > other.x) && (other.GetRight() > x))
                : false;
     }
 
     template<typename T>
     bool Rect<T>::IsPointIn(int pointX, int pointY) const {
-        return ((T) pointX >= x) && ((T) pointX < x + width) &&
-               ((T) pointY >= y) && ((T) pointY < y + height);
+        return ((T) pointX >= x) && ((T) pointX < GetRight()) &&
+               ((T) pointY >= y) && ((T) pointY < GetBottom());
     }
 
     template<typename T>
     bool Rect<T>::IsPointIn(double pointX, double pointY) const {
-        return ((T) pointX >= x) && ((T) pointX < x + width) &&
-               ((T) pointY >= y) && ((T) pointY < y + height);
+        return ((T) pointX >= x) && ((T) pointX < GetRight()) &&
+               ((T) pointY >= y) && ((T) pointY < GetBottom());
     }
 
     template<typename T>
     bool Rect<T>::IsPointIn(float pointX, float pointY) const {
-        return ((T) pointX >= x) && ((T) pointX < x + width) &&
-               ((T) pointY >= y) && ((T) pointY < y + height);
+        return ((T) pointX >= x) && ((T) pointX < GetRight()) &&
+               ((T) pointY >= y) && ((T) pointY < GetBottom());
     }
 
     template<typename T>
@@ -60,22 +60,28 @@ namespace Tce {
     }
 
     template<typename T>
-    Rect <T> Rect<T>::Union(const Rect &other) {
-        int minX = TCMath::Min(x, other.x);
-        int minY = TCMath::Min(y, other.y);
-        return {minX, minY,
-                (uint_t) (TCMath::Max(GetRight(), other.GetRight()) - minX),
-                (uint_t) (TCMath::Max(GetBottom(), other.GetBottom()) - minY)};
+    bool Rect<T>::Contains(const Rect &other) const {
+        return other.x >= x && other.y >= y && 
+            other.GetRight() <= GetRight() && other.GetBottom() <= GetBottom();
     }
 
     template<typename T>
-    Rect <T> Rect<T>::Intersect(const Rect &other) {
+    Rect <T> Rect<T>::Union(const Rect &other) const {
+        int minX = TCMath::Min(x, other.x);
+        int minY = TCMath::Min(y, other.y);
+        return {minX, minY,
+                (uint32_t) (TCMath::Max(GetRight(), other.GetRight()) - minX),
+                (uint32_t) (TCMath::Max(GetBottom(), other.GetBottom()) - minY)};
+    }
+
+    template<typename T>
+    Rect <T> Rect<T>::Intersect(const Rect &other) const {
         if (IsOverlapping(other)) {
             T left = TCMath::Max(x, other.x);
             T top = TCMath::Max(y, other.y);
             return {left, top,
-                    (uint_t) (TCMath::Min(GetRight(), other.GetRight()) - left),
-                    (uint_t) (TCMath::Min(GetBottom(), other.GetBottom()) - top)};
+                    (uint32_t) (TCMath::Min(GetRight(), other.GetRight()) - left),
+                    (uint32_t) (TCMath::Min(GetBottom(), other.GetBottom()) - top)};
         }
         return {(T) 0, (T) 0, 0, 0};
     }
@@ -88,5 +94,15 @@ namespace Tce {
     template<typename T>
     T Rect<T>::GetBottom() const {
         return (T)(y + height);
+    }
+
+    template<typename T>
+    T Rect<T>::GetCenterX() const {
+        return (T)(x + width / 2);
+    }
+
+    template<typename T>
+    T Rect<T>::GetCenterY() const {
+        return (T)(y + height / 2);
     }
 }

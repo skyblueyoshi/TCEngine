@@ -33,7 +33,6 @@ set(TARGET_SOURCE_FILES
 		src/Utils/FileMapper.cpp
 		src/Utils/TCFile.cpp
 		src/Utils/TCImage.cpp
-		src/Utils/TCString.cpp
 		src/Graphics/GraphicsDevice.cpp
 		src/Graphics/GraphicsDeviceOpenGL.cpp
 		src/Graphics/GraphicsResource.cpp
@@ -45,7 +44,6 @@ set(TARGET_SOURCE_FILES
 		src/Graphics/Program.cpp
 		src/Graphics/ProgramManager.cpp
 		src/Graphics/GraphicsHelper.cpp
-		src/Type/Type.cpp
 		src/NetWork/SingleSocketPool.cpp
 		src/NetWork/TCSocket.cpp
 		src/NetWork/NetClient.cpp
